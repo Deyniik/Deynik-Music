@@ -1194,3 +1194,357 @@
             }
         });
     </script>
+            // АЛЬБОООООООММММ
+    <!-- ВСТАВИТЬ ПОСЛЕ КОДА БАЗОВОГО ШАБЛОНА -->
+<style>
+    /* СТРАНИЦА АЛЬБОМА */
+    .album-page {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        background: linear-gradient(180deg, rgba(80, 60, 40, 0.6) 0%, #191414 300px);
+    }
+    
+    .album-header {
+        padding: 40px 30px 20px;
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+        background: linear-gradient(transparent 0%, rgba(0,0,0,0.5) 100%);
+    }
+    
+    .album-cover-large {
+        width: 232px;
+        height: 232px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        flex-shrink: 0;
+    }
+    
+    .album-info {
+        flex: 1;
+        padding-bottom: 20px;
+    }
+    
+    .album-type {
+        font-size: 0.9rem;
+        color: #B3B3B3;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .album-title-large {
+        font-size: 3.5rem;
+        font-weight: bold;
+        color: #FFFFFF;
+        margin-bottom: 16px;
+        line-height: 1;
+    }
+    
+    .album-artist-large {
+        font-size: 1.2rem;
+        color: #FFFFFF;
+        margin-bottom: 16px;
+    }
+    
+    .album-stats {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #B3B3B3;
+    }
+    
+    .album-actions {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-top: 24px;
+    }
+    
+    .play-button-large {
+        background: #1DB954;
+        border: none;
+        color: black;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .play-button-large:hover {
+        transform: scale(1.05);
+        background: #1ed760;
+    }
+    
+    .action-button {
+        background: transparent;
+        border: none;
+        color: #B3B3B3;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .action-button:hover {
+        color: #FFFFFF;
+    }
+    
+    .tracks-list {
+        padding: 0 30px 30px;
+        flex: 1;
+    }
+    
+    .tracks-header {
+        display: grid;
+        grid-template-columns: 40px 1fr 100px 60px;
+        gap: 16px;
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: #B3B3B3;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .track-item {
+        display: grid;
+        grid-template-columns: 40px 1fr 100px 60px;
+        gap: 16px;
+        padding: 12px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-items: center;
+    }
+    
+    .track-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .track-item.active {
+        background: rgba(29, 185, 84, 0.15);
+        position: relative;
+    }
+    
+    .track-item.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: #1DB954;
+        border-radius: 3px 0 0 3px;
+    }
+    
+    .track-number {
+        text-align: center;
+        color: #B3B3B3;
+        font-size: 0.9rem;
+    }
+    
+    .track-item.active .track-number {
+        color: #1DB954;
+        font-weight: bold;
+    }
+    
+    .track-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .track-title {
+        color: #FFFFFF;
+        font-size: 1rem;
+    }
+    
+    .track-item.active .track-title {
+        color: #1DB954;
+    }
+    
+    .track-artist {
+        color: #B3B3B3;
+        font-size: 0.9rem;
+    }
+    
+    .track-duration {
+        color: #B3B3B3;
+        font-size: 0.9rem;
+        text-align: right;
+    }
+    
+    .track-likes {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        color: #B3B3B3;
+        font-size: 0.9rem;
+    }
+    
+    .track-likes i {
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+    
+    .track-likes:hover i {
+        color: #1DB954;
+    }
+    
+    @media (max-width: 900px) {
+        .album-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .album-cover-large {
+            width: 180px;
+            height: 180px;
+        }
+        
+        .album-title-large {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<script>
+    // ДАННЫЕ АЛЬБОМА И ТРЕКОВ
+    window.tracks = {
+        'taylor-swift': {
+            name: "The Fate of Ophelia",
+            url: 'https://s3.k-connect.ru/static/music/1475/5132/1761060712_Taylor_Swift_-_The_Fate_of_Ophelia.flac',
+            description: "Taylor Swift",
+            currentTrack: "The Fate of Ophelia",
+            currentArtist: "Taylor Swift",
+            quality: "FLAC",
+            icon: "fas fa-heart",
+            category: "taylor",
+            likes: 0,
+            cover: "https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg",
+            descriptionText: "Уютная акустическая версия с элементами фолк-музыки. Идеально подходит для спокойного вечера."
+        },
+        'wood': {
+            name: "Wood",
+            url: 'https://s3.k-connect.ru/static/music/1475/5144/1761068612_Taylor_Swift_-_Wood.flac',
+            description: "Taylor Swift",
+            currentTrack: "Wood",
+            currentArtist: "Taylor Swift",
+            quality: "FLAC",
+            icon: "fas fa-tree",
+            category: "taylor",
+            likes: 0,
+            cover: "https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg",
+            descriptionText: "Акустическая баллада с теплым звучанием и лирическими текстами."
+        },
+        // ... остальные треки такие же как были
+    };
+
+    // КОНТЕНТ АЛЬБОМА
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `
+            <div class="album-page">
+                <div class="album-header">
+                    <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="The Life of a Showgirl" class="album-cover-large">
+                    <div class="album-info">
+                        <div class="album-type">Альбом</div>
+                        <h1 class="album-title-large">The Life of a Showgirl</h1>
+                        <div class="album-artist-large">Taylor Swift</div>
+                        <div class="album-stats">
+                            <span>2025 • 12 треков</span>
+                        </div>
+                        <div class="album-actions">
+                            <button class="play-button-large" id="album-play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="action-button">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button class="action-button">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracks-list">
+                    <div class="tracks-header">
+                        <div>#</div>
+                        <div>Название</div>
+                        <div>Длительность</div>
+                        <div></div>
+                    </div>
+                    
+                    ${Object.keys(window.tracks).map((trackId, index) => {
+                        const track = window.tracks[trackId];
+                        return `
+                            <div class="track-item ${trackId === window.playerState.currentTrackId ? 'active' : ''}" data-track="${trackId}">
+                                <div class="track-number">${index + 1}</div>
+                                <div class="track-info">
+                                    <div class="track-title">${track.name}</div>
+                                    <div class="track-artist">${track.currentArtist}</div>
+                                </div>
+                                <div class="track-duration">${track.duration || '3:45'}</div>
+                                <div class="track-likes">
+                                    <span class="likes-count">${track.likes}</span>
+                                    <i class="far fa-heart"></i>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+
+        // Обработчики для треков в альбоме
+        document.querySelectorAll('.track-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const trackId = this.getAttribute('data-track');
+                window.playerState.isPlaying = true;
+                document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('album-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+                window.changeTrack(trackId);
+                window.showNotification(`Выбран трек: ${window.tracks[trackId].name}`);
+            });
+        });
+
+        // Кнопка воспроизведения альбома
+        document.getElementById('album-play-btn').addEventListener('click', function() {
+            const playBtn = document.getElementById('play-btn');
+            if (window.playerState.isPlaying) {
+                window.playerState.audio.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                this.innerHTML = '<i class="fas fa-play"></i>';
+                window.playerState.isPlaying = false;
+            } else {
+                window.playerState.audio.play().then(() => {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    this.innerHTML = '<i class="fas fa-pause"></i>';
+                    window.playerState.isPlaying = true;
+                });
+            }
+        });
+
+        // Инициализация списка треков в боковой панели
+        if (window.initializeTrackList) {
+            window.initializeTrackList();
+        }
+    });
+</script>
