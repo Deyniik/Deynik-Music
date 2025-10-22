@@ -6,24 +6,36 @@
     <title>The Life of a Showgirl - Deynik Music</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/player.css">
-    <link rel="stylesheet" href="assets/css/side-panels.css">
-    <link rel="stylesheet" href="assets/css/album-page.css">
+    <style>
+        /* ВСТАВЬ СЮДА ВЕСЬ ТВОЙ CSS */
+        /* Тот же CSS что и в index.html */
+    </style>
 </head>
 <body class="retro-theme">
     <div class="vintage-overlay"></div>
-    
     <div class="container">
-        <!-- ШАПКА -->
-        <div id="header-container"></div>
-        
-        <div class="content">
-            <!-- ЛЕВАЯ ПАНЕЛЬ -->
-            <div id="left-panel-container"></div>
-            
-            <!-- ОСНОВНОЕ ОКНО (СТРАНИЦА АЛЬБОМА) -->
-            <div class="albums-container crt-effect">
+        <!-- ПОДКЛЮЧАЕМ ОБЩИЙ КАРКАС -->
+        <div id="layout-container"></div>
+    </div>
+
+    <script>
+        // Загружаем общий каркас
+        fetch('layout.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('layout-container').innerHTML = html;
+                // Показываем кнопку "Назад" на странице альбома
+                document.getElementById('back-button').style.display = 'flex';
+                // Загружаем контент альбома
+                loadAlbumContent();
+                // Инициализируем плеер
+                initializePlayer();
+            });
+
+        // Функция загрузки контента альбома
+        function loadAlbumContent() {
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = `
                 <div class="album-page">
                     <div class="album-header">
                         <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="The Life of a Showgirl" class="album-cover-large">
@@ -49,40 +61,14 @@
                     </div>
                     
                     <div class="tracks-list" id="tracks-list">
-                        <!-- Треки будут добавлены через JavaScript -->
+                        <!-- треки через JS -->
                     </div>
                 </div>
-            </div>
-            
-            <!-- ПРАВАЯ ПАНЕЛЬ -->
-            <div id="right-panel-container"></div>
-        </div>
-        
-        <!-- ПЛЕЕР -->
-        <div id="player-container"></div>
-    </div>
+            `;
+        }
 
-    <!-- Уведомление -->
-    <div class="notification" id="notification">Текст уведомления</div>
-
-    <!-- Подключаем JavaScript -->
-    <script src="assets/js/utils.js"></script>
-    <script src="assets/js/tracks-data.js"></script>
-    <script src="assets/js/player.js"></script>
-    <script src="assets/js/navigation.js"></script>
-    
-    <script>
-        // Загружаем компоненты при старте
-        loadAllComponents().then(() => {
-            // Показываем кнопку "Назад" на странице альбома
-            document.getElementById('back-button').style.display = 'flex';
-            // Инициализируем плеер
-            initializePlayer();
-            // Инициализируем навигацию
-            initializeNavigation();
-            // Загружаем треки альбома
-            loadAlbumTracks();
-        });
+        // ВСТАВЬ СЮДА ВЕСЬ ТВОЙ JavaScript  
+        // Тот же JavaScript что и в index.html
     </script>
 </body>
 </html>
