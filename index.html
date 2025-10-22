@@ -1,3 +1,108 @@
+<script>
+    // ... весь предыдущий код остается ...
+
+    // ДОБАВЛЯЕМ РОУТЕР
+    class Router {
+        constructor(player) {
+            this.player = player;
+            this.routes = {
+                '/': 'home',
+                '/album/:id': 'album'
+            };
+            this.init();
+        }
+
+        init() {
+            // Обработка кнопок назад/вперед в браузере
+            window.addEventListener('popstate', (e) => {
+                this.handleRoute(window.location.pathname);
+            });
+
+            // Обработка начальной загрузки
+            this.handleRoute(window.location.pathname);
+        }
+
+        navigate(path) {
+            if (window.location.pathname !== path) {
+                window.history.pushState({}, '', path);
+                this.handleRoute(path);
+            }
+        }
+
+        handleRoute(path) {
+            // Парсим путь
+            if (path === '/') {
+                this.player.renderHomePage();
+            } else if (path.startsWith('/album/')) {
+                const albumId = path.split('/album/')[1];
+                this.player.showAlbumPage(albumId);
+            } else {
+                // Если путь не распознан, переходим на главную
+                this.navigate('/');
+            }
+        }
+    }
+
+    // ОБНОВЛЯЕМ КЛАСС SpotifyPlayer
+    class SpotifyPlayer {
+        constructor() {
+            this.audio = new Audio();
+            this.router = new Router(this);
+            this.init();
+        }
+
+        // ... весь предыдущий код остается ...
+
+        renderHomePage() {
+            // ОБНОВЛЯЕМ URL
+            if (window.location.pathname !== '/') {
+                this.router.navigate('/');
+            }
+
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = `
+                <div class="albums-header">
+                    <h2>Альбомы</h2>
+                    <button class="mix-btn" id="mix-btn">
+                        <i class="fas fa-random"></i> Mix
+                    </button>
+                </div>
+                <div class="albums-grid">
+                    ${Object.values(albumsData).map(album => `
+                        <div class="album-card" data-album="${album.id}">
+                            <img src="${album.cover}" alt="${album.title}" class="album-cover">
+                            <div class="album-info">
+                                <div class="album-title">${album.title}</div>
+                                <div class="album-artist">${album.artist}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Добавляем обработчики для альбомов
+            mainContent.querySelectorAll('.album-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    // ИСПОЛЬЗУЕМ РОУТЕР ВМЕСТО ПРЯМОГО ВЫЗОВА
+                    this.router.navigate(`/album/${card.dataset.album}`);
+                });
+            });
+
+            // ... остальной код ...
+        }
+
+        showAlbumPage(albumId) {
+            // ОБНОВЛЯЕМ URL
+            if (window.location.pathname !== `/album/${albumId}`) {
+                this.router.navigate(`/album/${albumId}`);
+            }
+
+            const album = albumsData[albumId];
+            if (!album) {
+                this.router.navigate('/');
+                return;
+            }
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -1543,3 +1648,20 @@
     </script>
 </body>
 </html>
+        }
+
+        goBack() {
+            // ИСПОЛЬЗУЕМ ИСТОРИЮ БРАУЗЕРА
+            if (AppState.currentPage === 'album') {
+                window.history.back();
+            }
+        }
+
+        // ... остальной код ...
+    }
+
+    // ЗАПУСК ПРИЛОЖЕНИЯ
+    document.addEventListener('DOMContentLoaded', () => {
+        new SpotifyPlayer();
+    });
+</script>
