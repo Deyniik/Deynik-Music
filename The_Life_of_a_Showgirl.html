@@ -3,274 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Life of a Showgirl - Deynik Music</title>
+    <title>Deynik Music - Альбом</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Courier New', monospace;
-        }
+        /* ВСЕ ТЕ ЖЕ СТИЛИ ЧТО И В index.html */
+        /* ... вставь ВСЕ стили из index.html ... */
         
-        body {
-            background-color: #121212;
-            color: #FFFFFF;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 12px;
-            overflow: hidden;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-        
-        .container {
-            width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            max-height: 100vh;
-        }
-        
-        header {
-            text-align: center;
-            padding: 8px 0;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            justify-content: flex-start;
-        }
-        
-        .header-center {
-            flex: 2;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            justify-content: flex-end;
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-            color: #1DB954;
-            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-        
-        .theme-switcher {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .theme-switcher:hover {
-            background: rgba(29, 185, 84, 0.3);
-            transform: scale(1.05);
-        }
-
-        .content {
-            display: flex;
-            justify-content: space-between;
-            align-items: stretch;
-            flex: 1;
-            gap: 15px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        
-        .side-panel {
-            flex: 1;
-            background: #191414;
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            min-width: 180px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .left-panel {
-            text-align: right;
-        }
-        
-        .stations-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* КАТЕГОРИИ */
-        .categories-container {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .category-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #B3B3B3;
-            padding: 6px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .category-btn:hover {
-            background: rgba(29, 185, 84, 0.2);
-            color: white;
-        }
-        
-        .category-btn.active {
-            background: rgba(29, 185, 84, 0.3);
-            color: #1DB954;
-            border-color: #1DB954;
-        }
-        
-        .station-list {
-            list-style: none;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
-            padding-right: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .station-list::-webkit-scrollbar {
-            width: 5px;
-        }
-        
-        .station-list::-webkit-scrollbar-track {
-            background: #191414;
-        }
-        
-        .station-list::-webkit-scrollbar-thumb {
-            background-color: rgba(29, 185, 84, 0.3);
-            border-radius: 5px;
-        }
-        
-        .station-list li {
-            padding: 10px 12px;
-            margin: 4px 0;
-            background: rgba(40, 40, 40, 0.8);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid #1DB954;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .station-list li:hover {
-            background: rgba(29, 185, 84, 0.2);
-            transform: translateX(-3px);
-        }
-        
-        .station-list li.active {
-            background: rgba(29, 185, 84, 0.3);
-            border-left: 3px solid #1DB954;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
-        }
-        
-        .station-likes {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            color: #B3B3B3;
-        }
-        
-        .station-likes .likes-count {
-            min-width: 20px;
-            text-align: center;
-        }
-        
-        .station-icon {
-            margin-right: 10px;
-            font-size: 1rem;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .random-station-btn {
-            background: rgba(29, 185, 84, 0.2);
-            border: 1px solid rgba(29, 185, 84, 0.5);
-            color: #1DB954;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            margin-top: 5px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 36px;
-        }
-        
-        .random-station-btn:hover {
-            background: rgba(29, 185, 84, 0.3);
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .albums-container {
-            flex: 3;
-            display: flex;
-            flex-direction: column;
-            background: #191414;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 0;
-        }
-        
-        /* СТРАНИЦА АЛЬБОМА КАК В SPOTIFY */
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ СТРАНИЦЫ АЛЬБОМА */
         .album-page {
             flex: 1;
             display: flex;
@@ -296,7 +36,7 @@
             flex-shrink: 0;
         }
         
-        .album-info {
+        .album-info-large {
             flex: 1;
             padding-bottom: 20px;
         }
@@ -359,22 +99,6 @@
             background: #1ed760;
         }
         
-        .action-button {
-            background: transparent;
-            border: none;
-            color: #B3B3B3;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .action-button:hover {
-            color: #FFFFFF;
-        }
-        
         .tracks-list {
             padding: 0 30px 30px;
             flex: 1;
@@ -392,7 +116,7 @@
             letter-spacing: 1px;
         }
         
-        .track-item {
+        .album-track-item {
             display: grid;
             grid-template-columns: 40px 1fr 100px 60px;
             gap: 16px;
@@ -403,11 +127,11 @@
             align-items: center;
         }
         
-        .track-item:hover {
+        .album-track-item:hover {
             background: rgba(255, 255, 255, 0.1);
         }
         
-        .track-item.active {
+        .album-track-item.active {
             background: rgba(29, 185, 84, 0.2);
         }
         
@@ -415,12 +139,6 @@
             text-align: center;
             color: #B3B3B3;
             font-size: 0.9rem;
-        }
-        
-        .track-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
         }
         
         .track-title {
@@ -447,456 +165,24 @@
             color: #B3B3B3;
             font-size: 0.9rem;
         }
-        
-        /* ОБНОВЛЕННЫЙ ПЛЕЕР */
-        .player-container {
-            background: #191414;
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            height: auto;
-            flex-shrink: 0;
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .player-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .player-left {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .player-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            margin-right: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.3rem;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .player-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .station-text {
-            flex: 1;
-        }
-        
-        .station-text h2 {
-            font-size: 1.3rem;
-            margin-bottom: 4px;
-            color: #1DB954;
-        }
-        
-        .station-text p {
-            color: #B3B3B3;
-            font-size: 0.9rem;
-        }
-        
-        .player-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            gap: 10px;
-            position: relative;
-        }
-        
-        .player-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex: 1;
-            gap: 15px;
-        }
-        
-        .btn {
-            background: rgba(50, 50, 50, 0.8);
-            border: none;
+
+        .nav-button {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn:hover {
-            background: rgba(29, 185, 84, 0.4);
-            transform: scale(1.05);
-        }
-        
-        .btn-play {
-            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
-            width: 50px;
-            height: 50px;
-            font-size: 1.3rem;
-            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
-        }
-        
-        .btn-play:hover {
-            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
-        }
-
-        /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
-        .btn-like-container {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        .likes-count-bottom {
             font-size: 0.9rem;
-            color: #B3B3B3;
-            font-weight: bold;
-            min-width: 20px;
-            text-align: center;
         }
         
-        .btn-like {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            background: rgba(50, 50, 50, 0.8);
-            border: none;
-            color: white;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn-like i {
-            font-size: 1.3rem;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-like.active i {
-            color: white;
-        }
-        
-        .btn-like:hover {
-            background: rgba(29, 185, 84, 0.4);
+        .nav-button:hover {
+            background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
-        }
-        
-        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ И ПРОГРЕССА */
-        .player-bottom {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-        }
-        
-        .progress-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            max-width: 100%;
-        }
-        
-        .progress-time {
-            font-size: 0.8rem;
-            color: #B3B3B3;
-            min-width: 40px;
-            text-align: center;
-        }
-        
-        .progress-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            background: rgba(80, 80, 80, 0.7);
-            border-radius: 5px;
-            outline: none;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .progress-slider:hover {
-            background: rgba(100, 100, 100, 0.8);
-        }
-        
-        .progress-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
-        }
-        
-        .progress-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 8px rgba(29, 185, 84, 1);
-        }
-        
-        .progress-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
-        }
-        
-        .progress-slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 8px rgba(29, 185, 84, 1);
-        }
-        
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 250px;
-            max-width: 100%;
-        }
-        
-        .volume-icon {
-            font-size: 1.1rem;
-            color: #1DB954;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .volume-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            background: rgba(80, 80, 80, 0.7);
-            border-radius: 5px;
-            outline: none;
-            cursor: pointer;
-        }
-        
-        .volume-slider:hover {
-            background: rgba(100, 100, 100, 0.8);
-        }
-        
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 4px rgba(0,0,0,0.5);
-        }
-        
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
-        }
-        
-        .volume-slider::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 4px rgba(0,0,0,0.5);
-        }
-        
-        .category-title {
-            font-size: 0.9rem;
-            color: #1DB954;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            padding-bottom: 3px;
-            border-bottom: 1px solid rgba(29, 185, 84, 0.3);
-        }
-        
-        .crt-effect {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .crt-effect::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 3px;
-            z-index: 2;
-            pointer-events: none;
-        }
-        
-        .vintage-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.1;
-        }
-        
-        /* Уведомления */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1DB954;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .notification.show {
-            opacity: 1;
-        }
-        
-        /* Стили для обложек в правой панели */
-        .album-cover-right {
-            width: 100%;
-            max-width: 200px;
-            height: auto;
-            border-radius: 8px;
-            margin: 0 auto 15px;
-            display: block;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-        
-        .track-info {
-            margin-top: 15px;
-        }
-        
-        .track-info h3 {
-            font-size: 1rem;
-            color: #1DB954;
-            margin-bottom: 5px;
-        }
-        
-        .track-info p {
-            font-size: 0.8rem;
-            color: #B3B3B3;
-            margin-bottom: 8px;
-        }
-        
-        @media (max-width: 900px) {
-            .content {
-                flex-direction: column;
-            }
-            
-            .side-panel {
-                width: 100%;
-                height: 200px;
-                margin-bottom: 12px;
-            }
-            
-            .albums-container {
-                width: 100%;
-                height: 250px;
-                order: -1;
-            }
-            
-            .player-container {
-                flex-direction: column;
-                gap: 12px;
-                padding: 12px;
-            }
-            
-            .player-top {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .volume-control {
-                width: 100%;
-                max-width: 200px;
-            }
-            
-            .categories-container {
-                overflow-x: auto;
-                padding-bottom: 5px;
-            }
-            
-            .header-center {
-                flex: 1;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .album-cover-right {
-                max-width: 150px;
-            }
-            
-            .album-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                padding: 20px;
-            }
-            
-            .album-cover-large {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .album-title-large {
-                font-size: 2rem;
-            }
-        }
-
-        /* Темы */
-        body.retro-theme {
-            background-color: #121212;
-            color: #FFFFFF;
-        }
-        
-        body.retro-theme .vintage-overlay {
-            display: block;
         }
     </style>
 </head>
@@ -906,12 +192,12 @@
     <div class="container">
         <header>
             <div class="header-left">
-                <a href="index(8).html" class="theme-switcher" style="text-decoration: none;">
-                    <i class="fas fa-home"></i> Главная
-                </a>
+                <button class="nav-button" id="back-button">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
             </div>
             <div class="header-center">
-                <h1>Deynik Music</h1>
+                <h1 id="page-title">Deynik Music</h1>
             </div>
             <div class="header-right">
                 <button class="theme-switcher" id="themeSwitcher">
@@ -927,134 +213,14 @@
                     <span class="station-count">15</span>
                 </div>
                 
-                <!-- КАТЕГОРИИ -->
                 <div class="categories-container">
                     <button class="category-btn active" data-category="all">Все</button>
                     <button class="category-btn" data-category="taylor">Taylor Swift</button>
                     <button class="category-btn" data-category="pop">Поп</button>
                 </div>
                 
-                <ul class="station-list">
-                    <li class="active" data-track="taylor-swift">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-heart"></i></span> The Fate of Ophelia
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="wood">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-tree"></i></span> Wood
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="wish-list">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-list"></i></span> Wi$h Li$t
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="the-life-of-a-showgirl">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-star"></i></span> The Life of a Showgirl
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="ruin-the-friendship">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-users"></i></span> Ruin The Friendship
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="opalite">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-gem"></i></span> Opalite
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="honey">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-heart"></i></span> Honey
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="father-figure">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-user"></i></span> Father Figure
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="elizabeth-taylor">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-crown"></i></span> Elizabeth Taylor
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="eldest-daughter">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-female"></i></span> Eldest Daughter
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="cancelled">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-ban"></i></span> CANCELLED!
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="actually-romantic">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-heart"></i></span> Actually Romantic
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="instasamka">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-fire"></i></span> Kiss My Diss
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="lady-gaga-scheie">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-star"></i></span> Scheiße
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-track="lady-gaga-money">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-dollar-sign"></i></span> Money Honey
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                        </div>
-                    </li>
+                <ul class="station-list" id="track-list">
+                    <!-- Треки загружаются через JS -->
                 </ul>
                 
                 <div class="random-station-btn" id="random-track-btn">
@@ -1062,237 +228,56 @@
                 </div>
             </div>
             
-            <div class="albums-container crt-effect">
-                <!-- СТРАНИЦА АЛЬБОМА КАК В SPOTIFY -->
-                <div class="album-page">
-                    <div class="album-header">
-                        <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="The Life of a Showgirl" class="album-cover-large">
-                        <div class="album-info">
-                            <div class="album-type">Альбом</div>
-                            <h1 class="album-title-large">The Life of a Showgirl</h1>
-                            <div class="album-artist-large">Taylor Swift</div>
-                            <div class="album-stats">
-                                <span>2024 • 12 треков</span>
-                            </div>
-                            <div class="album-actions">
-                                <button class="play-button-large">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                                <button class="action-button">
-                                    <i class="far fa-heart"></i>
-                                </button>
-                                <button class="action-button">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="tracks-list">
-                        <div class="tracks-header">
-                            <div>#</div>
-                            <div>Название</div>
-                            <div>Длительность</div>
-                            <div></div>
-                        </div>
-                        
-                        <div class="track-item active">
-                            <div class="track-number">1</div>
-                            <div class="track-info">
-                                <div class="track-title">The Fate of Ophelia</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:45</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">2</div>
-                            <div class="track-info">
-                                <div class="track-title">Wood</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">4:12</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">3</div>
-                            <div class="track-info">
-                                <div class="track-title">Wi$h Li$t</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:22</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">4</div>
-                            <div class="track-info">
-                                <div class="track-title">The Life of a Showgirl</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">4:05</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">5</div>
-                            <div class="track-info">
-                                <div class="track-title">Ruin The Friendship</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:55</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">6</div>
-                            <div class="track-info">
-                                <div class="track-title">Opalite</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:38</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">7</div>
-                            <div class="track-info">
-                                <div class="track-title">Honey</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:15</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">8</div>
-                            <div class="track-info">
-                                <div class="track-title">Father Figure</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">4:22</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">9</div>
-                            <div class="track-info">
-                                <div class="track-title">Elizabeth Taylor</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:48</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">10</div>
-                            <div class="track-info">
-                                <div class="track-title">Eldest Daughter</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:28</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">11</div>
-                            <div class="track-info">
-                                <div class="track-title">CANCELLED!</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:12</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-item">
-                            <div class="track-number">12</div>
-                            <div class="track-info">
-                                <div class="track-title">Actually Romantic</div>
-                                <div class="track-artist">Taylor Swift</div>
-                            </div>
-                            <div class="track-duration">3:52</div>
-                            <div class="track-likes">
-                                <span class="likes-count">0</span> <i class="far fa-heart"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="albums-container crt-effect" id="main-content">
+                <!-- Контент альбома загружается через JS -->
             </div>
             
             <div class="side-panel crt-effect">
-                <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="The Life of a Showgirl" class="album-cover-right">
+                <h2>Сейчас играет</h2>
+                <img id="album-cover" class="album-cover-right" src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка альбома">
                 
                 <div class="track-info">
-                    <h3>Текущий трек</h3>
-                    <p>The Fate of Ophelia</p>
-                    <p>Taylor Swift</p>
-                    <p>Альбом: The Life of a Showgirl</p>
-                    <p>Год: 2024</p>
+                    <h3 id="current-station">The Fate of Ophelia</h3>
+                    <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Taylor Swift</span></p>
                 </div>
                 
-                <div class="category-title">Похожие альбомы</div>
-                <ul class="station-list">
-                    <li>Folklore - Taylor Swift</li>
-                    <li>Evermore - Taylor Swift</li>
-                    <li>Midnights - Taylor Swift</li>
-                    <li>Lover - Taylor Swift</li>
-                </ul>
+                <div style="margin-top: 20px;">
+                    <h3>Качество</h3>
+                    <p id="quality">FLAC</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>О треке</h3>
+                    <p id="track-description" style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
+                        Уютная акустическая версия с элементами фолк-музыки. Идеально подходит для спокойного вечера.
+                    </p>
+                </div>
             </div>
         </div>
         
-        <!-- ПЛЕЕР -->
         <div class="player-container crt-effect">
+            <!-- Плеер такой же как в index.html -->
             <div class="player-top">
                 <div class="player-left">
-                    <div class="player-icon">
-                        <i class="fas fa-music"></i>
+                    <div class="player-icon" id="player-icon">
+                        <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка трека">
                     </div>
                     <div class="station-text">
-                        <h2>The Fate of Ophelia</h2>
-                        <p>Taylor Swift</p>
+                        <h2 id="player-station">The Fate of Ophelia</h2>
+                        <p id="player-description">Taylor Swift</p>
                     </div>
                 </div>
                 
                 <div class="player-center">
-                    <button class="btn" id="prev-btn">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="btn btn-play" id="play-btn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="btn" id="next-btn">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
+                    <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
+                    <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
                 </div>
                 
                 <div class="player-buttons">
                     <div class="btn-like-container">
-                        <span class="likes-count-bottom">0</span>
-                        <button class="btn-like" id="like-btn">
+                        <span class="likes-count-bottom" id="likes-count-bottom">0</span>
+                        <button class="btn-like" id="like-btn" title="Лайкнуть трек">
                             <i class="far fa-heart"></i>
                         </button>
                     </div>
@@ -1302,314 +287,150 @@
             <div class="player-bottom">
                 <div class="progress-control">
                     <span class="progress-time" id="current-time">0:00</span>
-                    <input type="range" min="0" max="100" value="0" class="progress-slider" id="progress-slider">
-                    <span class="progress-time" id="total-time">3:45</span>
+                    <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0" step="0.1">
+                    <span class="progress-time" id="total-time">0:00</span>
                 </div>
                 
                 <div class="volume-control">
-                    <span class="volume-icon">
-                        <i class="fas fa-volume-up"></i>
-                    </span>
-                    <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider">
+                    <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
+                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="notification" id="notification">
-        Трек добавлен в избранное!
-    </div>
-    
+
+    <div class="notification" id="notification">Текст уведомления</div>
+
+    <!-- Подключаем общий скрипт плеера -->
+    <script src="shared-player.js"></script>
     <script>
-        // Глобальные переменные для управления музыкой
-        let currentAudio = null;
-        let isPlaying = false;
-        let currentTrack = 'taylor-swift';
-        let currentTime = 0;
-        let audioContext = null;
-        let audioSource = null;
-        let audioBuffer = null;
-        let startTime = 0;
-        let pausedTime = 0;
-        
-        // Элементы DOM
-        const playBtn = document.getElementById('play-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const likeBtn = document.getElementById('like-btn');
-        const progressSlider = document.getElementById('progress-slider');
-        const volumeSlider = document.getElementById('volume-slider');
-        const currentTimeEl = document.getElementById('current-time');
-        const totalTimeEl = document.getElementById('total-time');
-        const notification = document.getElementById('notification');
-        const themeSwitcher = document.getElementById('themeSwitcher');
-        const randomTrackBtn = document.getElementById('random-track-btn');
-        const stationList = document.querySelectorAll('.station-list li');
-        const categoryBtns = document.querySelectorAll('.category-btn');
-        
-        // Функция для сохранения состояния плеера в localStorage
-        function savePlayerState() {
-            const playerState = {
-                currentTrack: currentTrack,
-                isPlaying: isPlaying,
-                currentTime: currentTime,
-                volume: volumeSlider.value
-            };
-            localStorage.setItem('playerState', JSON.stringify(playerState));
-        }
-        
-        // Функция для загрузки состояния плеера из localStorage
-        function loadPlayerState() {
-            const savedState = localStorage.getItem('playerState');
-            if (savedState) {
-                const playerState = JSON.parse(savedState);
-                currentTrack = playerState.currentTrack || 'taylor-swift';
-                isPlaying = playerState.isPlaying || false;
-                currentTime = playerState.currentTime || 0;
-                volumeSlider.value = playerState.volume || 50;
-                
-                // Обновляем интерфейс в соответствии с загруженным состоянием
-                updatePlayerUI();
-                
-                // Если музыка была воспроизведена, продолжаем с того же места
-                if (isPlaying) {
-                    playAudio();
-                }
+        // СТРАНИЦА АЛЬБОМА
+        class AlbumPage {
+            constructor(player) {
+                this.player = player;
+                this.albumId = this.getAlbumIdFromURL();
+                this.init();
             }
-        }
-        
-        // Функция для обновления интерфейса плеера
-        function updatePlayerUI() {
-            // Обновляем активный трек в списке
-            stationList.forEach(item => {
-                if (item.dataset.track === currentTrack) {
-                    item.classList.add('active');
-                    
-                    // Обновляем информацию о треке в плеере
-                    const trackName = item.querySelector('div').textContent.trim();
-                    document.querySelector('.station-text h2').textContent = trackName;
-                    
-                    // Обновляем информацию о треке в правой панели
-                    document.querySelector('.track-info p:nth-child(2)').textContent = trackName;
+
+            getAlbumIdFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('album');
+            }
+
+            init() {
+                if (this.albumId) {
+                    this.renderAlbumPage(this.albumId);
                 } else {
-                    item.classList.remove('active');
+                    // Если альбом не указан, возвращаемся на главную
+                    window.location.href = 'index.html';
                 }
-            });
-            
-            // Обновляем состояние кнопки воспроизведения
-            if (isPlaying) {
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                this.setupEventListeners();
             }
-            
-            // Обновляем ползунок прогресса
-            progressSlider.value = (currentTime / 225) * 100; // 225 секунд = 3:45
-            
-            // Обновляем время
-            updateTimeDisplay();
-        }
-        
-        // Функция для обновления отображения времени
-        function updateTimeDisplay() {
-            const minutes = Math.floor(currentTime / 60);
-            const seconds = Math.floor(currentTime % 60);
-            currentTimeEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        }
-        
-        // Функция для воспроизведения аудио (эмуляция)
-        function playAudio() {
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            
-            // Эмулируем воспроизведение
-            const totalDuration = 225; // 3:45 в секундах
-            const updateInterval = setInterval(() => {
-                if (isPlaying && currentTime < totalDuration) {
-                    currentTime += 1;
-                    progressSlider.value = (currentTime / totalDuration) * 100;
-                    updateTimeDisplay();
-                } else if (currentTime >= totalDuration) {
-                    // Трек завершен, переходим к следующему
-                    clearInterval(updateInterval);
-                    playNextTrack();
+
+            renderAlbumPage(albumId) {
+                const album = this.player.albumsData[albumId];
+                if (!album) {
+                    window.location.href = 'index.html';
+                    return;
                 }
-            }, 1000);
-            
-            savePlayerState();
-        }
-        
-        // Функция для паузы аудио
-        function pauseAudio() {
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            savePlayerState();
-        }
-        
-        // Функция для переключения трека
-        function changeTrack(trackId) {
-            currentTrack = trackId;
-            currentTime = 0;
-            updatePlayerUI();
-            
-            if (isPlaying) {
-                playAudio();
-            }
-            
-            savePlayerState();
-        }
-        
-        // Функция для воспроизведения следующего трека
-        function playNextTrack() {
-            const tracks = Array.from(stationList).map(item => item.dataset.track);
-            const currentIndex = tracks.indexOf(currentTrack);
-            const nextIndex = (currentIndex + 1) % tracks.length;
-            changeTrack(tracks[nextIndex]);
-        }
-        
-        // Функция для воспроизведения предыдущего трека
-        function playPrevTrack() {
-            const tracks = Array.from(stationList).map(item => item.dataset.track);
-            const currentIndex = tracks.indexOf(currentTrack);
-            const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;
-            changeTrack(tracks[prevIndex]);
-        }
-        
-        // Функция для показа уведомления
-        function showNotification(message) {
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Обработчики событий
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                pauseAudio();
-            } else {
-                playAudio();
-            }
-        });
-        
-        prevBtn.addEventListener('click', playPrevTrack);
-        nextBtn.addEventListener('click', playNextTrack);
-        
-        likeBtn.addEventListener('click', () => {
-            likeBtn.classList.toggle('active');
-            likeBtn.querySelector('i').classList.toggle('far');
-            likeBtn.querySelector('i').classList.toggle('fas');
-            
-            // Обновляем счетчик лайков
-            const likesCount = likeBtn.parentElement.querySelector('.likes-count-bottom');
-            const currentLikes = parseInt(likesCount.textContent);
-            
-            if (likeBtn.classList.contains('active')) {
-                likesCount.textContent = currentLikes + 1;
-                showNotification('Трек добавлен в избранное!');
-            } else {
-                likesCount.textContent = currentLikes - 1;
-                showNotification('Трек удален из избранного!');
-            }
-            
-            // Обновляем счетчик лайков в списке треков
-            const activeTrack = document.querySelector(`.station-list li[data-track="${currentTrack}"]`);
-            if (activeTrack) {
-                const trackLikes = activeTrack.querySelector('.likes-count');
-                trackLikes.textContent = likesCount.textContent;
-            }
-        });
-        
-        progressSlider.addEventListener('input', () => {
-            const totalDuration = 225; // 3:45 в секундах
-            currentTime = (progressSlider.value / 100) * totalDuration;
-            updateTimeDisplay();
-            savePlayerState();
-        });
-        
-        volumeSlider.addEventListener('input', () => {
-            savePlayerState();
-        });
-        
-        // Обработчики для списка треков
-        stationList.forEach(item => {
-            item.addEventListener('click', () => {
-                changeTrack(item.dataset.track);
-            });
-            
-            // Обработчик для лайков в списке треков
-            const likeIcon = item.querySelector('.station-likes i');
-            const likesCount = item.querySelector('.likes-count');
-            
-            likeIcon.addEventListener('click', (e) => {
-                e.stopPropagation();
-                likeIcon.classList.toggle('far');
-                likeIcon.classList.toggle('fas');
-                
-                const currentLikes = parseInt(likesCount.textContent);
-                if (likeIcon.classList.contains('fas')) {
-                    likesCount.textContent = currentLikes + 1;
-                } else {
-                    likesCount.textContent = currentLikes - 1;
-                }
-                
-                // Если это текущий трек, обновляем счетчик в плеере
-                if (item.dataset.track === currentTrack) {
-                    const playerLikes = document.querySelector('.likes-count-bottom');
-                    playerLikes.textContent = likesCount.textContent;
-                }
-            });
-        });
-        
-        // Обработчики для категорий
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const category = btn.dataset.category;
-                
-                stationList.forEach(item => {
-                    if (category === 'all' || item.dataset.track.includes(category)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
+
+                // Обновляем заголовок страницы
+                document.getElementById('page-title').textContent = album.title;
+
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = `
+                    <div class="album-page">
+                        <div class="album-header">
+                            <img src="${album.cover}" alt="${album.title}" class="album-cover-large">
+                            <div class="album-info-large">
+                                <div class="album-type">Альбом</div>
+                                <h1 class="album-title-large">${album.title}</h1>
+                                <div class="album-artist-large">${album.artist}</div>
+                                <div class="album-stats">
+                                    <span>${album.year} • ${album.tracks.length} треков</span>
+                                </div>
+                                <div class="album-actions">
+                                    <button class="play-button-large" id="album-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tracks-list">
+                            <div class="tracks-header">
+                                <div>#</div>
+                                <div>Название</div>
+                                <div>Длительность</div>
+                                <div></div>
+                            </div>
+                            ${album.tracks.map((trackId, index) => {
+                                const track = this.player.tracksData[trackId];
+                                if (!track) return '';
+                                const isActive = this.player.currentTrack?.id === trackId;
+                                return `
+                                    <div class="album-track-item ${isActive ? 'active' : ''}" data-track="${trackId}">
+                                        <div class="track-number">${index + 1}</div>
+                                        <div class="track-info">
+                                            <div class="track-title">${track.name}</div>
+                                            <div class="track-artist">${track.artist}</div>
+                                        </div>
+                                        <div class="track-duration">3:45</div>
+                                        <div class="track-likes">
+                                            <span class="likes-count">${track.likes}</span>
+                                            <i class="${track.likes > 0 ? 'fas' : 'far'} fa-heart"></i>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Обработчики для страницы альбома
+                document.getElementById('album-play-btn').addEventListener('click', () => {
+                    if (album.tracks.length > 0) {
+                        this.player.playTrack(album.tracks[0]);
+                        this.player.isPlaying = true;
+                        this.player.updatePlayButton();
                     }
                 });
-            });
-        });
-        
-        // Обработчик для случайного трека
-        randomTrackBtn.addEventListener('click', () => {
-            const tracks = Array.from(stationList).filter(item => item.style.display !== 'none');
-            if (tracks.length > 0) {
-                const randomIndex = Math.floor(Math.random() * tracks.length);
-                changeTrack(tracks[randomIndex].dataset.track);
+
+                mainContent.querySelectorAll('.album-track-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.player.playTrack(item.dataset.track);
+                        this.player.isPlaying = true;
+                        this.player.updatePlayButton();
+                    });
+                });
             }
-        });
-        
-        // Обработчик для переключения темы
-        themeSwitcher.addEventListener('click', () => {
-            document.body.classList.toggle('retro-theme');
-            
-            if (document.body.classList.contains('retro-theme')) {
-                themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
-            } else {
-                themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Современная';
+
+            setupEventListeners() {
+                // Кнопка "Назад"
+                document.getElementById('back-button').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+
+                // Тема
+                document.getElementById('themeSwitcher').addEventListener('click', () => {
+                    this.player.toggleTheme();
+                });
+
+                // Категории
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.player.filterTracks(e.target.dataset.category);
+                    });
+                });
             }
-            
-            savePlayerState();
-        });
-        
-        // Загружаем состояние плеера при загрузке страницы
-        window.addEventListener('load', () => {
-            loadPlayerState();
-        });
-        
-        // Сохраняем состояние плеера при закрытии страницы
-        window.addEventListener('beforeunload', () => {
-            savePlayerState();
+        }
+
+        // ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.musicPlayer) {
+                window.musicPlayer.init();
+                new AlbumPage(window.musicPlayer);
+            }
         });
     </script>
 </body>
