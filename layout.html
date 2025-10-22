@@ -1,5 +1,4 @@
 <!-- Файл: layout.html -->
-<!-- ВЕРХНЯЯ ПАНЕЛЬ -->
 <header>
     <div class="header-left">
         <button class="back-button" onclick="goBack()" style="display: none;" id="back-button">
@@ -24,14 +23,134 @@
             <span class="station-count">15</span>
         </div>
         
+        <!-- КАТЕГОРИИ -->
         <div class="categories-container">
             <button class="category-btn active" data-category="all">Все</button>
             <button class="category-btn" data-category="taylor">Taylor Swift</button>
             <button class="category-btn" data-category="pop">Поп</button>
         </div>
         
-        <ul class="station-list" id="station-list">
-            <!-- Треки будут через JS -->
+        <ul class="station-list">
+            <li class="active" data-track="taylor-swift">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-heart"></i></span> The Fate of Ophelia
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="wood">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-tree"></i></span> Wood
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="wish-list">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-list"></i></span> Wi$h Li$t
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="the-life-of-a-showgirl">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-star"></i></span> The Life of a Showgirl
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="ruin-the-friendship">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-users"></i></span> Ruin The Friendship
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="opalite">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-gem"></i></span> Opalite
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="honey">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-heart"></i></span> Honey
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="father-figure">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-user"></i></span> Father Figure
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="elizabeth-taylor">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-crown"></i></span> Elizabeth Taylor
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="eldest-daughter">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-female"></i></span> Eldest Daughter
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="cancelled">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-ban"></i></span> CANCELLED!
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="actually-romantic">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-heart"></i></span> Actually Romantic
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="instasamka">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-fire"></i></span> Kiss My Diss
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="lady-gaga-scheie">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-star"></i></span> Scheiße
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
+            <li data-track="lady-gaga-money">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-dollar-sign"></i></span> Money Honey
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="far fa-heart"></i>
+                </div>
+            </li>
         </ul>
         
         <div class="random-station-btn" id="random-track-btn">
@@ -70,6 +189,7 @@
 
 <!-- ПЛЕЕР -->
 <div class="player-container crt-effect">
+    <!-- ВЕРХНЯЯ ЧАСТЬ -->
     <div class="player-top">
         <div class="player-left">
             <div class="player-icon" id="player-icon">
@@ -88,6 +208,7 @@
         </div>
         
         <div class="player-buttons">
+            <!-- ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ -->
             <div class="btn-like-container">
                 <span class="likes-count-bottom" id="likes-count-bottom">0</span>
                 <button class="btn-like" id="like-btn" title="Лайкнуть трек">
@@ -97,6 +218,7 @@
         </div>
     </div>
     
+    <!-- НИЖНЯЯ ЧАСТЬ - ПОЛЗУНКИ ПРОГРЕССА И ГРОМКОСТИ -->
     <div class="player-bottom">
         <div class="progress-control">
             <span class="progress-time" id="current-time">0:00</span>
@@ -112,5 +234,59 @@
     </div>
 </div>
 
-<!-- УВЕДОМЛЕНИЕ -->
+<!-- Уведомление -->
 <div class="notification" id="notification">Текст уведомления</div>
+
+<script>
+// БАЗОВЫЕ ФУНКЦИИ ДЛЯ ВСЕХ СТРАНИЦ
+
+// Функция для возврата на главную
+function goBack() {
+    savePlayerState();
+    window.location.href = 'index.html';
+}
+
+// Сохранение состояния плеера
+function savePlayerState() {
+    if (window.playerState && window.playerState.audio) {
+        localStorage.setItem('playerState', JSON.stringify({
+            currentTrackId: window.playerState.currentTrackId,
+            isPlaying: window.playerState.isPlaying,
+            currentTime: window.playerState.audio.currentTime,
+            volume: window.playerState.volume
+        }));
+    }
+}
+
+// Восстановление состояния плеера  
+function restorePlayerState() {
+    const savedState = localStorage.getItem('playerState');
+    if (savedState) {
+        return JSON.parse(savedState);
+    }
+    return null;
+}
+
+// Показать уведомление
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    if (notification) {
+        notification.textContent = message;
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+}
+
+// Форматирование времени
+function formatTime(seconds) {
+    if (isNaN(seconds)) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// Сохраняем состояние при уходе со страницы
+window.addEventListener('beforeunload', savePlayerState);
+</script>
