@@ -1,0 +1,116 @@
+<!-- Файл: layout.html -->
+<!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+<header>
+    <div class="header-left">
+        <button class="back-button" onclick="goBack()" style="display: none;" id="back-button">
+            <i class="fas fa-arrow-left"></i> Назад
+        </button>
+    </div>
+    <div class="header-center">
+        <h1>Deynik Music</h1>
+    </div>
+    <div class="header-right">
+        <button class="theme-switcher" id="themeSwitcher">
+            <i class="fas fa-palette"></i> Ретро
+        </button>
+    </div>
+</header>
+
+<div class="content">
+    <!-- ЛЕВАЯ ПАНЕЛЬ -->
+    <div class="side-panel left-panel crt-effect">
+        <div class="stations-header">
+            <h2>Треки</h2>
+            <span class="station-count">15</span>
+        </div>
+        
+        <div class="categories-container">
+            <button class="category-btn active" data-category="all">Все</button>
+            <button class="category-btn" data-category="taylor">Taylor Swift</button>
+            <button class="category-btn" data-category="pop">Поп</button>
+        </div>
+        
+        <ul class="station-list" id="station-list">
+            <!-- Треки будут через JS -->
+        </ul>
+        
+        <div class="random-station-btn" id="random-track-btn">
+            <i class="fas fa-random"></i> Случайный трек
+        </div>
+    </div>
+    
+    <!-- ОСНОВНОЕ ОКНО (БУДЕТ МЕНЯТЬСЯ) -->
+    <div class="albums-container crt-effect" id="main-content">
+        <!-- Сюда вставляется уникальный контент каждой страницы -->
+    </div>
+    
+    <!-- ПРАВАЯ ПАНЕЛЬ -->
+    <div class="side-panel crt-effect">
+        <h2>Сейчас играет</h2>
+        <img id="album-cover" class="album-cover-right" src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка альбома">
+        
+        <div class="track-info">
+            <h3 id="current-station">The Fate of Ophelia</h3>
+            <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Taylor Swift</span></p>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>Качество</h3>
+            <p id="quality">FLAC</p>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>О треке</h3>
+            <p id="track-description" style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
+                Уютная акустическая версия с элементами фолк-музыки. Идеально подходит для спокойного вечера.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ПЛЕЕР -->
+<div class="player-container crt-effect">
+    <div class="player-top">
+        <div class="player-left">
+            <div class="player-icon" id="player-icon">
+                <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка трека">
+            </div>
+            <div class="station-text">
+                <h2 id="player-station">The Fate of Ophelia</h2>
+                <p id="player-description">Taylor Swift</p>
+            </div>
+        </div>
+        
+        <div class="player-center">
+            <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+            <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
+            <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+        </div>
+        
+        <div class="player-buttons">
+            <div class="btn-like-container">
+                <span class="likes-count-bottom" id="likes-count-bottom">0</span>
+                <button class="btn-like" id="like-btn" title="Лайкнуть трек">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="player-bottom">
+        <div class="progress-control">
+            <span class="progress-time" id="current-time">0:00</span>
+            <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0" step="0.1">
+            <span class="progress-time" id="total-time">0:00</span>
+        </div>
+        
+        <div class="volume-control">
+            <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+            <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
+        </div>
+    </div>
+</div>
+
+<!-- УВЕДОМЛЕНИЕ -->
+<div class="notification" id="notification">Текст уведомления</div>
