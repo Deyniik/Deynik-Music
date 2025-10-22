@@ -7,14 +7,818 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ВСТАВЬ СЮДА ВЕСЬ ТВОЙ CSS */
-        /* Весь твой текущий CSS из index.html */
+        /* ВСТАВЬ СЮДА ВЕСЬ ТВОЙ CSS ИЗ ТВОЕГО index.html */
+        /* Весь CSS который у тебя сейчас работает */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        .container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 100vh;
+        }
+        
+        header {
+            text-align: center;
+            padding: 8px 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-start;
+        }
+        
+        .header-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #1DB954;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .theme-switcher {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .theme-switcher:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-button:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            flex: 1;
+            gap: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .side-panel {
+            flex: 1;
+            background: #191414;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .left-panel {
+            text-align: right;
+        }
+        
+        .stations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* КАТЕГОРИИ */
+        .categories-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #B3B3B3;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .category-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: white;
+        }
+        
+        .category-btn.active {
+            background: rgba(29, 185, 84, 0.3);
+            color: #1DB954;
+            border-color: #1DB954;
+        }
+        
+        .station-list {
+            list-style: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+            padding-right: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .station-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .station-list::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .station-list::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 5px;
+        }
+        
+        .station-list li {
+            padding: 10px 12px;
+            margin: 4px 0;
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid #1DB954;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .station-list li:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateX(-3px);
+        }
+        
+        .station-list li.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-left: 3px solid #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+        
+        .station-likes {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+        
+        .station-likes .likes-count {
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .station-icon {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .random-station-btn {
+            background: rgba(29, 185, 84, 0.2);
+            border: 1px solid rgba(29, 185, 84, 0.5);
+            color: #1DB954;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 36px;
+        }
+        
+        .random-station-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .albums-container {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            background: #191414;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        
+        .albums-header {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .mix-btn {
+            background: rgba(29, 185, 84, 0.2);
+            border: 1px solid rgba(29, 185, 84, 0.5);
+            color: #1DB954;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 120px;
+            margin: 0 auto;
+        }
+        
+        .mix-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .mix-btn.active {
+            background: rgba(29, 185, 84, 0.5);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
+        }
+        
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .album-card {
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .album-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(29, 185, 84, 0.5);
+        }
+        
+        .album-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .album-info {
+            padding: 12px;
+        }
+        
+        .album-title {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .album-artist {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+        
+        /* ОБНОВЛЕННЫЙ ПЛЕЕР */
+        .player-container {
+            background: #191414;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: auto;
+            flex-shrink: 0;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .player-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .player-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .player-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .player-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .station-text {
+            flex: 1;
+        }
+        
+        .station-text h2 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            color: #1DB954;
+        }
+        
+        .station-text p {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+        
+        .player-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .player-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .btn-play {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
+        }
+        
+        .btn-play:hover {
+            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        }
+
+        /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
+        .btn-like-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .likes-count-bottom {
+            font-size: 0.9rem;
+            color: #B3B3B3;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .btn-like {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-like i {
+            font-size: 1.3rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-like.active i {
+            color: white;
+        }
+        
+        .btn-like:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ И ПРОГРЕССА */
+        .player-bottom {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+        }
+        
+        .progress-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .progress-time {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .progress-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(80, 80, 80, 0.7);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-slider:hover {
+            background: rgba(100, 100, 100, 0.8);
+        }
+        
+        .progress-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
+        }
+        
+        .progress-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(29, 185, 84, 1);
+        }
+        
+        .progress-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
+        }
+        
+        .progress-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(29, 185, 84, 1);
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 250px;
+            max-width: 100%;
+        }
+        
+        .volume-icon {
+            font-size: 1.1rem;
+            color: #1DB954;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(80, 80, 80, 0.7);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .volume-slider:hover {
+            background: rgba(100, 100, 100, 0.8);
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .category-title {
+            font-size: 0.9rem;
+            color: #1DB954;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(29, 185, 84, 0.3);
+        }
+        
+        .crt-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crt-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 3px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .vintage-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.1;
+        }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        /* Стили для обложек в правой панели */
+        .album-cover-right {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 8px;
+            margin: 0 auto 15px;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .track-info {
+            margin-top: 15px;
+        }
+        
+        .track-info h3 {
+            font-size: 1rem;
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+        
+        .track-info p {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 12px;
+            }
+            
+            .albums-container {
+                width: 100%;
+                height: 250px;
+                order: -1;
+            }
+            
+            .player-container {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .player-top {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .volume-control {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .categories-container {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+            
+            .header-center {
+                flex: 1;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .album-cover-right {
+                max-width: 150px;
+            }
+            
+            .albums-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+
+        /* Темы */
+        body.retro-theme {
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        
+        body.retro-theme .vintage-overlay {
+            display: block;
+        }
     </style>
 </head>
 <body class="retro-theme">
     <div class="vintage-overlay"></div>
+    
     <div class="container">
-        <!-- ПОДКЛЮЧАЕМ ОБЩИЙ КАРКАС -->
+        <!-- ЗАГРУЖАЕМ ОБЩИЙ КАРКАС -->
         <div id="layout-container"></div>
     </div>
 
@@ -24,12 +828,22 @@
             .then(response => response.text())
             .then(html => {
                 document.getElementById('layout-container').innerHTML = html;
+                
                 // Скрываем кнопку "Назад" на главной
                 document.getElementById('back-button').style.display = 'none';
+                
                 // Загружаем контент главной страницы
                 loadHomeContent();
-                // Инициализируем плеер
-                initializePlayer();
+                
+                // Инициализируем плеер после загрузки каркаса
+                setTimeout(() => {
+                    initializePlayer();
+                    setupNavigation();
+                }, 100);
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки layout:', error);
+                document.getElementById('layout-container').innerHTML = '<div>Ошибка загрузки</div>';
             });
 
         // Функция загрузки контента главной страницы
@@ -52,13 +866,158 @@
                         </div>
                     </div>
                     
-                    <!-- остальные альбомы -->
+                    <div class="album-card" data-album="the-fame-monster">
+                        <img src="https://s3.k-connect.ru/static/music/3/4763/1758141423_Lady_Gaga_-_Money_Honey_1758141423477_cover.jpg" alt="The Fame Monster" class="album-cover">
+                        <div class="album-info">
+                            <div class="album-title">The Fame Monster</div>
+                            <div class="album-artist">Lady Gaga</div>
+                        </div>
+                    </div>
+                    
+                    <div class="album-card" data-album="born-this-way">
+                        <img src="https://s3.k-connect.ru/static/music/3/4754/1758141420_Lady_Gaga_-_Scheie_1758141419969_cover.jpg" alt="Born This Way" class="album-cover">
+                        <div class="album-info">
+                            <div class="album-title">Born This Way</div>
+                            <div class="album-artist">Lady Gaga</div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
 
-        // ВСТАВЬ СЮДА ВЕСЬ ТВОЙ JavaScript
-        // Весь твой текущий JavaScript из index.html
+        // ВСТАВЬ СЮДА ВЕСЬ ТВОЙ JavaScript ИЗ ТВОЕГО index.html
+        // Весь JavaScript который у тебя сейчас работает
+        
+        // Глобальные переменные для сохранения состояния между страницами
+        window.playerState = window.playerState || {
+            currentTrackId: 'taylor-swift',
+            isPlaying: false,
+            audio: null,
+            currentTime: 0,
+            volume: 70
+        };
+
+        // Объект с треками
+        window.tracks = {
+            'taylor-swift': {
+                name: "The Fate of Ophelia",
+                url: 'https://s3.k-connect.ru/static/music/1475/5132/1761060712_Taylor_Swift_-_The_Fate_of_Ophelia.flac',
+                description: "Taylor Swift",
+                currentTrack: "The Fate of Ophelia",
+                currentArtist: "Taylor Swift",
+                quality: "FLAC",
+                icon: "fas fa-heart",
+                category: "taylor",
+                likes: 0,
+                cover: "https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg",
+                descriptionText: "Уютная акустическая версия с элементами фолк-музыки. Идеально подходит для спокойного вечера.",
+                duration: "3:45"
+            },
+            'wood': {
+                name: "Wood",
+                url: 'https://s3.k-connect.ru/static/music/1475/5144/1761068612_Taylor_Swift_-_Wood.flac',
+                description: "Taylor Swift",
+                currentTrack: "Wood",
+                currentArtist: "Taylor Swift",
+                quality: "FLAC",
+                icon: "fas fa-tree",
+                category: "taylor",
+                likes: 0,
+                cover: "https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg",
+                descriptionText: "Акустическая баллада с теплым звучанием и лирическими текстами.",
+                duration: "4:12"
+            },
+            // ... остальные треки такие же как у тебя
+        };
+
+        // Основные функции плеера
+        function initializePlayer() {
+            // Восстанавливаем состояние
+            const savedState = restorePlayerState();
+            
+            // Настраиваем обработчики событий
+            setupPlayerEventListeners();
+            setupCategoryFilters();
+            
+            // Восстанавливаем состояние интерфейса
+            if (savedState && window.tracks[savedState.currentTrackId]) {
+                updateInterfaceForTrack(savedState.currentTrackId);
+                
+                // Восстанавливаем воспроизведение если нужно
+                if (savedState.isPlaying) {
+                    window.playerState.audio = new Audio(window.tracks[savedState.currentTrackId].url);
+                    window.playerState.audio.currentTime = savedState.currentTime;
+                    window.playerState.audio.volume = savedState.volume / 100;
+                    
+                    const playBtn = document.getElementById('play-btn');
+                    if (playBtn) playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    
+                    window.playerState.audio.play().then(() => {
+                        startProgressUpdate();
+                    }).catch(e => {
+                        console.log('Автовоспроизведение заблокировано');
+                    });
+                }
+            } else {
+                // Инициализация первого трека
+                changeTrack(window.playerState.currentTrackId);
+            }
+        }
+
+        function setupPlayerEventListeners() {
+            // Твои обработчики событий как были
+            const playBtn = document.getElementById('play-btn');
+            const prevButton = document.getElementById('prev-btn');
+            const nextButton = document.getElementById('next-btn');
+            const likeButton = document.getElementById('like-btn');
+            const randomTrackBtn = document.getElementById('random-track-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            const progressSlider = document.getElementById('progress-slider');
+            const trackItems = document.querySelectorAll('.station-list li');
+            const themeSwitcher = document.getElementById('themeSwitcher');
+
+            if (playBtn) {
+                playBtn.addEventListener('click', togglePlay);
+            }
+            
+            if (prevButton) {
+                prevButton.addEventListener('click', playPreviousTrack);
+            }
+            
+            // ... остальные обработчики как у тебя
+        }
+
+        function setupNavigation() {
+            // Навигация по альбомам
+            const albumCards = document.querySelectorAll('.album-card');
+            albumCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const album = this.getAttribute('data-album');
+                    savePlayerState();
+                    
+                    if (album === 'the-life-of-a-showgirl') {
+                        window.location.href = 'The_Life_of_a_Showgirl.html';
+                    }
+                });
+            });
+
+            // Переключение темы
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            if (themeSwitcher) {
+                themeSwitcher.addEventListener('click', function() {
+                    document.body.classList.toggle('retro-theme');
+                    if (document.body.classList.contains('retro-theme')) {
+                        this.innerHTML = '<i class="fas fa-palette"></i> Ретро';
+                    } else {
+                        this.innerHTML = '<i class="fas fa-palette"></i> Современная';
+                    }
+                });
+            }
+        }
+
+        // Остальные функции плеера (changeTrack, togglePlay и т.д.)
+        // Вставь сюда все остальные функции из твоего кода
+        
     </script>
 </body>
 </html>
