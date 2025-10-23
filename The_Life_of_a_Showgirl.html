@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Music - Альбом</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ВСЕ ТЕ ЖЕ СТИЛИ ЧТО И В index.html */
+        /* ... вставь ВСЕ стили из index.html ... */
+        
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ СТРАНИЦЫ АЛЬБОМА */
+        .album-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(80, 60, 40, 0.6) 0%, #191414 300px);
+        }
+        
+        .album-header {
+            padding: 40px 30px 20px;
+            display: flex;
+            align-items: flex-end;
+            gap: 24px;
+            background: linear-gradient(transparent 0%, rgba(0,0,0,0.5) 100%);
+        }
+        
+        .album-cover-large {
+            width: 232px;
+            height: 232px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+        }
+        
+        .album-info-large {
+            flex: 1;
+            padding-bottom: 20px;
+        }
+        
+        .album-type {
+            font-size: 0.9rem;
+            color: #B3B3B3;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .album-title-large {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+        
+        .album-artist-large {
+            font-size: 1.2rem;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+        }
+        
+        .album-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #B3B3B3;
+        }
+        
+        .album-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .play-button-large {
+            background: #1DB954;
+            border: none;
+            color: black;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .play-button-large:hover {
+            transform: scale(1.05);
+            background: #1ed760;
+        }
+        
+        .tracks-list {
+            padding: 0 30px 30px;
+            flex: 1;
+        }
+        
+        .tracks-header {
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 60px;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #B3B3B3;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .album-track-item {
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 60px;
+            gap: 16px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-items: center;
+        }
+        
+        .album-track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .album-track-item.active {
+            background: rgba(29, 185, 84, 0.2);
+        }
+        
+        .track-number {
+            text-align: center;
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+        
+        .track-title {
+            color: #FFFFFF;
+            font-size: 1rem;
+        }
+        
+        .track-artist {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+        
+        .track-duration {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .track-likes {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+
+        .nav-button {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .nav-button:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="retro-theme">
+    <div class="vintage-overlay"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <button class="nav-button" id="back-button">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+            </div>
+            <div class="header-center">
+                <h1 id="page-title">Deynik Music</h1>
+            </div>
+            <div class="header-right">
+                <button class="theme-switcher" id="themeSwitcher">
+                    <i class="fas fa-palette"></i> Ретро
+                </button>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="side-panel left-panel crt-effect">
+                <div class="stations-header">
+                    <h2>Треки</h2>
+                    <span class="station-count">15</span>
+                </div>
+                
+                <div class="categories-container">
+                    <button class="category-btn active" data-category="all">Все</button>
+                    <button class="category-btn" data-category="taylor">Taylor Swift</button>
+                    <button class="category-btn" data-category="pop">Поп</button>
+                </div>
+                
+                <ul class="station-list" id="track-list">
+                    <!-- Треки загружаются через JS -->
+                </ul>
+                
+                <div class="random-station-btn" id="random-track-btn">
+                    <i class="fas fa-random"></i> Случайный трек
+                </div>
+            </div>
+            
+            <div class="albums-container crt-effect" id="main-content">
+                <!-- Контент альбома загружается через JS -->
+            </div>
+            
+            <div class="side-panel crt-effect">
+                <h2>Сейчас играет</h2>
+                <img id="album-cover" class="album-cover-right" src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка альбома">
+                
+                <div class="track-info">
+                    <h3 id="current-station">The Fate of Ophelia</h3>
+                    <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Taylor Swift</span></p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Качество</h3>
+                    <p id="quality">FLAC</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>О треке</h3>
+                    <p id="track-description" style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
+                        Уютная акустическая версия с элементами фолк-музыки. Идеально подходит для спокойного вечера.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="player-container crt-effect">
+            <!-- Плеер такой же как в index.html -->
+            <div class="player-top">
+                <div class="player-left">
+                    <div class="player-icon" id="player-icon">
+                        <img src="https://s3.k-connect.ru/static/music/1475/5132/1761060712_cover.jpeg" alt="Обложка трека">
+                    </div>
+                    <div class="station-text">
+                        <h2 id="player-station">The Fate of Ophelia</h2>
+                        <p id="player-description">Taylor Swift</p>
+                    </div>
+                </div>
+                
+                <div class="player-center">
+                    <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
+                    <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                </div>
+                
+                <div class="player-buttons">
+                    <div class="btn-like-container">
+                        <span class="likes-count-bottom" id="likes-count-bottom">0</span>
+                        <button class="btn-like" id="like-btn" title="Лайкнуть трек">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="player-bottom">
+                <div class="progress-control">
+                    <span class="progress-time" id="current-time">0:00</span>
+                    <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0" step="0.1">
+                    <span class="progress-time" id="total-time">0:00</span>
+                </div>
+                
+                <div class="volume-control">
+                    <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
+                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Текст уведомления</div>
+
+    <!-- Подключаем общий скрипт плеера -->
+    <script src="shared-player.js"></script>
+    <script>
+        // СТРАНИЦА АЛЬБОМА
+        class AlbumPage {
+            constructor(player) {
+                this.player = player;
+                this.albumId = this.getAlbumIdFromURL();
+                this.init();
+            }
+
+            getAlbumIdFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('album');
+            }
+
+            init() {
+                if (this.albumId) {
+                    this.renderAlbumPage(this.albumId);
+                } else {
+                    // Если альбом не указан, возвращаемся на главную
+                    window.location.href = 'index.html';
+                }
+                this.setupEventListeners();
+            }
+
+            renderAlbumPage(albumId) {
+                const album = this.player.albumsData[albumId];
+                if (!album) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Обновляем заголовок страницы
+                document.getElementById('page-title').textContent = album.title;
+
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = `
+                    <div class="album-page">
+                        <div class="album-header">
+                            <img src="${album.cover}" alt="${album.title}" class="album-cover-large">
+                            <div class="album-info-large">
+                                <div class="album-type">Альбом</div>
+                                <h1 class="album-title-large">${album.title}</h1>
+                                <div class="album-artist-large">${album.artist}</div>
+                                <div class="album-stats">
+                                    <span>${album.year} • ${album.tracks.length} треков</span>
+                                </div>
+                                <div class="album-actions">
+                                    <button class="play-button-large" id="album-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tracks-list">
+                            <div class="tracks-header">
+                                <div>#</div>
+                                <div>Название</div>
+                                <div>Длительность</div>
+                                <div></div>
+                            </div>
+                            ${album.tracks.map((trackId, index) => {
+                                const track = this.player.tracksData[trackId];
+                                if (!track) return '';
+                                const isActive = this.player.currentTrack?.id === trackId;
+                                return `
+                                    <div class="album-track-item ${isActive ? 'active' : ''}" data-track="${trackId}">
+                                        <div class="track-number">${index + 1}</div>
+                                        <div class="track-info">
+                                            <div class="track-title">${track.name}</div>
+                                            <div class="track-artist">${track.artist}</div>
+                                        </div>
+                                        <div class="track-duration">3:45</div>
+                                        <div class="track-likes">
+                                            <span class="likes-count">${track.likes}</span>
+                                            <i class="${track.likes > 0 ? 'fas' : 'far'} fa-heart"></i>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Обработчики для страницы альбома
+                document.getElementById('album-play-btn').addEventListener('click', () => {
+                    if (album.tracks.length > 0) {
+                        this.player.playTrack(album.tracks[0]);
+                        this.player.isPlaying = true;
+                        this.player.updatePlayButton();
+                    }
+                });
+
+                mainContent.querySelectorAll('.album-track-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.player.playTrack(item.dataset.track);
+                        this.player.isPlaying = true;
+                        this.player.updatePlayButton();
+                    });
+                });
+            }
+
+            setupEventListeners() {
+                // Кнопка "Назад"
+                document.getElementById('back-button').addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+
+                // Тема
+                document.getElementById('themeSwitcher').addEventListener('click', () => {
+                    this.player.toggleTheme();
+                });
+
+                // Категории
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.player.filterTracks(e.target.dataset.category);
+                    });
+                });
+            }
+        }
+
+        // ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.musicPlayer) {
+                window.musicPlayer.init();
+                new AlbumPage(window.musicPlayer);
+            }
+        });
+    </script>
+</body>
+</html>
