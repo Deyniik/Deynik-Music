@@ -3,80 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title>Deynik Music</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* Сюда копируем все СТИЛИ плеера, шапки и боковых панелей из прошлого кода */
-        /* Главное: оставь пустое место в центре с id="content-area" */
-        :root { --bg-black: #000; --panel-bg: #0f0f0f; --text-gray: #7a7a7a; --logo-brown: #5c4033; }
-        body { background: var(--bg-black); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-        
-        .top-nav { height: 65px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
-        .app-main { flex: 1; display: flex; gap: 10px; padding: 10px; overflow: hidden; }
-        .panel { background: var(--panel-bg); border-radius: 12px; padding: 20px; }
-        .side { width: 350px; }
-        .center { flex: 1; overflow-y: auto; } /* ТУТ БУДЕТ МЕНЯТЬСЯ КОНТЕНТ */
-        .player-bar { height: 85px; background: #000; display: flex; align-items: center; padding: 0 20px; border-top: 1px solid #111; }
-    </style>
 </head>
 <body>
-
     <header class="top-nav">
-        <div onclick="loadPage('home')" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-            <h1 style="font-size:24px;">Deynik Music</h1>
-            <svg width="30" height="30" viewBox="0 0 100 100"><polygon points="10,10 80,50 10,90" fill="#5c4033"/></svg>
+        <div class="logo-area" onclick="location.hash='#home'">
+            <h1 style="font-size: 26px; font-weight: 900; letter-spacing: -1.5px;">Deynik Music</h1>
+            <svg width="30" height="30" viewBox="0 0 100 100">
+                <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
+                <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+            </svg>
         </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
+        </div>
+        <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <button onclick="loadPage('home')">Главная</button>
+            <div class="side-item" onclick="location.hash='#home'">
+                <i data-lucide="home"></i> <span>Главная</span>
+            </div>
+            <div class="side-item">
+                <i data-lucide="library"></i> <span>Медиатека</span>
+            </div>
         </aside>
 
-        <main class="panel center" id="content-area">
-            </main>
+        <main class="panel center scroll-hide" id="content-area"></main>
 
         <aside class="panel side">
-            <b>Очередь / О треке</b>
-            <div id="right-panel-content"></div>
+            <div class="right-tabs">
+                <span class="active">О ТРЕКЕ</span>
+            </div>
+            <div id="wiki-panel" style="margin-top:20px;">
+                <p style="color:#7a7a7a; font-size:14px;">Включите музыку, чтобы увидеть информацию.</p>
+            </div>
         </aside>
     </div>
 
     <footer class="player-bar">
-        <div id="player-status">Музыка готова</div>
-        <button onclick="togglePlay()">Play/Pause</button>
+        <div class="p-left">
+            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; display:none; background:#1a1a1a;">
+            <div>
+                <b id="p-title" style="font-size:14px; display:block;">Не выбрано</b>
+                <span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
+            </div>
+        </div>
+
+        <div class="p-center">
+            <div class="p-controls">
+                <i data-lucide="skip-back" class="p-btn-icon"></i>
+                <div class="p-play-main" onclick="togglePlay()">
+                    <i id="main-icon" data-lucide="play" fill="black" size="22"></i>
+                </div>
+                <i data-lucide="skip-forward" class="p-btn-icon"></i>
+            </div>
+            <div class="p-progress-bg" onclick="seek(event)">
+                <div id="p-fill" class="p-progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="p-right">
+            <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
+            <div class="vol-bar"><div style="width:70%; height:100%; background:white;"></div></div>
+        </div>
     </footer>
 
     <script>
-        // ФУНКЦИЯ ЗАГРУЗКИ СТРАНИЦ
-        async function loadPage(pageName) {
+        let audio = new Audio();
+
+        async function loadContent() {
+            const hash = location.hash.replace('#', '') || 'home';
             const area = document.getElementById('content-area');
             try {
-                // Мы идем в папку pages и берем нужный файл
-                const response = await fetch(`pages/${pageName}.html`);
-                const html = await response.text();
-                
-                // Вставляем этот код в центр
-                area.innerHTML = html;
-                
-                // Меняем адрес в строке (визуально)
-                window.history.pushState({}, '', pageName === 'home' ? '/' : `/album/${pageName}`);
-                
-                // Переинициализируем иконки Lucide, так как мы добавили новый HTML
+                const response = await fetch(`pages/${hash}.html`);
+                area.innerHTML = await response.text();
                 lucide.createIcons();
             } catch (err) {
-                console.error("Ошибка загрузки страницы:", err);
+                area.innerHTML = "<h1>Страница не найдена</h1>";
             }
         }
 
-        // Плеер (базовая логика)
-        let audio = new Audio();
-        function togglePlay() { 
-            if(!audio.src) return alert("Выбери трек в альбоме!");
-            audio.paused ? audio.play() : audio.pause(); 
+        window.addEventListener('hashchange', loadContent);
+        window.onload = loadContent;
+
+        // Команда для запуска музыки из любой подгруженной страницы
+        window.playNewTrack = function(url, title, img, wikiText) {
+            audio.src = url;
+            audio.play();
+            document.getElementById('p-title').innerText = title;
+            document.getElementById('p-img').src = img;
+            document.getElementById('p-img').style.display = 'block';
+            document.getElementById('wiki-panel').innerHTML = `
+                <img src="${img}" style="width:100%; border-radius:8px; margin-bottom:15px;">
+                <p style="font-size:14px; line-height:1.6;">${wikiText}</p>
+            `;
+            updateIcon(true);
+        };
+
+        function togglePlay() {
+            if(!audio.src) return;
+            audio.paused ? audio.play() : audio.pause();
+            updateIcon(!audio.paused);
         }
 
-        // При загрузке сайта сразу открываем главную
-        window.onload = () => loadPage('home');
+        function updateIcon(playing) {
+            const icon = playing ? 'pause' : 'play';
+            document.getElementById('main-icon').setAttribute('data-lucide', icon);
+            lucide.createIcons();
+        }
+
+        audio.ontimeupdate = () => {
+            const pct = (audio.currentTime / audio.duration) * 100 || 0;
+            document.getElementById('p-fill').style.width = pct + '%';
+        };
+
+        function seek(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        }
     </script>
 </body>
 </html>
