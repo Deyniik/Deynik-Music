@@ -1,1 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Deynik Music</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Сюда копируем все СТИЛИ плеера, шапки и боковых панелей из прошлого кода */
+        /* Главное: оставь пустое место в центре с id="content-area" */
+        :root { --bg-black: #000; --panel-bg: #0f0f0f; --text-gray: #7a7a7a; --logo-brown: #5c4033; }
+        body { background: var(--bg-black); color: white; font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        .top-nav { height: 65px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+        .app-main { flex: 1; display: flex; gap: 10px; padding: 10px; overflow: hidden; }
+        .panel { background: var(--panel-bg); border-radius: 12px; padding: 20px; }
+        .side { width: 350px; }
+        .center { flex: 1; overflow-y: auto; } /* ТУТ БУДЕТ МЕНЯТЬСЯ КОНТЕНТ */
+        .player-bar { height: 85px; background: #000; display: flex; align-items: center; padding: 0 20px; border-top: 1px solid #111; }
+    </style>
+</head>
+<body>
 
+    <header class="top-nav">
+        <div onclick="loadPage('home')" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+            <h1 style="font-size:24px;">Deynik Music</h1>
+            <svg width="30" height="30" viewBox="0 0 100 100"><polygon points="10,10 80,50 10,90" fill="#5c4033"/></svg>
+        </div>
+    </header>
+
+    <div class="app-main">
+        <aside class="panel side">
+            <button onclick="loadPage('home')">Главная</button>
+        </aside>
+
+        <main class="panel center" id="content-area">
+            </main>
+
+        <aside class="panel side">
+            <b>Очередь / О треке</b>
+            <div id="right-panel-content"></div>
+        </aside>
+    </div>
+
+    <footer class="player-bar">
+        <div id="player-status">Музыка готова</div>
+        <button onclick="togglePlay()">Play/Pause</button>
+    </footer>
+
+    <script>
+        // ФУНКЦИЯ ЗАГРУЗКИ СТРАНИЦ
+        async function loadPage(pageName) {
+            const area = document.getElementById('content-area');
+            try {
+                // Мы идем в папку pages и берем нужный файл
+                const response = await fetch(`pages/${pageName}.html`);
+                const html = await response.text();
+                
+                // Вставляем этот код в центр
+                area.innerHTML = html;
+                
+                // Меняем адрес в строке (визуально)
+                window.history.pushState({}, '', pageName === 'home' ? '/' : `/album/${pageName}`);
+                
+                // Переинициализируем иконки Lucide, так как мы добавили новый HTML
+                lucide.createIcons();
+            } catch (err) {
+                console.error("Ошибка загрузки страницы:", err);
+            }
+        }
+
+        // Плеер (базовая логика)
+        let audio = new Audio();
+        function togglePlay() { 
+            if(!audio.src) return alert("Выбери трек в альбоме!");
+            audio.paused ? audio.play() : audio.pause(); 
+        }
+
+        // При загрузке сайта сразу открываем главную
+        window.onload = () => loadPage('home');
+    </script>
+</body>
+</html>
