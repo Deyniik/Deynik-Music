@@ -26,8 +26,8 @@
             <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px; color:#7a7a7a">
                 <i data-lucide="library"></i> <b>Моя медиатека</b>
             </div>
-            <div class="side-item" onclick="location.hash='#home'" style="cursor:pointer; margin-bottom:15px; display:flex; align-items:center; gap:12px;">
-                <i data-lucide="home"></i> <span>Главная</span>
+            <div class="side-item" onclick="location.hash='#home'" style="cursor:pointer; margin-bottom:15px;">
+                <i data-lucide="home"></i> <span style="margin-left:12px">Главная</span>
             </div>
         </aside>
 
@@ -35,10 +35,12 @@
 
         <aside class="panel side">
             <div class="right-tabs">
-                <div id="t-wiki" class="tab-link active">О треке</div>
+                <div id="t-queue" class="tab-link active" onclick="switchRight('queue')">Далее</div>
+                <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
             </div>
-            <div id="panel-wiki">
-                <img id="wiki-cover" src="" style="width:100%; border-radius:8px; margin-bottom:20px; display:none;">
+            <div id="panel-queue" class="scroll-hide" style="overflow-y:auto;"></div>
+            <div id="panel-wiki" class="hidden">
+                <img id="wiki-cover" src="" style="width:100%; border-radius:8px; margin-bottom:20px;">
                 <h3 id="wiki-title" style="margin-bottom:10px;"></h3>
                 <p id="wiki-text" style="color:#7a7a7a; font-size:14px; line-height:1.6;"></p>
             </div>
@@ -47,20 +49,19 @@
 
     <footer class="player-bar">
         <div style="display:flex; align-items:center; gap:15px;">
-            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; display:none;">
+            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
             <div>
                 <b id="p-title" style="font-size:14px; display:block;">Выберите трек</b>
-                <span id="p-artist" style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
+                <span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
             </div>
         </div>
-
         <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
             <div style="display:flex; align-items:center; gap:20px;">
-                <div class="p-btn"><i data-lucide="skip-back" fill="white" size="18"></i></div>
+                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18"></i></div>
                 <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
                     <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px"></i>
                 </div>
-                <div class="p-btn"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
+                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
             </div>
             <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
                 <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
@@ -70,61 +71,74 @@
                 <span id="d-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
             </div>
         </div>
-
         <div style="display:flex; justify-content:flex-end;">
             <div style="display:flex; align-items:center; gap:10px;">
                 <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
-                <div style="width:100px; height:4px; background:#333; border-radius:2px;">
-                    <div style="height:100%; background:white; width:70%;"></div>
-                </div>
+                <div style="width:100px; height:4px; background:#333; border-radius:2px;"><div style="height:100%; background:white; width:70%;"></div></div>
             </div>
         </div>
     </footer>
 
     <script>
         let audio = new Audio();
+        let currentTracks = [];
+        let currentIdx = -1;
 
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
-            const area = document.getElementById('content-area');
             try {
                 const response = await fetch(`./pages/${hash}.html`);
-                if (!response.ok) throw new Error();
-                area.innerHTML = await response.text();
+                document.getElementById('content-area').innerHTML = await response.text();
                 lucide.createIcons();
-            } catch (err) {
-                location.hash = '#home';
-            }
+                if(hash === 'home') currentIdx = -1; 
+            } catch (err) { location.hash = '#home'; }
         }
 
-        window.addEventListener('hashchange', loadContent);
-        window.onload = loadContent;
-
-        window.playNewTrack = function(url, title, img) {
-            audio.src = url;
+        window.playTrack = function(idx, trackList) {
+            currentTracks = trackList;
+            currentIdx = idx;
+            const track = currentTracks[currentIdx];
+            audio.src = track.url;
             audio.play();
-            document.getElementById('p-title').innerText = title;
-            document.getElementById('p-img').src = img;
-            document.getElementById('p-img').style.display = 'block';
-            
-            document.getElementById('wiki-cover').src = img;
-            document.getElementById('wiki-cover').style.display = 'block';
-            document.getElementById('wiki-title').innerText = title;
-            document.getElementById('wiki-text').innerText = `Песня "${title}" из альбома Mayhem (2025).`;
-            
-            updateUI();
+            updateUI(track);
+            renderQueue();
         };
+
+        function updateUI(track) {
+            document.getElementById('p-title').innerText = track.title;
+            document.getElementById('p-img').src = "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg";
+            document.getElementById('p-img').style.display = 'block';
+            document.getElementById('main-play-btn').setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
+            
+            document.getElementById('wiki-cover').src = document.getElementById('p-img').src;
+            document.getElementById('wiki-title').innerText = track.title;
+            document.getElementById('wiki-text').innerText = `Трек из альбома Mayhem (2025). Длительность: ${track.time}.`;
+            lucide.createIcons();
+        }
 
         function togglePlay() {
             if(!audio.src) return;
             audio.paused ? audio.play() : audio.pause();
-            updateUI();
+            updateUI(currentTracks[currentIdx]);
         }
 
-        function updateUI() {
-            const icon = audio.paused ? 'play' : 'pause';
-            document.getElementById('main-play-btn').setAttribute('data-lucide', icon);
-            lucide.createIcons();
+        function nextTrack() { if(currentIdx < currentTracks.length - 1) playTrack(currentIdx + 1, currentTracks); }
+        function prevTrack() { if(currentIdx > 0) playTrack(currentIdx - 1, currentTracks); }
+
+        function renderQueue() {
+            document.getElementById('panel-queue').innerHTML = currentTracks.map((t, i) => `
+                <div class="track-row" style="opacity:${i === currentIdx ? '1' : '0.5'}" onclick="playTrack(${i}, currentTracks)">
+                    <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:40px; border-radius:4px; margin-right:12px;">
+                    <b>${t.title}</b>
+                </div>
+            `).join('');
+        }
+
+        function switchRight(type) {
+            document.getElementById('panel-queue').classList.toggle('hidden', type !== 'queue');
+            document.getElementById('panel-wiki').classList.toggle('hidden', type !== 'wiki');
+            document.getElementById('t-queue').classList.toggle('active', type === 'queue');
+            document.getElementById('t-wiki').classList.toggle('active', type === 'wiki');
         }
 
         audio.ontimeupdate = () => {
@@ -144,6 +158,9 @@
             const rect = e.currentTarget.getBoundingClientRect();
             audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
         }
+
+        window.addEventListener('hashchange', loadContent);
+        window.onload = loadContent;
     </script>
 </body>
 </html>
