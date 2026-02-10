@@ -15,97 +15,130 @@
                 <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
-        <div class="search-container"><input type="text" class="search-input" placeholder="Поиск треков"></div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
+        </div>
         <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <div class="side-item" onclick="location.hash='#home'"><i data-lucide="home"></i> <span>Главная</span></div>
-            <div class="side-item"><i data-lucide="library"></i> <span>Медиатека</span></div>
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px; color:#7a7a7a">
+                <i data-lucide="library"></i> <b>Моя медиатека</b>
+            </div>
+            <div class="side-item" onclick="location.hash='#home'" style="cursor:pointer; margin-bottom:15px; display:flex; align-items:center; gap:12px;">
+                <i data-lucide="home"></i> <span>Главная</span>
+            </div>
         </aside>
 
         <main class="panel center scroll-hide" id="content-area"></main>
 
         <aside class="panel side">
-            <div class="right-tabs"><span class="active">О ТРЕКЕ</span></div>
-            <div id="wiki-panel" style="margin-top:20px;">
-                <p style="color:#7a7a7a; font-size:14px;">Выберите трек для инфо.</p>
+            <div class="right-tabs">
+                <div id="t-wiki" class="tab-link active">О треке</div>
+            </div>
+            <div id="panel-wiki">
+                <img id="wiki-cover" src="" style="width:100%; border-radius:8px; margin-bottom:20px; display:none;">
+                <h3 id="wiki-title" style="margin-bottom:10px;"></h3>
+                <p id="wiki-text" style="color:#7a7a7a; font-size:14px; line-height:1.6;"></p>
             </div>
         </aside>
     </div>
 
     <footer class="player-bar">
-        <div class="p-left">
-            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; display:none; background:#1a1a1a;">
-            <div><b id="p-title" style="font-size:14px; display:block;">Не выбрано</b><span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span></div>
-        </div>
-        <div class="p-center">
-            <div class="p-controls">
-                <i data-lucide="skip-back" class="p-btn-icon"></i>
-                <div class="p-play-main" onclick="togglePlay()"><i id="main-icon" data-lucide="play" fill="black" size="22"></i></div>
-                <i data-lucide="skip-forward" class="p-btn-icon"></i>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; display:none;">
+            <div>
+                <b id="p-title" style="font-size:14px; display:block;">Выберите трек</b>
+                <span id="p-artist" style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
             </div>
-            <div class="p-progress-bg" onclick="seek(event)"><div id="p-fill" class="p-progress-fill"></div></div>
         </div>
-        <div class="p-right">
-            <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
-            <div class="vol-bar"><div style="width:70%; height:100%; background:white;"></div></div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="p-btn"><i data-lucide="skip-back" fill="white" size="18"></i></div>
+                <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
+                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px"></i>
+                </div>
+                <div class="p-btn"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
+                <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
+                <div style="flex:1; height:4px; background:#333; border-radius:2px; cursor:pointer;" onclick="seek(event)">
+                    <div id="p-fill" style="height:100%; background:white; width:0%; border-radius:2px;"></div>
+                </div>
+                <span id="d-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
+                <div style="width:100px; height:4px; background:#333; border-radius:2px;">
+                    <div style="height:100%; background:white; width:70%;"></div>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script>
         let audio = new Audio();
 
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ
         async function loadContent() {
-            // Берем название страницы из хэша (например, #mayhem -> mayhem)
             let hash = location.hash.replace('#', '') || 'home';
             const area = document.getElementById('content-area');
-            
             try {
-                // ВАЖНО: Добавляем ./ перед путем для GitHub Pages
                 const response = await fetch(`./pages/${hash}.html`);
-                
-                if (!response.ok) throw new Error('404');
-                
+                if (!response.ok) throw new Error();
                 area.innerHTML = await response.text();
                 lucide.createIcons();
             } catch (err) {
-                area.innerHTML = `<div style="padding:20px;"><h2>Ошибка загрузки</h2><p>Файл pages/${hash}.html не найден. Проверь название папки и файлов!</p></div>`;
+                location.hash = '#home';
             }
         }
 
-        // Следим за изменением хэша в адресе
         window.addEventListener('hashchange', loadContent);
         window.onload = loadContent;
 
-        window.playNewTrack = function(url, title, img, wiki) {
+        window.playNewTrack = function(url, title, img) {
             audio.src = url;
             audio.play();
             document.getElementById('p-title').innerText = title;
             document.getElementById('p-img').src = img;
             document.getElementById('p-img').style.display = 'block';
-            document.getElementById('wiki-panel').innerHTML = `<img src="${img}" style="width:100%; border-radius:8px; margin-bottom:15px;"><p style="font-size:14px; line-height:1.6;">${wiki}</p>`;
-            updateIcon(true);
+            
+            document.getElementById('wiki-cover').src = img;
+            document.getElementById('wiki-cover').style.display = 'block';
+            document.getElementById('wiki-title').innerText = title;
+            document.getElementById('wiki-text').innerText = `Песня "${title}" из альбома Mayhem (2025).`;
+            
+            updateUI();
         };
 
         function togglePlay() {
             if(!audio.src) return;
             audio.paused ? audio.play() : audio.pause();
-            updateIcon(!audio.paused);
+            updateUI();
         }
 
-        function updateIcon(playing) {
-            const icon = playing ? 'pause' : 'play';
-            document.getElementById('main-icon').setAttribute('data-lucide', icon);
+        function updateUI() {
+            const icon = audio.paused ? 'play' : 'pause';
+            document.getElementById('main-play-btn').setAttribute('data-lucide', icon);
             lucide.createIcons();
         }
 
         audio.ontimeupdate = () => {
             const pct = (audio.currentTime / audio.duration) * 100 || 0;
             document.getElementById('p-fill').style.width = pct + '%';
+            document.getElementById('c-time').innerText = formatTime(audio.currentTime);
+            if(audio.duration) document.getElementById('d-time').innerText = formatTime(audio.duration);
         };
+
+        function formatTime(s) {
+            const m = Math.floor(s/60);
+            const sec = Math.floor(s%60);
+            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+        }
 
         function seek(e) {
             const rect = e.currentTarget.getBoundingClientRect();
