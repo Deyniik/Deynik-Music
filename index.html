@@ -9,36 +9,28 @@
 <body>
     <header class="top-nav">
         <div class="logo-area" onclick="location.hash='#home'">
-            <h1 style="font-size: 26px; font-weight: 900; letter-spacing: -1.5px;">Deynik Music</h1>
+            <h1>Deynik Music</h1>
             <svg width="30" height="30" viewBox="0 0 100 100">
                 <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
                 <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
-        </div>
+        <div class="search-container"><input type="text" class="search-input" placeholder="Поиск треков"></div>
         <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <div class="side-item" onclick="location.hash='#home'">
-                <i data-lucide="home"></i> <span>Главная</span>
-            </div>
-            <div class="side-item">
-                <i data-lucide="library"></i> <span>Медиатека</span>
-            </div>
+            <div class="side-item" onclick="location.hash='#home'"><i data-lucide="home"></i> <span>Главная</span></div>
+            <div class="side-item"><i data-lucide="library"></i> <span>Медиатека</span></div>
         </aside>
 
         <main class="panel center scroll-hide" id="content-area"></main>
 
         <aside class="panel side">
-            <div class="right-tabs">
-                <span class="active">О ТРЕКЕ</span>
-            </div>
+            <div class="right-tabs"><span class="active">О ТРЕКЕ</span></div>
             <div id="wiki-panel" style="margin-top:20px;">
-                <p style="color:#7a7a7a; font-size:14px;">Включите музыку, чтобы увидеть информацию.</p>
+                <p style="color:#7a7a7a; font-size:14px;">Выберите трек для инфо.</p>
             </div>
         </aside>
     </div>
@@ -46,25 +38,16 @@
     <footer class="player-bar">
         <div class="p-left">
             <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; display:none; background:#1a1a1a;">
-            <div>
-                <b id="p-title" style="font-size:14px; display:block;">Не выбрано</b>
-                <span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
-            </div>
+            <div><b id="p-title" style="font-size:14px; display:block;">Не выбрано</b><span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span></div>
         </div>
-
         <div class="p-center">
             <div class="p-controls">
                 <i data-lucide="skip-back" class="p-btn-icon"></i>
-                <div class="p-play-main" onclick="togglePlay()">
-                    <i id="main-icon" data-lucide="play" fill="black" size="22"></i>
-                </div>
+                <div class="p-play-main" onclick="togglePlay()"><i id="main-icon" data-lucide="play" fill="black" size="22"></i></div>
                 <i data-lucide="skip-forward" class="p-btn-icon"></i>
             </div>
-            <div class="p-progress-bg" onclick="seek(event)">
-                <div id="p-fill" class="p-progress-fill"></div>
-            </div>
+            <div class="p-progress-bg" onclick="seek(event)"><div id="p-fill" class="p-progress-fill"></div></div>
         </div>
-
         <div class="p-right">
             <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
             <div class="vol-bar"><div style="width:70%; height:100%; background:white;"></div></div>
@@ -74,32 +57,36 @@
     <script>
         let audio = new Audio();
 
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ
         async function loadContent() {
-            const hash = location.hash.replace('#', '') || 'home';
+            // Берем название страницы из хэша (например, #mayhem -> mayhem)
+            let hash = location.hash.replace('#', '') || 'home';
             const area = document.getElementById('content-area');
+            
             try {
-                const response = await fetch(`pages/${hash}.html`);
+                // ВАЖНО: Добавляем ./ перед путем для GitHub Pages
+                const response = await fetch(`./pages/${hash}.html`);
+                
+                if (!response.ok) throw new Error('404');
+                
                 area.innerHTML = await response.text();
                 lucide.createIcons();
             } catch (err) {
-                area.innerHTML = "<h1>Страница не найдена</h1>";
+                area.innerHTML = `<div style="padding:20px;"><h2>Ошибка загрузки</h2><p>Файл pages/${hash}.html не найден. Проверь название папки и файлов!</p></div>`;
             }
         }
 
+        // Следим за изменением хэша в адресе
         window.addEventListener('hashchange', loadContent);
         window.onload = loadContent;
 
-        // Команда для запуска музыки из любой подгруженной страницы
-        window.playNewTrack = function(url, title, img, wikiText) {
+        window.playNewTrack = function(url, title, img, wiki) {
             audio.src = url;
             audio.play();
             document.getElementById('p-title').innerText = title;
             document.getElementById('p-img').src = img;
             document.getElementById('p-img').style.display = 'block';
-            document.getElementById('wiki-panel').innerHTML = `
-                <img src="${img}" style="width:100%; border-radius:8px; margin-bottom:15px;">
-                <p style="font-size:14px; line-height:1.6;">${wikiText}</p>
-            `;
+            document.getElementById('wiki-panel').innerHTML = `<img src="${img}" style="width:100%; border-radius:8px; margin-bottom:15px;"><p style="font-size:14px; line-height:1.6;">${wiki}</p>`;
             updateIcon(true);
         };
 
