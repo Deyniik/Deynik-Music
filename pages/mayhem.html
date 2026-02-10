@@ -6,18 +6,31 @@
         <p>Lady Gaga • 2025 • 14 песен</p>
     </div>
 </div>
+<div id="album-list"></div>
 
-<div id="album-list">
-    <div class="track-row" onclick="window.playNewTrack('https://s3.k-connect.ru/static/music/1475/5954/1770656682_Lady_Gaga_-_Disease.mp3', 'Disease', 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg')">
-        <span style="color:#7a7a7a">1</span>
-        <b>Disease</b>
-        <span style="text-align:right; color:#7a7a7a">3:50</span>
-    </div>
-    
-    <div class="track-row" onclick="window.playNewTrack('https://s3.k-connect.ru/static/music/1475/5955/1770656744_Lady_Gaga_-_Abracadabra.mp3', 'Abracadabra', 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg')">
-        <span style="color:#7a7a7a">2</span>
-        <b>Abracadabra</b>
-        <span style="text-align:right; color:#7a7a7a">3:43</span>
-    </div>
-    
-    </div>
+<script>
+    var tracks = [
+        {title:"Disease", url:"https://s3.k-connect.ru/static/music/1475/5954/1770656682_Lady_Gaga_-_Disease.mp3", time:"3:50"},
+        {title:"Abracadabra", url:"https://s3.k-connect.ru/static/music/1475/5955/1770656744_Lady_Gaga_-_Abracadabra.mp3", time:"3:43"},
+        {title:"Garden Of Eden", url:"https://s3.k-connect.ru/static/music/1475/5956/1770656858_Lady_Gaga_-_Garden_Of_Eden.mp3", time:"3:59"},
+        {title:"Perfect Celebrity", url:"https://s3.k-connect.ru/static/music/1475/5957/1770656859_Lady_Gaga_-_Perfect_Celebrity.mp3", time:"3:49"},
+        {title:"Vanish Into You", url:"https://s3.k-connect.ru/static/music/1475/5959/1770656860_Lady_Gaga_-_Vanish_Into_You.mp3", time:"4:04"},
+        {title:"Killah", url:"https://s3.k-connect.ru/static/music/1475/5960/1770656860_Lady_Gaga_-_Killah.mp3", time:"3:30"},
+        {title:"Zombieboy", url:"https://s3.k-connect.ru/static/music/1475/5961/1770656861_Lady_Gaga_-_Zombieboy.mp3", time:"3:33"},
+        {title:"LoveDrug", url:"https://s3.k-connect.ru/static/music/1475/5963/1770656862_Lady_Gaga_-_LoveDrug.mp3", time:"3:13"},
+        {title:"How Bad Do U Want Me", url:"https://s3.k-connect.ru/static/music/1475/5964/1770656932_Lady_Gaga_-_How_Bad_Do_U_Want_Me.mp3", time:"3:58"},
+        {title:"Don't Call Tonight", url:"https://s3.k-connect.ru/static/music/1475/5965/1770656932_Lady_Gaga_-_Don_t_Call_Tonight.mp3", time:"3:45"},
+        {title:"Shadow Of A Man", url:"https://s3.k-connect.ru/static/music/1475/5967/1770656933_Lady_Gaga_-_Shadow_Of_A_Man.mp3", time:"3:19"},
+        {title:"The Beast", url:"https://s3.k-connect.ru/static/music/1475/5968/1770656934_Lady_Gaga_-_The_Beast.mp3", time:"3:54"},
+        {title:"Blade Of Grass", url:"https://s3.k-connect.ru/static/music/1475/5969/1770656934_Lady_Gaga_-_Blade_Of_Grass.mp3", time:"4:17"},
+        {title:"Die With A Smile", url:"https://s3.k-connect.ru/static/music/1475/5970/1770656935_Lady_Gaga_-_Die_With_A_Smile.mp3", time:"4:11"}
+    ];
+
+    document.getElementById('album-list').innerHTML = tracks.map((t, i) => `
+        <div class="track-row" onclick="window.playTrack(${i}, tracks)">
+            <span style="color:#7a7a7a">${i+1}</span>
+            <b>${t.title}</b>
+            <span style="text-align:right; color:#7a7a7a">${t.time}</span>
+        </div>
+    `).join('');
+</script>
