@@ -15,7 +15,7 @@
             <div id="album-main-play-btn" class="album-play-btn" onclick="window.toggleAlbumPlay()">
                 <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
             </div>
-            <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike()">
+            <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike(event)">
                 <i data-lucide="heart" size="22" color="white" fill="none"></i>
             </div>
             <div id="album-pin-btn" class="album-pin-btn" onclick="window.toggleAlbumPin()">
@@ -37,6 +37,7 @@
         // ========== СОСТОЯНИЕ ==========
         if (window.isAlbumPinned === undefined) window.isAlbumPinned = false;
         if (window.isAlbumLiked === undefined) window.isAlbumLiked = false;
+        if (!window.trackLikes) window.trackLikes = {};
         
         // ========== РЕНДЕР ТРЕКОВ ==========
         window.renderMayhemTracks = function() {
@@ -53,11 +54,12 @@
                 const track = window.albumTracks[i];
                 const isPlaying = isAlbumPlaying && currentIdx === i && currentAudio && !currentAudio.paused;
                 const isCurrentTrack = isAlbumPlaying && currentIdx === i;
+                const isLiked = window.trackLikes[track.url] || false;
                 
-                html += `<div class="track-row ${isCurrentTrack ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">`;
+                html += `<div class="track-row ${isCurrentTrack ? 'playing' : ''}" data-track-index="${i}">`;
                 
                 // ЛЕВАЯ КОЛОНКА - АНИМАЦИЯ ВОЛНЫ ИЛИ ЦИФРА
-                html += `<div style="display:flex; align-items:center; justify-content:flex-start; width:40px;">`;
+                html += `<div style="display:flex; align-items:center; justify-content:flex-start; width:40px;" onclick="window.playTrack(${i}, window.albumTracks)">`;
                 if (isCurrentTrack) {
                     if (isPlaying) {
                         html += `<div class="playing-indicator">
@@ -74,15 +76,42 @@
                 html += `</div>`;
                 
                 // НАЗВАНИЕ ТРЕКА
-                html += `<b style="${isCurrentTrack ? 'color: #CC6B26 !important; font-weight: 700;' : ''}">${track.title}</b>`;
+                html += `<b style="${isCurrentTrack ? 'color: #CC6B26 !important; font-weight: 700;' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">${track.title}</b>`;
+                
+                // ЛАЙК ТРЕКА
+                html += `<div style="text-align:center; color:#7a7a7a;" onclick="event.stopPropagation(); window.toggleTrackLike('${track.url}', this)">`;
+                if (isLiked) {
+                    html += `<i data-lucide="heart" size="16" color="#CC6B26" fill="#CC6B26" class="track-like active"></i>`;
+                } else {
+                    html += `<i data-lucide="heart" size="16" color="#7a7a7a" fill="none" class="track-like"></i>`;
+                }
+                html += `</div>`;
                 
                 // ВРЕМЯ
-                html += `<span style="text-align:right; color:#7a7a7a;">${track.time}</span>`;
+                html += `<span style="text-align:right; color:#7a7a7a;" onclick="window.playTrack(${i}, window.albumTracks)">${track.time}</span>`;
                 
                 html += `</div>`;
             }
             
             albumList.innerHTML = html;
+            lucide.createIcons();
+        };
+
+        // ========== TOGGLE LIKE ДЛЯ ТРЕКА ==========
+        window.toggleTrackLike = function(trackUrl, element) {
+            if (!window.trackLikes) window.trackLikes = {};
+            window.trackLikes[trackUrl] = !window.trackLikes[trackUrl];
+            
+            const icon = element.querySelector('i');
+            if (window.trackLikes[trackUrl]) {
+                icon.setAttribute('fill', '#CC6B26');
+                icon.setAttribute('color', '#CC6B26');
+                icon.classList.add('active');
+            } else {
+                icon.setAttribute('fill', 'none');
+                icon.setAttribute('color', '#7a7a7a');
+                icon.classList.remove('active');
+            }
             lucide.createIcons();
         };
 
@@ -96,10 +125,8 @@
             
             if (isAlbumPlaying && audio && !audio.paused) {
                 playIcon.setAttribute('data-lucide', 'pause');
-                playIcon.setAttribute('fill', 'white');
             } else {
                 playIcon.setAttribute('data-lucide', 'play');
-                playIcon.setAttribute('fill', 'white');
             }
             lucide.createIcons();
         };
@@ -125,8 +152,9 @@
             setTimeout(window.renderMayhemTracks, 20);
         };
 
-        // ========== TOGGLE LIKE ==========
-        window.toggleAlbumLike = function() {
+        // ========== TOGGLE LIKE АЛЬБОМА ==========
+        window.toggleAlbumLike = function(event) {
+            if (event) event.stopPropagation();
             window.isAlbumLiked = !window.isAlbumLiked;
             const btn = document.getElementById('album-like-btn');
             const icon = btn?.querySelector('i');
@@ -175,17 +203,15 @@
             }
         };
 
-        // ========== SHARE ALBUM С АНИМАЦИЕЙ ==========
+        // ========== SHARE ALBUM ==========
         window.shareAlbum = function(btn) {
             const url = 'https://deyniik.github.io/Deynik-Music/#mayhem';
             navigator.clipboard.writeText(url).then(function() {
-                // Анимация кнопки
                 btn.classList.add('share-animation');
                 setTimeout(() => {
                     btn.classList.remove('share-animation');
                 }, 400);
                 
-                // Меняем иконку временно
                 const icon = btn.querySelector('i');
                 const originalIcon = icon.getAttribute('data-lucide');
                 icon.setAttribute('data-lucide', 'check');
@@ -211,24 +237,6 @@
         const originalTogglePlay = window.togglePlay;
         window.togglePlay = function() {
             if (originalTogglePlay) originalTogglePlay();
-            setTimeout(() => {
-                window.renderMayhemTracks();
-                window.updateAlbumPlayButton();
-            }, 30);
-        };
-
-        const originalNextTrack = window.nextTrack;
-        window.nextTrack = function() {
-            if (originalNextTrack) originalNextTrack();
-            setTimeout(() => {
-                window.renderMayhemTracks();
-                window.updateAlbumPlayButton();
-            }, 30);
-        };
-
-        const originalPrevTrack = window.prevTrack;
-        window.prevTrack = function() {
-            if (originalPrevTrack) originalPrevTrack();
             setTimeout(() => {
                 window.renderMayhemTracks();
                 window.updateAlbumPlayButton();
