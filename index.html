@@ -2,97 +2,105 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Deynik Music</title>
+    <title>Deynik Music | Mayhem Ultra</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+
     <header class="top-nav">
-        <div class="logo-area" onclick="loadPage('home')">
-            <div class="logo-text">Deynik Music</div>
-            <svg width="34" height="34" viewBox="0 0 100 100" style="margin-left: 20px;">
-                <polygon points="5,15 70,50 5,85" fill="#5c4033"/>
-                <path d="M85,30 Q110,50 85,70 M98,15 Q135,50 98,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-        </div>
-        
+        <div class="logo">Deynik Music</div>
         <div class="search-container">
             <input type="text" class="search-input" placeholder="Поиск музыки">
         </div>
-        
-        <div style="width: 380px;"></div> </header>
+        <div style="width: 380px;"></div>
+    </header>
 
     <div class="app-main">
         <aside class="panel side">
             <div class="filter-nav">
-                <button class="nav-arrow" onclick="scrollF(-100)"><i data-lucide="chevron-left"></i></button>
-                <div class="filter-scroll scroll-hide" id="fScroll">
-                    <button class="tab active"><i data-lucide="home" size="18"></i></button>
-                    <button class="tab">Исполнители</button>
-                    <button class="tab">Альбомы</button>
-                    <button class="tab">Плейлисты</button>
+                <button class="nav-arrow" onclick="scrollFilters(-120)"><i data-lucide="chevron-left" size="18"></i></button>
+                <div class="filter-scroll scroll-hide" id="filterScroll">
+                    <button class="tab active" onclick="filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
+                    <button class="tab" onclick="filterSide('artist', this)">Исполнители</button>
+                    <button class="tab" onclick="filterSide('album', this)">Альбомы</button>
+                    <button class="tab" onclick="filterSide('playlist', this)">Плейлисты</button>
+                    <button class="tab" onclick="filterSide('radio', this)">Радио</button>
                 </div>
-                <button class="nav-arrow" onclick="scrollF(100)"><i data-lucide="chevron-right"></i></button>
+                <button class="nav-arrow" onclick="scrollFilters(120)"><i data-lucide="chevron-right" size="18"></i></button>
             </div>
-            <div class="side-item playlist-likes">
-                <div class="heart-box"><i data-lucide="heart" fill="white"></i></div>
-                <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
+            <div id="side-list" class="scroll-hide" style="overflow-y:auto;">
+                <div class="side-item">
+                    <div style="width:52px; height:52px; border-radius:6px; background: linear-gradient(135deg, #450af5, #c4efd9); display:flex; align-items:center; justify-content:center;">
+                        <i data-lucide="heart" fill="white" color="white" size="24"></i>
+                    </div>
+                    <div style="margin-left:8px;"><b>Лайки</b><br><small style="color:var(--text-gray)">Плейлист • 17 треков</small></div>
+                </div>
+                <div id="filtered-content"></div>
             </div>
         </aside>
 
-        <main class="panel center scroll-hide" id="content-area"></main>
+        <main class="panel center scroll-hide">
+            <div class="vibe-banner">
+                <h1>Мой Vibe</h1>
+                <div style="background: var(--spotify-green); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items:center; justify-content:center; cursor:pointer;" onclick="playVibe()">
+                    <i id="vibe-play-icon" data-lucide="play" fill="black" color="black" size="32" style="margin-left:4px"></i>
+                </div>
+            </div>
+            <h2 style="margin-bottom:20px; font-size: 22px; font-weight: 800;">Mayhem — Lady Gaga</h2>
+            <div class="track-grid" id="track-grid"></div>
+        </main>
 
         <aside class="panel side">
-            <div class="right-tabs">
-                <div id="t-queue" class="tab-link active" onclick="switchSide('queue')">Далее</div>
-                <div id="t-wiki" class="tab-link" onclick="switchSide('wiki')">О треке</div>
+            <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:100%; border-radius:10px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 id="side-title" style="font-size:24px; font-weight:800;">Disease</h2>
+                    <p style="color:var(--text-gray); font-size:17px;">Lady Gaga</p>
+                </div>
+                <i data-lucide="heart" id="like-side" class="like-btn" onclick="toggleLike()"></i>
             </div>
-            <div class="right-content scroll-hide">
-                <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" class="side-big-img">
-                <div id="side-meta">
-                    <h2 id="side-title">Disease</h2>
-                    <p id="side-artist">Lady Gaga</p>
-                </div>
-                
-                <div id="panel-queue">
-                    <p class="section-label">В ЭТОМ АЛЬБОМЕ</p>
-                    <div id="queue-list"></div>
-                </div>
-                
-                <div id="panel-wiki" class="hidden">
-                    <p id="wiki-text" class="wiki-info"></p>
-                </div>
+            <div style="margin-top:35px;">
+                <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:var(--text-gray); text-transform:uppercase;">В этом альбоме</p>
+                <div id="queue-list" class="scroll-hide"></div>
             </div>
         </aside>
     </div>
 
     <footer class="player-bar">
-        <div class="p-info">
-            <img id="p-img" src="" class="p-thumb">
-            <div><b id="p-title"></b><br><span id="p-artist"></span></div>
-            <i data-lucide="heart" class="like-btn" onclick="toggleLike()"></i>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img id="p-img" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:60px; height:60px; border-radius:4px;">
+            <div>
+                <b id="p-title" style="font-size:15px; display:block;">Disease</b>
+                <span style="color:var(--text-gray); font-size:13px;">Lady Gaga</span>
+            </div>
+            <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
         </div>
 
-        <div class="p-controls">
-            <div class="p-btns">
-                <i data-lucide="shuffle" class="p-sub-btn"></i>
-                <i data-lucide="skip-back" fill="currentColor" class="p-main-btn" onclick="prev()"></i>
-                <div class="p-play-circle" onclick="togglePlay()">
-                    <i id="play-icon" data-lucide="play" fill="black"></i>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+            <div style="display:flex; align-items:center; gap:28px;">
+                <i data-lucide="shuffle" size="18" class="spotify-btn"></i>
+                <i data-lucide="skip-back" fill="currentColor" size="24" class="spotify-btn" onclick="prevTrack()"></i>
+                <div onclick="togglePlay()" style="background:white; border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:black; cursor:pointer;">
+                    <i id="main-play-icon" data-lucide="play" fill="black" size="22" style="margin-left:3px"></i>
                 </div>
-                <i data-lucide="skip-forward" fill="currentColor" class="p-main-btn" onclick="next()"></i>
-                <i data-lucide="repeat" class="p-sub-btn"></i>
+                <i data-lucide="skip-forward" fill="currentColor" size="24" class="spotify-btn" onclick="nextTrack()"></i>
+                <i data-lucide="repeat" size="18" class="spotify-btn"></i>
             </div>
-            <div class="p-progress">
-                <span id="cur">0:00</span>
-                <div class="bar-bg" onclick="seek(event)"><div id="fill" class="bar-fill"></div></div>
-                <span id="dur">0:00</span>
+            <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
+                <span style="font-size:12px; color:var(--text-gray); width:40px; text-align:right;" id="cur-time">0:00</span>
+                <div class="bar-bg" onmousedown="seek(event)"><div id="p-fill" class="bar-fill"></div></div>
+                <span style="font-size:12px; color:var(--text-gray); width:40px;" id="dur-time">0:00</span>
             </div>
         </div>
 
-        <div class="p-volume">
-            <i data-lucide="volume-2" size="20"></i>
-            <div class="vol-bg"><div id="v-fill" class="vol-fill"></div></div>
+        <div style="display:flex; justify-content:flex-end; align-items:center;">
+            <div style="display:flex; align-items:center; gap:12px;" onwheel="handleVolumeWheel(event)">
+                <i data-lucide="volume-2" size="20" color="#b3b3b3"></i>
+                <div class="vol-slider" id="vol-slider" onmousedown="startVolDrag(event)">
+                    <div id="v-fill" class="vol-fill"></div>
+                </div>
+            </div>
         </div>
     </footer>
 
