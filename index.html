@@ -10,9 +10,9 @@
     <header class="top-nav">
         <div class="logo-area" onclick="location.hash='#home'">
             <h1>Deynik Music</h1>
-            <svg width="34" height="34" viewBox="0 0 100 100" style="margin-left: 10px;">
+            <svg width="34" height="34" viewBox="0 0 100 100" style="margin-left: 15px;">
                 <polygon points="5,15 70,50 5,85" fill="#5c4033"/>
-                <path d="M75,30 Q100,50 75,70 M88,15 Q125,50 88,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+                <path d="M80,30 Q105,50 80,70 M93,15 Q130,50 93,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
         
@@ -20,23 +20,30 @@
             <input type="text" class="search-input" placeholder="Поиск музыки">
         </div>
         
-        <div style="width: 380px;"></div> </header>
+        <div style="width: 380px;"></div>
+    </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <div class="side-header">
-                <i data-lucide="library"></i> <b>Моя медиатека</b>
+            <div class="filter-nav">
+                <div class="filter-scroll scroll-hide" id="filterScroll">
+                    <button class="tab active"><i data-lucide="home" size="16"></i></button>
+                    <button class="tab">Исполнители</button>
+                    <button class="tab">Альбомы</button>
+                    <button class="tab">Плейлисты</button>
+                </div>
             </div>
-            <div class="side-item active" onclick="location.hash='#home'">
-                <i data-lucide="home"></i> <span>Главная</span>
-            </div>
-            <div class="side-playlist-card">
-                <div class="like-square"><i data-lucide="heart" fill="white"></i></div>
-                <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
-            </div>
+            
+            <div class="side-content scroll-hide">
+                <div class="side-item-playlist">
+                    <div class="playlist-icon-likes"><i data-lucide="heart" fill="white"></i></div>
+                    <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
+                </div>
+                </div>
         </aside>
 
-        <main class="panel center scroll-hide" id="content-area"></main>
+        <main class="panel center scroll-hide" id="content-area">
+            </main>
 
         <aside class="panel side">
             <div class="right-tabs">
@@ -44,55 +51,55 @@
                 <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
             </div>
             
-            <div class="side-scroll-content scroll-hide">
+            <div class="right-scroll-container scroll-hide">
                 <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" class="side-big-img">
                 
                 <div id="panel-queue">
-                    <p class="small-label">ОЧЕРЕДЬ</p>
+                    <p class="section-label">ОЧЕРЕДЬ</p>
                     <div id="queue-list"></div>
                 </div>
 
                 <div id="panel-wiki" class="hidden">
-                    <h2 id="wiki-title"></h2>
-                    <p id="wiki-text" class="wiki-info"></p>
+                    <h2 id="wiki-title" style="margin-bottom:10px;"></h2>
+                    <p id="wiki-text" class="wiki-desc"></p>
                 </div>
             </div>
         </aside>
     </div>
 
     <footer class="player-bar">
-        <div class="p-track-info">
-            <img id="p-img" src="" class="p-min-cover" style="display:none;">
+        <div class="p-info">
+            <img id="p-img" src="" class="p-cover" style="display:none;">
             <div>
                 <b id="p-title">Выберите трек</b>
-                <span id="p-artist" style="display:block; font-size:12px; color:#a7a7a7;">Lady Gaga</span>
+                <span id="p-artist">Lady Gaga</span>
             </div>
-            <i data-lucide="heart" class="p-like"></i>
+            <i data-lucide="heart" class="like-icon" style="margin-left:15px;"></i>
         </div>
 
-        <div class="p-core-controls">
+        <div class="p-controls">
             <div class="p-buttons">
-                <i data-lucide="shuffle" class="p-sub-btn"></i>
-                <i data-lucide="skip-back" fill="currentColor" class="p-main-btn" onclick="prevTrack()"></i>
-                <div class="p-play-btn" onclick="togglePlay()">
-                    <i id="main-play-icon" data-lucide="play" fill="black"></i>
+                <i data-lucide="shuffle" size="18" class="p-btn-sub"></i>
+                <i data-lucide="skip-back" fill="currentColor" size="24" class="p-btn-main" onclick="prevTrack()"></i>
+                <div class="p-play-circle" onclick="togglePlay()">
+                    <i id="main-play-icon" data-lucide="play" fill="black" size="22"></i>
                 </div>
-                <i data-lucide="skip-forward" fill="currentColor" class="p-main-btn" onclick="nextTrack()"></i>
-                <i data-lucide="repeat" class="p-sub-btn"></i>
+                <i data-lucide="skip-forward" fill="currentColor" size="24" class="p-btn-main" onclick="nextTrack()"></i>
+                <i data-lucide="repeat" size="18" class="p-btn-sub"></i>
             </div>
-            <div class="p-progress-box">
+            <div class="p-progress">
                 <span id="c-time">0:00</span>
-                <div class="p-slider-bg" onclick="seek(event)"><div id="p-fill" class="p-slider-fill"></div></div>
+                <div class="p-bar-bg" onclick="seek(event)"><div id="p-fill" class="p-bar-fill"></div></div>
                 <span id="d-time">0:00</span>
             </div>
         </div>
 
-        <div class="p-volume-box">
-            <i data-lucide="volume-2" size="18" color="#a7a7a7"></i>
-            <div class="v-slider-bg"><div class="v-slider-fill" style="width:70%"></div></div>
+        <div class="p-volume">
+            <i data-lucide="volume-2" size="20" color="#a7a7a7"></i>
+            <div class="v-slider"><div id="v-fill" class="v-fill" style="width:70%;"></div></div>
         </div>
     </footer>
 
-    <script src="player-logic.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
