@@ -119,6 +119,10 @@ body {
     cursor: pointer; 
 }
 
+.p-btn i {
+    transform: scale(0.9);
+}
+
 .p-btn:hover { 
     background: #252525; 
 }
@@ -137,12 +141,13 @@ body {
 
 .track-row { 
     display: grid; 
-    grid-template-columns: 35px 1fr 60px; 
-    padding: 10px; 
+    grid-template-columns: 45px 1fr 60px; 
+    padding: 12px 10px; 
     border-radius: 8px; 
     cursor: pointer; 
     align-items: center;
     transition: 0.2s;
+    margin-bottom: 2px;
 }
 
 .track-row:hover { 
@@ -154,17 +159,18 @@ body {
     border-left: 3px solid var(--brand);
 }
 
-.track-row.playing span:first-child {
-    color: var(--brand) !important;
-    font-weight: 700;
+.track-row.playing b {
+    color: var(--brand);
 }
 
 .playing-indicator {
     display: flex;
-    gap: 3px;
+    gap: 4px;
     align-items: center;
     justify-content: center;
     color: var(--brand) !important;
+    width: 24px;
+    height: 24px;
 }
 
 .playing-indicator span {
@@ -307,12 +313,19 @@ body {
     background: var(--brand);
 }
 
-/* Стили для плей-кнопки альбома */
+/* Стили для кнопок альбома */
+.album-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
 .album-play-btn {
     width: 55px;
     height: 55px;
     background: var(--brand);
-    border-radius: 50%;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -326,7 +339,51 @@ body {
     background: var(--brand-hover);
 }
 
+.album-play-btn.pause {
+    background: var(--brand);
+}
+
+.album-play-btn.pause i {
+    margin-left: 0;
+}
+
+.album-like-btn, .album-pin-btn {
+    width: 45px;
+    height: 45px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.album-like-btn:hover, .album-pin-btn:hover {
+    background: #252525;
+}
+
+.album-like-btn.active i {
+    color: white !important;
+    fill: white !important;
+}
+
+.album-pin-btn.active {
+    background: var(--brand);
+}
+
+.album-pin-btn.active i {
+    color: white;
+}
+
 /* Очередь */
+#queue-list {
+    overflow-y: auto;
+    max-height: calc(100vh - 400px);
+    scrollbar-width: none;
+    padding-right: 5px;
+}
+
 .queue-item {
     display: flex;
     gap: 12px;
@@ -335,6 +392,7 @@ body {
     cursor: pointer;
     border-radius: 8px;
     transition: 0.2s;
+    margin-bottom: 2px;
 }
 
 .queue-item:hover {
