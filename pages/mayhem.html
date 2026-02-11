@@ -1,4 +1,4 @@
-<div style="display:flex; gap:30px; margin-bottom:40px;">
+<div style="display:flex; gap:30px; margin-bottom:40px; position:relative; z-index:2;">
     <img id="album-cover-image" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
     <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
         <div>
@@ -31,7 +31,7 @@
     let isAlbumLiked = false;
     let isAlbumPinned = false;
 
-    // --- ОСНОВНАЯ ФУНКЦИЯ РЕНДЕРА С ПОДСВЕТКОЙ И АНИМАЦИЕЙ ---
+    // ========== РЕНДЕР ТРЕКОВ С ПОДСВЕТКОЙ И АНИМАЦИЕЙ ==========
     function renderMayhemTracks() {
         const albumList = document.getElementById('album-list');
         if (albumList && window.albumTracks) {
@@ -42,10 +42,10 @@
                     <div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">
                         <div style="display:flex; align-items:center; justify-content:center; width:40px; height:24px;">
                             ${isPlaying ? 
-                                `<div class="playing-indicator" style="display: flex; gap: 4px; align-items: center;">
-                                    <span style="width: 4px; height: 4px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite;"></span>
-                                    <span style="width: 4px; height: 4px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.4s;"></span>
-                                    <span style="width: 4px; height: 4px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.8s;"></span>
+                                `<div class="playing-indicator" style="display: flex; gap: 4px; align-items: center; justify-content: center;">
+                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite;"></span>
+                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.4s;"></span>
+                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.8s;"></span>
                                 </div>` : 
                                 `<span style="color:#7a7a7a; font-size:14px; font-weight:400;">${i+1}</span>`
                             }
@@ -60,14 +60,25 @@
         }
     }
 
-    // --- ПЕРЕОПРЕДЕЛЯЕМ МЕТОДЫ ПЛЕЕРА ДЛЯ АВТООБНОВЛЕНИЯ ---
+    // ========== ПЕРЕОПРЕДЕЛЕНИЕ МЕТОДОВ ПЛЕЕРА ==========
     const originalPlayTrack = window.playTrack;
     window.playTrack = function(idx, trackList) {
         originalPlayTrack(idx, trackList);
-        // Обновляем список, если это наш альбом
         if (trackList === window.albumTracks) {
             setTimeout(renderMayhemTracks, 30);
         }
+        // Обновляем иконку play/pause
+        setTimeout(() => {
+            const playIcon = document.getElementById('album-play-icon');
+            if (playIcon) {
+                if (window.audio && !window.audio.paused && window.currentTracks === window.albumTracks) {
+                    playIcon.setAttribute('data-lucide', 'pause');
+                } else {
+                    playIcon.setAttribute('data-lucide', 'play');
+                }
+                lucide.createIcons();
+            }
+        }, 50);
     };
 
     const originalTogglePlay = window.togglePlay;
@@ -75,22 +86,50 @@
         originalTogglePlay();
         if (window.currentTracks === window.albumTracks) {
             setTimeout(renderMayhemTracks, 30);
+            // Обновляем иконку play/pause
+            setTimeout(() => {
+                const playIcon = document.getElementById('album-play-icon');
+                if (playIcon) {
+                    if (window.audio && !window.audio.paused) {
+                        playIcon.setAttribute('data-lucide', 'pause');
+                    } else {
+                        playIcon.setAttribute('data-lucide', 'play');
+                    }
+                    lucide.createIcons();
+                }
+            }, 50);
         }
     };
 
-    // --- СЛУШАЕМ СОБЫТИЯ АУДИО ДЛЯ МГНОВЕННОЙ СМЕНЫ ИКОНКИ PLAY/PAUSE ---
+    // ========== СЛУШАЕМ СОБЫТИЯ АУДИО ==========
     if (window.audio) {
         window.audio.addEventListener('play', () => {
-            if (window.currentTracks === window.albumTracks) renderMayhemTracks();
+            if (window.currentTracks === window.albumTracks) {
+                renderMayhemTracks();
+                const playIcon = document.getElementById('album-play-icon');
+                if (playIcon) {
+                    playIcon.setAttribute('data-lucide', 'pause');
+                    lucide.createIcons();
+                }
+            }
         });
+        
         window.audio.addEventListener('pause', () => {
-            if (window.currentTracks === window.albumTracks) renderMayhemTracks();
+            if (window.currentTracks === window.albumTracks) {
+                renderMayhemTracks();
+                const playIcon = document.getElementById('album-play-icon');
+                if (playIcon) {
+                    playIcon.setAttribute('data-lucide', 'play');
+                    lucide.createIcons();
+                }
+            }
         });
     }
 
-    // --- ЛОГИКА ЛАЙКА И ПИНА ---
+    // ========== УПРАВЛЕНИЕ АЛЬБОМОМ ==========
     window.toggleAlbumPlay = function() {
         if (!window.albumTracks) return;
+        
         if (window.currentTracks === window.albumTracks && window.audio.src) {
             window.togglePlay();
         } else {
@@ -106,8 +145,14 @@
         isAlbumLiked = !isAlbumLiked;
         const btn = document.getElementById('album-like-btn');
         const icon = btn.querySelector('i');
-        btn.classList.toggle('active', isAlbumLiked);
-        icon.setAttribute('fill', isAlbumLiked ? 'white' : 'none');
+        
+        if (isAlbumLiked) {
+            btn.classList.add('active');
+            icon.setAttribute('fill', 'white');
+        } else {
+            btn.classList.remove('active');
+            icon.setAttribute('fill', 'none');
+        }
         lucide.createIcons();
     };
 
@@ -131,15 +176,27 @@
         }
         lucide.createIcons();
         
-        // Обновляем главную, если она открыта
         if (location.hash === '#home' && window.renderPinnedAlbum) {
             setTimeout(window.renderPinnedAlbum, 50);
         }
     };
 
-    // --- СТАРТ ---
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
     renderMayhemTracks();
-    // Дополнительная страховка для обновления после загрузки DOM
     setTimeout(renderMayhemTracks, 50);
+    
+    // Устанавливаем правильную иконку play/pause при загрузке
+    setTimeout(() => {
+        const playIcon = document.getElementById('album-play-icon');
+        if (playIcon) {
+            if (window.audio && !window.audio.paused && window.currentTracks === window.albumTracks) {
+                playIcon.setAttribute('data-lucide', 'pause');
+            } else {
+                playIcon.setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        }
+    }, 100);
+    
     lucide.createIcons();
 </script>
