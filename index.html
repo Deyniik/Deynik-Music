@@ -35,7 +35,7 @@
                 </div>
                 <button class="nav-arrow" onclick="scrollFilters(120)"><i data-lucide="chevron-right" size="18"></i></button>
             </div>
-            <div id="side-list" class="scroll-hide" style="overflow-y:auto;">
+            <div id="side-list" class="scroll-hide" style="overflow-y: auto;">
                 <div class="side-item">
                     <div style="width:52px; height:52px; border-radius:6px; background: linear-gradient(135deg, #450af5, #c4efd9); display:flex; align-items:center; justify-content:center;">
                         <i data-lucide="heart" fill="white" color="white" size="24"></i>
@@ -46,12 +46,12 @@
             </div>
         </aside>
 
-        <!-- ЦЕНТР (контент) -->
+        <!-- ЦЕНТР -->
         <main class="panel center scroll-hide" id="content-area"></main>
 
         <!-- ПРАВАЯ ПАНЕЛЬ как в УУУУУУУУ -->
         <aside class="panel side">
-            <img id="side-cover" src="" style="width:100%; border-radius:10px; margin-bottom:20px; display:none;">
+            <img id="side-cover" src="" style="width:100%; border-radius:10px; margin-bottom:20px; display: none;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <h2 id="side-title" style="font-size:24px; font-weight:800;">Выберите трек</h2>
@@ -61,12 +61,12 @@
             </div>
             <div style="margin-top:35px;">
                 <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:#7a7a7a; text-transform:uppercase;">В этом альбоме</p>
-                <div id="queue-list" class="scroll-hide" style="overflow-y:auto;"></div>
+                <div id="queue-list" class="scroll-hide" style="overflow-y: auto;"></div>
             </div>
         </aside>
     </div>
 
-    <!-- ПЛЕЕР (дизайн квадратной кнопки) -->
+    <!-- ПЛЕЕР с квадратными кнопками -->
     <footer class="player-bar">
         <div style="display:flex; align-items:center; gap:15px;">
             <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
@@ -113,21 +113,21 @@
         let isVolDragging = false;
         const albumCover = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
 
-        // ========== ЗАГРУЗКА КОНТЕНТА ==========
+        // ========== ЗАГРУЗКА ==========
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
             try {
-                const response = await fetch(`./pages/${hash}.html`);
-                document.getElementById('content-area').innerHTML = await response.text();
+                const res = await fetch(`./pages/${hash}.html`);
+                document.getElementById('content-area').innerHTML = await res.text();
                 lucide.createIcons();
-            } catch (err) {
+            } catch {
                 location.hash = '#home';
             }
         }
 
-        // ========== ФУНКЦИИ ПЛЕЕРА ==========
+        // ========== ПЛЕЕР ==========
         window.playTrack = function(idx, trackList) {
-            if (!trackList || !trackList.length) return;
+            if (!trackList?.length) return;
             currentTracks = trackList;
             currentIdx = idx;
             const track = currentTracks[currentIdx];
@@ -167,18 +167,13 @@
         };
 
         window.nextTrack = function() {
-            if (currentIdx < currentTracks.length - 1) {
-                window.playTrack(currentIdx + 1, currentTracks);
-            }
+            if (currentIdx < currentTracks.length - 1) playTrack(currentIdx + 1, currentTracks);
         };
 
         window.prevTrack = function() {
-            if (currentIdx > 0) {
-                window.playTrack(currentIdx - 1, currentTracks);
-            }
+            if (currentIdx > 0) playTrack(currentIdx - 1, currentTracks);
         };
 
-        // ========== ОЧЕРЕДЬ ==========
         function renderQueue() {
             if (!currentTracks.length) {
                 document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Нет треков</p>';
@@ -234,13 +229,8 @@
             document.getElementById('v-fill').style.width = (audio.volume * 100) + '%';
         };
 
-        window.addEventListener('mousemove', function(e) {
-            if (isVolDragging) updateVolumeFromEvent(e);
-        });
-        
-        window.addEventListener('mouseup', function() {
-            isVolDragging = false;
-        });
+        window.addEventListener('mousemove', (e) => { if (isVolDragging) updateVolumeFromEvent(e); });
+        window.addEventListener('mouseup', () => { isVolDragging = false; });
 
         // ========== ЛАЙК ==========
         window.toggleLike = function() {
@@ -279,16 +269,14 @@
                 `).join('');
         }
 
-        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        // ========== СТАРТ ==========
         window.addEventListener('hashchange', loadContent);
-        
-        window.onload = function() {
+        window.onload = () => {
             loadContent();
             renderSide('all');
             lucide.createIcons();
             audio.volume = 0.7;
         };
-
         audio.onended = nextTrack;
     </script>
 </body>
