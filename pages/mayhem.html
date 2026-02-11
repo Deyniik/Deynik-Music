@@ -7,7 +7,7 @@
             <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
                 <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
                 <span style="color:#7a7a7a;">•</span>
-                <span style="color:#7a7a7a;" id="album-duration">41:03</span>
+                <span style="color:#7a7a7a;">17 песен</span>
             </div>
         </div>
         
@@ -16,10 +16,10 @@
                 <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
             </div>
             <div id="album-like-btn" class="album-like-btn" onclick="toggleAlbumLike()">
-                <i data-lucide="heart" size="22" color="white"></i>
+                <i data-lucide="heart" size="22" color="white" fill="none"></i>
             </div>
             <div id="album-pin-btn" class="album-pin-btn" onclick="toggleAlbumPin()">
-                <i data-lucide="pin" size="22" color="white"></i>
+                <i data-lucide="pin" size="22" color="white" fill="none"></i>
             </div>
         </div>
     </div>
@@ -28,41 +28,26 @@
 <div id="album-list"></div>
 
 <script>
-    let isAlbumPlaying = false;
     let isAlbumLiked = false;
     let isAlbumPinned = false;
-
-    function formatAlbumDuration() {
-        if (!window.albumTracks) return '41:03';
-        let total = 0;
-        window.albumTracks.forEach(track => {
-            const [m, s] = track.time.split(':').map(Number);
-            total += m * 60 + s;
-        });
-        const minutes = Math.floor(total / 60);
-        const seconds = total % 60;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
 
     function renderMayhemTracks() {
         const albumList = document.getElementById('album-list');
         if (albumList && window.albumTracks) {
-            document.getElementById('album-duration').innerText = formatAlbumDuration();
-            
             albumList.innerHTML = window.albumTracks.map((t, i) => {
                 const isPlaying = window.currentTracks === window.albumTracks && window.currentIdx === i;
                 
                 return `
                     <div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">
-                        <div style="display:flex; align-items:center; justify-content:center; width:35px;">
+                        <div style="display:flex; align-items:center; justify-content:flex-start; width:40px;">
                             ${isPlaying ? 
                                 `<div class="playing-indicator">
                                     <span></span><span></span><span></span>
                                 </div>` : 
-                                `<span style="color:#7a7a7a;">${i+1}</span>`
+                                `<span style="color:#7a7a7a; font-size:14px;">${i+1}</span>`
                             }
                         </div>
-                        <b style="${isPlaying ? 'color: #CC6B26;' : ''}">${t.title}</b>
+                        <b style="${isPlaying ? 'color: #CC6B26 !important;' : ''}">${t.title}</b>
                         <span style="text-align:right; color:#7a7a7a">${t.time}</span>
                     </div>
                 `;
@@ -72,66 +57,20 @@
         }
     }
 
-    // Функция для кнопки Play/Pause альбома
     window.toggleAlbumPlay = function() {
         if (!window.albumTracks) return;
         
         if (window.currentTracks === window.albumTracks && audio.src) {
-            // Альбом уже загружен - просто ставим на паузу/плей
-            togglePlay();
-            
-            // Обновляем иконку
-            const icon = document.getElementById('album-play-icon');
-            icon.setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
-            icon.style.marginLeft = audio.paused ? '4px' : '0';
-            lucide.createIcons();
+            window.togglePlay();
         } else {
-            // Первый запуск альбома
-            window.playTrack(0, window.albumTracks);
-            const icon = document.getElementById('album-play-icon');
-            icon.setAttribute('data-lucide', 'pause');
-            icon.style.marginLeft = '0';
-            lucide.createIcons();
-        }
-        
-        isAlbumPlaying = !isAlbumPlaying;
-    };
-
-    // Слушаем изменения состояния плеера
-    const originalPlayTrack = window.playTrack;
-    window.playTrack = function(idx, trackList) {
-        originalPlayTrack(idx, trackList);
-        setTimeout(renderMayhemTracks, 50);
-        
-        // Обновляем кнопку альбома если это наш альбом
-        if (trackList === window.albumTracks) {
-            const icon = document.getElementById('album-play-icon');
-            if (icon) {
-                icon.setAttribute('data-lucide', 'pause');
-                icon.style.marginLeft = '0';
-                lucide.createIcons();
+            if (window.currentTracks === window.albumTracks && window.currentIdx !== -1) {
+                window.playTrack(window.currentIdx, window.albumTracks);
+            } else {
+                window.playTrack(0, window.albumTracks);
             }
-            isAlbumPlaying = true;
         }
     };
 
-    // Обновляем иконку при паузе/плее
-    const originalTogglePlay = window.togglePlay;
-    window.togglePlay = function() {
-        originalTogglePlay();
-        
-        if (window.currentTracks === window.albumTracks) {
-            const icon = document.getElementById('album-play-icon');
-            if (icon) {
-                icon.setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
-                icon.style.marginLeft = audio.paused ? '4px' : '0';
-                lucide.createIcons();
-            }
-            isAlbumPlaying = !audio.paused;
-        }
-    };
-
-    // Лайк альбома
     window.toggleAlbumLike = function() {
         isAlbumLiked = !isAlbumLiked;
         const btn = document.getElementById('album-like-btn');
@@ -147,44 +86,72 @@
         lucide.createIcons();
     };
 
-    // Пин альбома (закрепление на главной)
     window.toggleAlbumPin = function() {
         isAlbumPinned = !isAlbumPinned;
         const btn = document.getElementById('album-pin-btn');
+        const icon = btn.querySelector('i');
         
         if (isAlbumPinned) {
             btn.classList.add('active');
-            // Здесь можно добавить логику закрепления
+            icon.setAttribute('fill', 'white');
+            // Здесь добавим в левую панель на home
+            const pinnedAlbum = {
+                name: "Mayhem",
+                sub: "Альбом • 2025",
+                cover: "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg"
+            };
+            window.pinnedAlbum = pinnedAlbum;
+            
+            // Если мы на home странице, обновим ее
+            if (location.hash === '#home') {
+                setTimeout(() => {
+                    const event = new Event('hashchange');
+                    window.dispatchEvent(event);
+                }, 100);
+            }
         } else {
             btn.classList.remove('active');
+            icon.setAttribute('fill', 'none');
+            window.pinnedAlbum = null;
+            
+            if (location.hash === '#home') {
+                setTimeout(() => {
+                    const event = new Event('hashchange');
+                    window.dispatchEvent(event);
+                }, 100);
+            }
         }
         lucide.createIcons();
     };
 
-    // Обновляем при загрузке
+    // Обновляем playTrack
+    const originalPlayTrack = window.playTrack;
+    window.playTrack = function(idx, trackList) {
+        originalPlayTrack(idx, trackList);
+        setTimeout(renderMayhemTracks, 50);
+    };
+
+    // Обновляем togglePlay
+    const originalTogglePlay = window.togglePlay;
+    window.togglePlay = function() {
+        originalTogglePlay();
+        setTimeout(renderMayhemTracks, 50);
+    };
+
+    // Первый рендер
     renderMayhemTracks();
     setTimeout(renderMayhemTracks, 50);
     
-    // Обновляем состояние кнопки при смене трека
+    // Слушаем события аудио
     audio.addEventListener('play', function() {
         if (window.currentTracks === window.albumTracks) {
-            const icon = document.getElementById('album-play-icon');
-            if (icon) {
-                icon.setAttribute('data-lucide', 'pause');
-                icon.style.marginLeft = '0';
-                lucide.createIcons();
-            }
+            renderMayhemTracks();
         }
     });
     
     audio.addEventListener('pause', function() {
         if (window.currentTracks === window.albumTracks) {
-            const icon = document.getElementById('album-play-icon');
-            if (icon) {
-                icon.setAttribute('data-lucide', 'play');
-                icon.style.marginLeft = '4px';
-                lucide.createIcons();
-            }
+            renderMayhemTracks();
         }
     });
     
