@@ -1,18 +1,18 @@
 <div style="height:260px; border-radius:12px; background: linear-gradient(135deg, #4b3621, #000); display:flex; flex-direction:column; justify-content:center; align-items:center; margin-bottom:30px;">
-    <h1 style="font-size:55px; font-weight:800; margin-bottom:15px;">Мой Vibe</h1>
-    <div class="p-btn" style="width:65px; height:65px; background:#1ed760; border-radius:50%;" 
-         onclick="const r = Math.floor(Math.random() * window.albumTracks.length); window.playTrack(r, window.albumTracks);">
-        <i data-lucide="play" fill="black" color="black" size="30" style="margin-left:4px"></i>
+    <h1 style="font-size:55px; font-weight:800; margin-bottom:15px; color:white;">Мой Vibe</h1>
+    <div style="width:70px; height:70px; background:#1ed760; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;" 
+         onclick="window.playTrack(Math.floor(Math.random() * 17), window.albumTracks || [])">
+        <i data-lucide="play" fill="black" color="black" size="32" style="margin-left:4px"></i>
     </div>
 </div>
 
-<h2 style="margin-bottom:20px;">Альбомы на сегодня</h2>
+<h2 style="margin-bottom:20px; color:white;">Альбомы на сегодня</h2>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px;">
     <div class="album-card" onclick="location.hash='#mayhem'">
-        <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:100%; border-radius:8px; margin-bottom:12px;">
-        <b style="font-size:15px;">Mayhem</b><br>
-        <small style="color:#7a7a7a">Lady Gaga • 2026</small>
+        <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg">
+        <b style="font-size:15px; color:white;">Mayhem</b><br>
+        <small style="color:#7a7a7a;">Lady Gaga • 2025</small>
     </div>
 </div>
 
