@@ -57,7 +57,7 @@
                 <i data-lucide="heart" id="like-side" class="like-btn" onclick="toggleLike()"></i>
             </div>
             <div style="margin-top:35px;">
-                <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:#7a7a7a; text-transform:uppercase;">В этом альбоме</p>
+                <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:#7a7a7a; text-transform:uppercase;">Очередь</p>
                 <div id="queue-list" class="scroll-hide" style="overflow-y: auto;"></div>
             </div>
         </aside>
@@ -67,8 +67,8 @@
         <div style="display:flex; align-items:center; gap:15px;">
             <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
             <div>
-                <b id="p-title" style="font-size:14px; display:block;">Выберите трек</b>
-                <span id="p-artist" style="color:#7a7a7a; font-size:12px;"></span>
+                <b id="p-title" style="font-size:15px; display:block; font-weight:600;">Выберите трек</b>
+                <span id="p-artist" style="color:#7a7a7a; font-size:13px;"></span>
             </div>
             <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
         </div>
@@ -133,10 +133,8 @@
                 const res = await fetch(`./pages/${hash}.html`);
                 let html = await res.text();
                 
-                // Вставляем HTML в контентную область
                 document.getElementById('content-area').innerHTML = html;
                 
-                // Выполняем скрипты внутри загруженного контента
                 const scripts = document.getElementById('content-area').getElementsByTagName('script');
                 for (let script of scripts) {
                     eval(script.innerHTML);
@@ -158,6 +156,13 @@
             audio.play();
             updateUI(track);
             renderQueue();
+            
+            setTimeout(() => {
+                if (location.hash === '#mayhem') {
+                    const event = new Event('hashchange');
+                    window.dispatchEvent(event);
+                }
+            }, 50);
         };
 
         function updateUI(track) {
@@ -187,27 +192,48 @@
             if (!audio.src) return;
             audio.paused ? audio.play() : audio.pause();
             if (currentTracks[currentIdx]) updateUI(currentTracks[currentIdx]);
+            
+            setTimeout(() => {
+                if (location.hash === '#mayhem') {
+                    const event = new Event('hashchange');
+                    window.dispatchEvent(event);
+                }
+            }, 50);
         };
 
         window.nextTrack = function() {
-            if (currentIdx < currentTracks.length - 1) playTrack(currentIdx + 1, currentTracks);
+            if (currentIdx < currentTracks.length - 1) {
+                playTrack(currentIdx + 1, currentTracks);
+            }
         };
 
         window.prevTrack = function() {
-            if (currentIdx > 0) playTrack(currentIdx - 1, currentTracks);
+            if (currentIdx > 0) {
+                playTrack(currentIdx - 1, currentTracks);
+            }
         };
 
         function renderQueue() {
             if (!currentTracks.length) {
-                document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Нет треков</p>';
+                document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
                 return;
             }
-            document.getElementById('queue-list').innerHTML = currentTracks.map((t, i) => `
-                <div class="side-item" style="opacity:${i === currentIdx ? '1' : '0.5'}" onclick="playTrack(${i}, currentTracks)">
-                    <img src="${albumCover}" style="width:44px; height:44px; border-radius:4px;">
-                    <div><b style="font-size:13px">${t.title}</b><br><small style="color:#7a7a7a">Lady Gaga</small></div>
-                </div>
-            `).join('');
+            
+            const queueTracks = currentTracks.slice(currentIdx);
+            
+            document.getElementById('queue-list').innerHTML = queueTracks.map((t, i) => {
+                const isPlaying = i === 0;
+                return `
+                    <div class="queue-item ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${currentIdx + i}, currentTracks)">
+                        <img src="${albumCover}" style="width:44px; height:44px; border-radius:4px;">
+                        <div style="flex:1;">
+                            <b style="font-size:13px; ${isPlaying ? 'color: #CC6B26;' : ''}">${t.title}</b>
+                            <br><small style="color:#7a7a7a">Lady Gaga</small>
+                        </div>
+                        <span style="color:#7a7a7a; font-size:12px;">${t.time}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         // ========== ВРЕМЯ ==========
@@ -292,6 +318,21 @@
                 `).join('');
         }
 
+        // ========== ОБРАБОТЧИК КОНЦА ТРЕКА ==========
+        audio.onended = function() {
+            if (currentIdx < currentTracks.length - 1) {
+                playTrack(currentIdx + 1, currentTracks);
+            }
+            renderQueue();
+            
+            setTimeout(() => {
+                if (location.hash === '#mayhem') {
+                    const event = new Event('hashchange');
+                    window.dispatchEvent(event);
+                }
+            }, 100);
+        };
+
         // ========== СТАРТ ==========
         window.addEventListener('hashchange', loadContent);
         window.onload = () => {
@@ -300,7 +341,6 @@
             lucide.createIcons();
             audio.volume = 0.7;
         };
-        audio.onended = nextTrack;
     </script>
 </body>
 </html>
