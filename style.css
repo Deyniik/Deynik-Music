@@ -2,12 +2,14 @@
 
 :root { 
     --bg-black: #000000; 
-    --panel-bg: #0f0f0f; 
-    --card-inner: #141414; 
+    --panel-bg: #121212;
+    --card-bg: #1a1a1a;
+    --card-inner: #1f1f1f;
     --text-gray: #7a7a7a; 
     --brand: #CC6B26;
     --brand-hover: #e07c3a;
     --brand-light: rgba(204, 107, 38, 0.15);
+    --brand-heart: #CC6B26;
 }
 
 * { 
@@ -101,20 +103,20 @@ body {
     background: var(--panel-bg);
 }
 
-/* ГРАДИЕНТ КАК В SPOTIFY - СВЕРХУ ВНИЗ */
-.center::before {
+/* ГРАДИЕНТ ТОЛЬКО ДЛЯ АЛЬБОМА */
+.center:has(#album-gradient)::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 400px;
+    height: 380px;
     background: radial-gradient(circle at 20% 0%, 
-        rgba(200, 200, 200, 0.25) 0%, 
-        rgba(180, 180, 180, 0.12) 25%,
-        rgba(160, 160, 160, 0.05) 50%,
-        rgba(140, 140, 140, 0.02) 70%,
-        transparent 90%
+        rgba(210,210,210,0.2) 0%,
+        rgba(190,190,190,0.1) 15%,
+        rgba(170,170,170,0.04) 30%,
+        rgba(150,150,150,0.01) 45%,
+        transparent 65%
     );
     pointer-events: none;
     z-index: 1;
@@ -161,7 +163,7 @@ body {
 }
 
 .album-card { 
-    background: var(--card-inner); 
+    background: var(--card-inner);
     padding: 15px; 
     border-radius: 10px; 
     cursor: pointer; 
@@ -169,7 +171,7 @@ body {
 }
 
 .album-card:hover { 
-    background: #1d1d1d; 
+    background: #2a2a2a; 
 }
 
 /* СТИЛИ ДЛЯ ТРЕКОВ В АЛЬБОМЕ */
@@ -189,7 +191,7 @@ body {
     background: #1a1a1a; 
 }
 
-/* ПОДСВЕТКА ИГРАЮЩЕГО ТРЕКА - ЯРКАЯ И ЗАМЕТНАЯ */
+/* ПОДСВЕТКА ИГРАЮЩЕГО ТРЕКА */
 .track-row.playing {
     background: var(--brand-light) !important;
     border-left: 4px solid var(--brand);
@@ -201,20 +203,10 @@ body {
     font-weight: 700;
 }
 
-.track-row.playing::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 3px;
-    background: linear-gradient(to bottom, var(--brand), #ff9e5e);
-}
-
-/* АНИМАЦИЯ ВОСПРОИЗВЕДЕНИЯ - КАК В СПОТИФАЙ */
+/* НОВАЯ АНИМАЦИЯ ВОСПРОИЗВЕДЕНИЯ - ЗВУКОВАЯ ВОЛНА */
 .playing-indicator {
     display: flex;
-    gap: 5px;
+    gap: 3px;
     align-items: center;
     justify-content: center;
     width: 40px;
@@ -222,35 +214,38 @@ body {
 }
 
 .playing-indicator span {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 16px;
     background: var(--brand);
-    border-radius: 50%;
-    animation: spotify-wave 1.2s infinite ease-in-out;
+    border-radius: 2px;
+    animation: sound-wave 1.2s infinite ease;
 }
 
 .playing-indicator span:nth-child(1) { 
+    height: 12px;
     animation-delay: 0s; 
 }
 
 .playing-indicator span:nth-child(2) { 
+    height: 20px;
     animation-delay: 0.2s; 
 }
 
 .playing-indicator span:nth-child(3) { 
+    height: 8px;
     animation-delay: 0.4s; 
 }
 
-@keyframes spotify-wave {
+@keyframes sound-wave {
     0%, 100% { 
-        opacity: 0.3; 
-        transform: scale(0.8);
+        opacity: 0.8;
+        transform: scaleY(1);
         background: var(--brand);
     }
     50% { 
-        opacity: 1; 
-        transform: scale(1.4);
-        background: #ff8c4a;
+        opacity: 1;
+        transform: scaleY(1.5);
+        background: #ff9e5e;
     }
 }
 
@@ -337,7 +332,8 @@ body {
 }
 
 .like-btn.active {
-    color: white !important;
+    color: var(--brand-heart) !important;
+    fill: var(--brand-heart) !important;
 }
 
 .vol-slider {
@@ -405,7 +401,7 @@ body {
     transition: all 0.2s;
 }
 
-.album-like-btn, .album-pin-btn {
+.album-like-btn, .album-pin-btn, .album-share-btn {
     width: 45px;
     height: 45px;
     background: #1a1a1a;
@@ -417,13 +413,13 @@ body {
     transition: 0.2s;
 }
 
-.album-like-btn:hover, .album-pin-btn:hover {
+.album-like-btn:hover, .album-pin-btn:hover, .album-share-btn:hover {
     background: #252525;
 }
 
 .album-like-btn.active i {
-    color: white !important;
-    fill: white !important;
+    color: var(--brand-heart) !important;
+    fill: var(--brand-heart) !important;
 }
 
 .album-pin-btn.active {
@@ -435,13 +431,18 @@ body {
     fill: white;
 }
 
+.album-share-btn i {
+    color: white;
+}
+
 /* ОЧЕРЕДЬ */
 #queue-list {
     overflow-y: auto;
-    max-height: calc(100vh - 450px);
+    flex: 1;
     scrollbar-width: none;
     padding-right: 5px;
     scroll-behavior: smooth;
+    max-height: none !important;
 }
 
 .queue-item {
@@ -475,4 +476,23 @@ body {
 
 #p-artist {
     font-size: 13px !important;
+}
+
+/* ПРАВАЯ ПАНЕЛЬ */
+.panel.side:last-child {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.panel.side:last-child > div:last-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#queue-list {
+    flex: 1;
+    overflow-y: auto;
 }
