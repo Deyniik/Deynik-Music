@@ -11,8 +11,8 @@
         <div class="logo-area" onclick="location.hash='#home'">
             <h1>Deynik Music</h1>
             <svg class="logo-svg" width="34" height="34" viewBox="0 0 100 100">
-                <polygon points="12,12 75,50 12,88" fill="#CC6B26" rx="8" ry="8" style="rx:8; ry:8"/>
-                <path d="M65,30 Q88,50 65,70 M78,15 Q110,50 78,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(-5, 0)"/>
+                <polygon points="12,12 75,50 12,88" fill="#CC6B26" rx="8" ry="8"/>
+                <path d="M65,30 Q88,50 65,70 M78,15 Q110,50 78,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(5, 0)"/>
             </svg>
         </div>
         <div class="search-container">
@@ -24,15 +24,12 @@
     <div class="app-main">
         <aside class="panel side">
             <div class="filter-nav">
-                <button class="nav-arrow" onclick="scrollFilters(-120)"><i data-lucide="chevron-left" size="18"></i></button>
                 <div class="filter-scroll scroll-hide" id="filterScroll">
                     <button class="tab active" onclick="filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
                     <button class="tab" onclick="filterSide('artist', this)">Исполнители</button>
                     <button class="tab" onclick="filterSide('album', this)">Альбомы</button>
                     <button class="tab" onclick="filterSide('playlist', this)">Плейлисты</button>
-                    <button class="tab" onclick="filterSide('radio', this)">Радио</button>
                 </div>
-                <button class="nav-arrow" onclick="scrollFilters(120)"><i data-lucide="chevron-right" size="18"></i></button>
             </div>
             <div id="side-list" class="scroll-hide" style="overflow-y: auto;">
                 <div class="side-item">
@@ -65,7 +62,7 @@
     </div>
 
     <footer class="player-bar">
-        <div style="display:flex; align-items:center; gap:15px;">
+        <div style="display:flex; align-items:center; gap:15px; transform: translateY(-4px);">
             <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
             <div>
                 <b id="p-title" style="font-size:15px; display:block; font-weight:600;">Выберите трек</b>
@@ -74,13 +71,13 @@
             <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
         </div>
 
-        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px; transform: translateY(-4px);">
             <div style="display:flex; align-items:center; gap:20px;">
-                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18" style="transform: scale(0.9);"></i></div>
+                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18"></i></div>
                 <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
-                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px; transform: scale(0.9);"></i>
+                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px;"></i>
                 </div>
-                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18" style="transform: scale(0.9);"></i></div>
+                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
             </div>
             <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
                 <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
@@ -91,7 +88,7 @@
             </div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; align-items:center;">
+        <div style="display:flex; justify-content:flex-end; align-items:center; transform: translateY(-4px);">
             <div style="display:flex; align-items:center; gap:12px;" onwheel="handleVolumeWheel(event)">
                 <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
                 <div class="vol-slider" id="vol-slider" onmousedown="startVolDrag(event)">
@@ -130,6 +127,7 @@
         let isVolDragging = false;
         const albumCover = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
         window.pinnedAlbum = null;
+        window.trackLikes = {};
         
         window.audio = audio;
         window.currentTracks = currentTracks;
@@ -140,62 +138,60 @@
         window.vibeTracks = [];
 
         window.toggleVibePlay = function() {
+            const vibeIcon = document.getElementById('vibePlayIcon');
+            
             if (!window.isVibePlaying) {
-                // Первый запуск или после остановки
                 if (!window.vibeTracks.length) {
                     window.vibeTracks = [...window.albumTracks];
                 }
                 
-                // Перемешиваем
                 const shuffled = [...window.vibeTracks];
                 for (let i = shuffled.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
                 }
                 
-                // ОЧЕРЕДЬ ПУСТАЯ - НЕ ПОКАЗЫВАЕМ ТРЕКИ
                 window.currentTracks = [];
                 window.currentIdx = -1;
                 renderQueue();
                 
-                // Запускаем первый трек
                 setTimeout(() => {
                     window.playTrack(0, shuffled);
                     window.isVibePlaying = true;
-                    updateVibeButton();
+                    if (vibeIcon) {
+                        vibeIcon.setAttribute('data-lucide', 'pause');
+                        lucide.createIcons();
+                    }
                 }, 50);
             } else {
-                // Повторное нажатие - ставим на паузу
                 window.togglePlay();
                 window.isVibePlaying = !audio.paused;
-                updateVibeButton();
+                if (vibeIcon) {
+                    vibeIcon.setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
+                    lucide.createIcons();
+                }
             }
         };
 
-        function updateVibeButton() {
-            const vibeIcon = document.getElementById('vibePlayIcon');
-            if (vibeIcon) {
-                if (window.isVibePlaying && !audio.paused) {
-                    vibeIcon.setAttribute('data-lucide', 'pause');
-                } else {
-                    vibeIcon.setAttribute('data-lucide', 'play');
-                }
-                lucide.createIcons();
-            }
-        }
-
-        // Следим за состоянием плеера для кнопки Vibe
         audio.addEventListener('play', function() {
             if (window.currentTracks !== window.albumTracks) {
                 window.isVibePlaying = true;
-                updateVibeButton();
+                const vibeIcon = document.getElementById('vibePlayIcon');
+                if (vibeIcon) {
+                    vibeIcon.setAttribute('data-lucide', 'pause');
+                    lucide.createIcons();
+                }
             }
         });
 
         audio.addEventListener('pause', function() {
             if (window.currentTracks !== window.albumTracks) {
                 window.isVibePlaying = false;
-                updateVibeButton();
+                const vibeIcon = document.getElementById('vibePlayIcon');
+                if (vibeIcon) {
+                    vibeIcon.setAttribute('data-lucide', 'play');
+                    lucide.createIcons();
+                }
             }
         });
 
@@ -384,10 +380,6 @@
         };
 
         // ========== ЛЕВАЯ ПАНЕЛЬ ==========
-        window.scrollFilters = function(val) {
-            document.getElementById('filterScroll').scrollLeft += val;
-        };
-
         window.filterSide = function(type, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
