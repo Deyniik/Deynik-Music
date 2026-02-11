@@ -10,24 +10,30 @@
     <header class="top-nav">
         <div class="logo-area" onclick="location.hash='#home'">
             <h1>Deynik Music</h1>
-            <svg width="30" height="30" viewBox="0 0 100 100">
-                <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
-                <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+            <svg width="32" height="32" viewBox="0 0 100 100">
+                <polygon points="5,10 75,50 5,90" fill="#5c4033"/>
+                <path d="M70,30 Q95,50 70,70 M85,15 Q120,50 85,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
+            <input type="text" class="search-input" placeholder="Поиск музыки">
         </div>
         <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px; color:#7a7a7a">
+            <div class="side-header">
                 <i data-lucide="library"></i> <b>Моя медиатека</b>
             </div>
-            <div class="side-item" onclick="location.hash='#home'" style="cursor:pointer; margin-bottom:15px;">
-                <i data-lucide="home"></i> <span style="margin-left:12px">Главная</span>
+            <div class="side-item active" onclick="location.hash='#home'">
+                <i data-lucide="home"></i> <span>Главная</span>
+            </div>
+            <div id="side-list-content">
+                <div class="side-item-playlist">
+                    <div class="playlist-icon-likes"><i data-lucide="heart" fill="white"></i></div>
+                    <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
+                </div>
             </div>
         </aside>
 
@@ -38,44 +44,52 @@
                 <div id="t-queue" class="tab-link active" onclick="switchRight('queue')">Далее</div>
                 <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
             </div>
-            <div id="panel-queue" class="scroll-hide" style="overflow-y:auto;"></div>
-            <div id="panel-wiki" class="hidden">
-                <img id="wiki-cover" src="" style="width:100%; border-radius:8px; margin-bottom:20px;">
-                <h3 id="wiki-title" style="margin-bottom:10px;"></h3>
-                <p id="wiki-text" style="color:#7a7a7a; font-size:14px; line-height:1.6;"></p>
+            <div class="right-content-scroll scroll-hide">
+                <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" class="side-big-cover">
+                
+                <div id="panel-queue">
+                    <p class="section-label">В ЭТОМ АЛЬБОМЕ</p>
+                    <div id="queue-list"></div>
+                </div>
+
+                <div id="panel-wiki" class="hidden">
+                    <h2 id="wiki-title" style="margin-top:15px;"></h2>
+                    <p id="wiki-text" class="wiki-description"></p>
+                </div>
             </div>
         </aside>
     </div>
 
     <footer class="player-bar">
-        <div style="display:flex; align-items:center; gap:15px;">
-            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
+        <div class="p-info">
+            <img id="p-img" src="" class="p-cover-img" style="display:none;">
             <div>
-                <b id="p-title" style="font-size:14px; display:block;">Выберите трек</b>
-                <span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
+                <b id="p-title">Выберите трек</b>
+                <span id="p-artist">Lady Gaga</span>
+            </div>
+            <i data-lucide="heart" class="like-btn" style="margin-left:15px;"></i>
+        </div>
+
+        <div class="p-controls-wrapper">
+            <div class="p-buttons">
+                <i data-lucide="shuffle" size="18" class="p-icon-btn"></i>
+                <i data-lucide="skip-back" fill="currentColor" size="24" class="p-icon-btn" onclick="prevTrack()"></i>
+                <div class="p-play-circle" onclick="togglePlay()">
+                    <i id="main-play-icon" data-lucide="play" fill="black" size="22"></i>
+                </div>
+                <i data-lucide="skip-forward" fill="currentColor" size="24" class="p-icon-btn" onclick="nextTrack()"></i>
+                <i data-lucide="repeat" size="18" class="p-icon-btn"></i>
+            </div>
+            <div class="p-progress-area">
+                <span id="c-time">0:00</span>
+                <div class="p-bar-bg" onclick="seek(event)"><div id="p-fill" class="p-bar-fill"></div></div>
+                <span id="d-time">0:00</span>
             </div>
         </div>
-        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-            <div style="display:flex; align-items:center; gap:20px;">
-                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18"></i></div>
-                <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
-                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px"></i>
-                </div>
-                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
-                <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
-                <div style="flex:1; height:4px; background:#333; border-radius:2px; cursor:pointer;" onclick="seek(event)">
-                    <div id="p-fill" style="height:100%; background:white; width:0%; border-radius:2px;"></div>
-                </div>
-                <span id="d-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
-            </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
-                <div style="width:100px; height:4px; background:#333; border-radius:2px;"><div style="height:100%; background:white; width:70%;"></div></div>
-            </div>
+
+        <div class="p-volume-area">
+            <i data-lucide="volume-2" size="20" color="#b3b3b3"></i>
+            <div class="vol-slider"><div class="vol-fill" style="width:70%;"></div></div>
         </div>
     </footer>
 
@@ -87,32 +101,29 @@
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
             try {
-                const response = await fetch(`./pages/${hash}.html`);
-                document.getElementById('content-area').innerHTML = await response.text();
+                const res = await fetch(`./pages/${hash}.html`);
+                document.getElementById('content-area').innerHTML = await res.text();
                 lucide.createIcons();
-                if(hash === 'home') currentIdx = -1; 
-            } catch (err) { location.hash = '#home'; }
+            } catch { location.hash = '#home'; }
         }
 
-        window.playTrack = function(idx, trackList) {
-            currentTracks = trackList;
+        window.playTrack = function(idx, list) {
+            currentTracks = list;
             currentIdx = idx;
-            const track = currentTracks[currentIdx];
-            audio.src = track.url;
+            const t = currentTracks[currentIdx];
+            audio.src = t.url;
             audio.play();
-            updateUI(track);
+            updateUI(t);
             renderQueue();
+            updateWiki(t);
+            if(window.highlightCurrent) window.highlightCurrent(idx);
         };
 
-        function updateUI(track) {
-            document.getElementById('p-title').innerText = track.title;
+        function updateUI(t) {
+            document.getElementById('p-title').innerText = t.title;
             document.getElementById('p-img').src = "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg";
             document.getElementById('p-img').style.display = 'block';
-            document.getElementById('main-play-btn').setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
-            
-            document.getElementById('wiki-cover').src = document.getElementById('p-img').src;
-            document.getElementById('wiki-title').innerText = track.title;
-            document.getElementById('wiki-text').innerText = `Трек из альбома Mayhem (2025). Длительность: ${track.time}.`;
+            document.getElementById('main-play-icon').setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
             lucide.createIcons();
         }
 
@@ -122,16 +133,23 @@
             updateUI(currentTracks[currentIdx]);
         }
 
-        function nextTrack() { if(currentIdx < currentTracks.length - 1) playTrack(currentIdx + 1, currentTracks); }
-        function prevTrack() { if(currentIdx > 0) playTrack(currentIdx - 1, currentTracks); }
+        function nextTrack() { if(currentIdx < currentTracks.length-1) playTrack(currentIdx+1, currentTracks); }
+        function prevTrack() { if(currentIdx > 0) playTrack(currentIdx-1, currentTracks); }
 
         function renderQueue() {
-            document.getElementById('panel-queue').innerHTML = currentTracks.map((t, i) => `
-                <div class="track-row" style="opacity:${i === currentIdx ? '1' : '0.5'}" onclick="playTrack(${i}, currentTracks)">
-                    <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:40px; border-radius:4px; margin-right:12px;">
-                    <b>${t.title}</b>
+            document.getElementById('queue-list').innerHTML = currentTracks.map((t, i) => `
+                <div class="side-queue-item ${i === currentIdx ? 'active' : ''}" onclick="playTrack(${i}, currentTracks)">
+                    <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg">
+                    <div><b>${t.title}</b><br><small>Lady Gaga</small></div>
                 </div>
             `).join('');
+        }
+
+        function updateWiki(t) {
+            document.getElementById('wiki-title').innerText = t.title;
+            // Краткая генерация инфо
+            const desc = `Трек "${t.title}" — это глубокое погружение в эстетику альбома Mayhem. Lady Gaga сочетает здесь экспериментальный поп и мощные биты. Длительность композиции составляет ${t.time || '3:50'}.`;
+            document.getElementById('wiki-text').innerText = desc;
         }
 
         function switchRight(type) {
@@ -149,8 +167,7 @@
         };
 
         function formatTime(s) {
-            const m = Math.floor(s/60);
-            const sec = Math.floor(s%60);
+            const m = Math.floor(s/60); const sec = Math.floor(s%60);
             return `${m}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
