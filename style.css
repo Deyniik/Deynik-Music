@@ -18,13 +18,15 @@
 }
 
 body { 
-    background: var(--bg-black); 
+    background: black; 
     color: white; 
     font-family: 'Inter', sans-serif; 
     height: 100vh; 
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
+    transition: background 0.5s ease;
+    background-attachment: fixed;
 }
 
 .top-nav { 
@@ -33,6 +35,8 @@ body {
     align-items: center; 
     padding: 0 20px;
     justify-content: space-between;
+    position: relative;
+    z-index: 2;
 }
 
 .logo-area { 
@@ -53,6 +57,8 @@ body {
     flex: 1;
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 2;
 }
 
 .search-input { 
@@ -78,14 +84,18 @@ body {
     gap: 10px; 
     padding: 0 10px 10px; 
     overflow: hidden; 
+    position: relative;
+    z-index: 2;
 }
 
 .panel { 
-    background: var(--panel-bg); 
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(5px);
     border-radius: 12px; 
     padding: 20px; 
     display: flex; 
     flex-direction: column; 
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .side { 
@@ -101,11 +111,15 @@ body {
 
 .player-bar { 
     height: 85px; 
-    background: black; 
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
     display: grid; 
     grid-template-columns: 350px 1fr 350px; 
     align-items: center; 
     padding: 0 25px;
+    position: relative;
+    z-index: 3;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .p-btn { 
@@ -167,13 +181,13 @@ body {
     display: flex;
     gap: 4px;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     width: 30px;
 }
 
 .playing-indicator span {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
     background: var(--brand);
     border-radius: 50%;
     animation: pulse 1.2s infinite;
@@ -189,7 +203,7 @@ body {
 
 @keyframes pulse {
     0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
+    50% { opacity: 1; transform: scale(1.3); }
 }
 
 .scroll-hide::-webkit-scrollbar { 
@@ -202,6 +216,7 @@ body {
     gap: 10px;
     margin-bottom: 25px;
     position: relative;
+    z-index: 2;
 }
 
 .filter-scroll {
@@ -311,7 +326,7 @@ body {
     background: var(--brand);
 }
 
-/* КНОПКИ АЛЬБОМА - ТЕПЕРЬ В РЯД */
+/* КНОПКИ АЛЬБОМА - В РЯД */
 .album-actions {
     display: flex;
     align-items: center;
@@ -412,4 +427,15 @@ body {
 
 #p-artist {
     font-size: 13px !important;
+}
+
+/* АНИМАЦИЯ ДЛЯ ИНДИКАТОРА ВОСПРОИЗВЕДЕНИЯ */
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* СТИЛИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ */
+#pinned-album-container {
+    margin-top: 20px;
 }
