@@ -1,136 +1,143 @@
-<div style="display:flex; gap:30px; margin-bottom:40px; position:relative; z-index:2;">
-    <img id="album-cover-image" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-    <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
-        <div>
-            <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
-            <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Mayhem</h1>
-            <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
-                <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
-                <span style="color:#7a7a7a;">•</span>
-                <span style="color:#7a7a7a;">17 песен</span>
+<div style="position: relative; z-index: 1;">
+    <div id="album-gradient" style="position: absolute; top: -20px; left: -20px; right: -20px; height: 400px; background: radial-gradient(circle at 20% 0%, rgba(180,180,180,0.25) 0%, rgba(180,180,180,0.08) 40%, transparent 80%); pointer-events: none; z-index: 0;"></div>
+    
+    <div style="display:flex; gap:30px; margin-bottom:40px; position: relative; z-index: 2;">
+        <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
+            <div>
+                <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
+                <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Mayhem</h1>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                    <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
+                    <span style="color:#7a7a7a;">•</span>
+                    <span style="color:#7a7a7a;">17 песен</span>
+                </div>
             </div>
-        </div>
-        
-        <div class="album-actions">
-            <div id="album-main-play-btn" class="album-play-btn" onclick="toggleAlbumPlay()">
-                <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
-            </div>
-            <div id="album-like-btn" class="album-like-btn" onclick="toggleAlbumLike()">
-                <i data-lucide="heart" size="22" color="white" fill="none"></i>
-            </div>
-            <div id="album-pin-btn" class="album-pin-btn" onclick="toggleAlbumPin()">
-                <i data-lucide="pin" size="22" color="white" fill="none"></i>
+            
+            <div class="album-actions">
+                <div id="album-main-play-btn" class="album-play-btn" onclick="window.toggleAlbumPlay()">
+                    <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
+                </div>
+                <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike()">
+                    <i data-lucide="heart" size="22" color="white" fill="none"></i>
+                </div>
+                <div id="album-pin-btn" class="album-pin-btn" onclick="window.toggleAlbumPin()">
+                    <i data-lucide="pin" size="22" color="white" fill="none"></i>
+                </div>
             </div>
         </div>
     </div>
+
+    <div id="album-list" style="position: relative; z-index: 2;"></div>
 </div>
 
-<div id="album-list"></div>
-
 <script>
-    let isAlbumLiked = false;
-    let isAlbumPinned = false;
-
-    // ========== РЕНДЕР ТРЕКОВ С ПОДСВЕТКОЙ И АНИМАЦИЕЙ ==========
-    function renderMayhemTracks() {
+    // ========== ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ ==========
+    if (window.isAlbumPinned === undefined) window.isAlbumPinned = false;
+    if (window.isAlbumLiked === undefined) window.isAlbumLiked = false;
+    
+    // ========== ФУНКЦИЯ РЕНДЕРА ТРЕКОВ ==========
+    window.renderMayhemTracks = function() {
         const albumList = document.getElementById('album-list');
-        if (albumList && window.albumTracks) {
-            albumList.innerHTML = window.albumTracks.map((t, i) => {
-                const isPlaying = (window.currentTracks === window.albumTracks && window.currentIdx === i);
-                
-                return `
-                    <div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">
-                        <div style="display:flex; align-items:center; justify-content:center; width:40px; height:24px;">
-                            ${isPlaying ? 
-                                `<div class="playing-indicator" style="display: flex; gap: 4px; align-items: center; justify-content: center;">
-                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite;"></span>
-                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.4s;"></span>
-                                    <span style="width: 5px; height: 5px; background: #CC6B26; border-radius: 50%; animation: pulse 1.2s infinite; animation-delay: 0.8s;"></span>
-                                </div>` : 
-                                `<span style="color:#7a7a7a; font-size:14px; font-weight:400;">${i+1}</span>`
-                            }
-                        </div>
-                        <b style="${isPlaying ? 'color: #CC6B26 !important;' : ''}">${t.title}</b>
-                        <span style="text-align:right; color:#7a7a7a">${t.time}</span>
-                    </div>
-                `;
-            }).join('');
+        if (!albumList || !window.albumTracks) return;
+        
+        const isAlbumPlaying = window.currentTracks === window.albumTracks;
+        const currentAudio = window.audio;
+        
+        let html = '';
+        for (let i = 0; i < window.albumTracks.length; i++) {
+            const track = window.albumTracks[i];
+            const isPlaying = isAlbumPlaying && window.currentIdx === i && currentAudio && !currentAudio.paused;
             
-            lucide.createIcons();
+            html += `<div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">`;
+            
+            // ЛЕВАЯ КОЛОНКА - АНИМАЦИЯ ИЛИ ЦИФРА
+            html += `<div style="display:flex; align-items:center; justify-content:flex-start; width:40px;">`;
+            if (isPlaying) {
+                html += `<div class="playing-indicator">
+                            <span></span><span></span><span></span>
+                        </div>`;
+            } else {
+                html += `<span style="color:#7a7a7a; font-size:14px;">${i+1}</span>`;
+            }
+            html += `</div>`;
+            
+            // НАЗВАНИЕ ТРЕКА
+            html += `<b style="${isPlaying ? 'color: #CC6B26 !important;' : ''}">${track.title}</b>`;
+            
+            // ВРЕМЯ
+            html += `<span style="text-align:right; color:#7a7a7a">${track.time}</span>`;
+            
+            html += `</div>`;
         }
-    }
+        
+        albumList.innerHTML = html;
+        lucide.createIcons();
+    };
 
-    // ========== ПЕРЕОПРЕДЕЛЕНИЕ МЕТОДОВ ПЛЕЕРА ==========
+    // ========== ПЕРЕОПРЕДЕЛЕНИЕ ФУНКЦИЙ ПЛЕЕРА ==========
     const originalPlayTrack = window.playTrack;
     window.playTrack = function(idx, trackList) {
-        originalPlayTrack(idx, trackList);
-        if (trackList === window.albumTracks) {
-            setTimeout(renderMayhemTracks, 30);
-        }
-        // Обновляем иконку play/pause
+        if (originalPlayTrack) originalPlayTrack(idx, trackList);
         setTimeout(() => {
-            const playIcon = document.getElementById('album-play-icon');
-            if (playIcon) {
-                if (window.audio && !window.audio.paused && window.currentTracks === window.albumTracks) {
-                    playIcon.setAttribute('data-lucide', 'pause');
-                } else {
-                    playIcon.setAttribute('data-lucide', 'play');
-                }
-                lucide.createIcons();
-            }
-        }, 50);
+            window.renderMayhemTracks();
+            window.updateAlbumPlayButton();
+        }, 10);
     };
 
     const originalTogglePlay = window.togglePlay;
     window.togglePlay = function() {
-        originalTogglePlay();
-        if (window.currentTracks === window.albumTracks) {
-            setTimeout(renderMayhemTracks, 30);
-            // Обновляем иконку play/pause
-            setTimeout(() => {
-                const playIcon = document.getElementById('album-play-icon');
-                if (playIcon) {
-                    if (window.audio && !window.audio.paused) {
-                        playIcon.setAttribute('data-lucide', 'pause');
-                    } else {
-                        playIcon.setAttribute('data-lucide', 'play');
-                    }
-                    lucide.createIcons();
-                }
-            }, 50);
-        }
+        if (originalTogglePlay) originalTogglePlay();
+        setTimeout(() => {
+            window.renderMayhemTracks();
+            window.updateAlbumPlayButton();
+        }, 10);
     };
 
-    // ========== СЛУШАЕМ СОБЫТИЯ АУДИО ==========
-    if (window.audio) {
-        window.audio.addEventListener('play', () => {
-            if (window.currentTracks === window.albumTracks) {
-                renderMayhemTracks();
-                const playIcon = document.getElementById('album-play-icon');
-                if (playIcon) {
-                    playIcon.setAttribute('data-lucide', 'pause');
-                    lucide.createIcons();
-                }
-            }
-        });
-        
-        window.audio.addEventListener('pause', () => {
-            if (window.currentTracks === window.albumTracks) {
-                renderMayhemTracks();
-                const playIcon = document.getElementById('album-play-icon');
-                if (playIcon) {
-                    playIcon.setAttribute('data-lucide', 'play');
-                    lucide.createIcons();
-                }
-            }
-        });
-    }
+    const originalNextTrack = window.nextTrack;
+    window.nextTrack = function() {
+        if (originalNextTrack) originalNextTrack();
+        setTimeout(() => {
+            window.renderMayhemTracks();
+            window.updateAlbumPlayButton();
+        }, 10);
+    };
 
-    // ========== УПРАВЛЕНИЕ АЛЬБОМОМ ==========
+    const originalPrevTrack = window.prevTrack;
+    window.prevTrack = function() {
+        if (originalPrevTrack) originalPrevTrack();
+        setTimeout(() => {
+            window.renderMayhemTracks();
+            window.updateAlbumPlayButton();
+        }, 10);
+    };
+
+    // ========== ОБНОВЛЕНИЕ КНОПКИ ВОСПРОИЗВЕДЕНИЯ ==========
+    window.updateAlbumPlayButton = function() {
+        const playIcon = document.getElementById('album-play-icon');
+        if (!playIcon) return;
+        
+        const isAlbumPlaying = window.currentTracks === window.albumTracks;
+        const audio = window.audio;
+        
+        if (isAlbumPlaying && audio && !audio.paused) {
+            playIcon.setAttribute('data-lucide', 'pause');
+            playIcon.setAttribute('fill', 'white');
+        } else {
+            playIcon.setAttribute('data-lucide', 'play');
+            playIcon.setAttribute('fill', 'white');
+        }
+        lucide.createIcons();
+    };
+
+    // ========== TOGGLE PLAY ALBUM ==========
     window.toggleAlbumPlay = function() {
         if (!window.albumTracks) return;
         
-        if (window.currentTracks === window.albumTracks && window.audio.src) {
+        const isAlbumPlaying = window.currentTracks === window.albumTracks;
+        const audio = window.audio;
+        
+        if (isAlbumPlaying && audio && audio.src) {
             window.togglePlay();
         } else {
             if (window.currentTracks === window.albumTracks && window.currentIdx !== -1) {
@@ -139,64 +146,107 @@
                 window.playTrack(0, window.albumTracks);
             }
         }
+        setTimeout(() => window.updateAlbumPlayButton(), 10);
     };
 
+    // ========== TOGGLE LIKE ALBUM ==========
     window.toggleAlbumLike = function() {
-        isAlbumLiked = !isAlbumLiked;
+        window.isAlbumLiked = !window.isAlbumLiked;
         const btn = document.getElementById('album-like-btn');
-        const icon = btn.querySelector('i');
+        const icon = btn?.querySelector('i');
         
-        if (isAlbumLiked) {
-            btn.classList.add('active');
-            icon.setAttribute('fill', 'white');
-        } else {
-            btn.classList.remove('active');
-            icon.setAttribute('fill', 'none');
-        }
-        lucide.createIcons();
-    };
-
-    window.toggleAlbumPin = function() {
-        isAlbumPinned = !isAlbumPinned;
-        const btn = document.getElementById('album-pin-btn');
-        const icon = btn.querySelector('i');
-        
-        if (isAlbumPinned) {
-            btn.classList.add('active');
-            icon.setAttribute('fill', 'white');
-            window.pinnedAlbum = {
-                name: "Mayhem",
-                sub: "Альбом • 2025",
-                cover: "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg"
-            };
-        } else {
-            btn.classList.remove('active');
-            icon.setAttribute('fill', 'none');
-            window.pinnedAlbum = null;
-        }
-        lucide.createIcons();
-        
-        if (location.hash === '#home' && window.renderPinnedAlbum) {
-            setTimeout(window.renderPinnedAlbum, 50);
-        }
-    };
-
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    renderMayhemTracks();
-    setTimeout(renderMayhemTracks, 50);
-    
-    // Устанавливаем правильную иконку play/pause при загрузке
-    setTimeout(() => {
-        const playIcon = document.getElementById('album-play-icon');
-        if (playIcon) {
-            if (window.audio && !window.audio.paused && window.currentTracks === window.albumTracks) {
-                playIcon.setAttribute('data-lucide', 'pause');
+        if (btn && icon) {
+            if (window.isAlbumLiked) {
+                btn.classList.add('active');
+                icon.setAttribute('fill', 'white');
             } else {
-                playIcon.setAttribute('data-lucide', 'play');
+                btn.classList.remove('active');
+                icon.setAttribute('fill', 'none');
             }
             lucide.createIcons();
         }
-    }, 100);
+    };
+
+    // ========== TOGGLE PIN ALBUM ==========
+    window.toggleAlbumPin = function() {
+        window.isAlbumPinned = !window.isAlbumPinned;
+        const btn = document.getElementById('album-pin-btn');
+        const icon = btn?.querySelector('i');
+        
+        if (btn && icon) {
+            if (window.isAlbumPinned) {
+                btn.classList.add('active');
+                icon.setAttribute('fill', 'white');
+                window.pinnedAlbum = {
+                    name: "Mayhem",
+                    sub: "Альбом • 2025",
+                    cover: "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg"
+                };
+            } else {
+                btn.classList.remove('active');
+                icon.setAttribute('fill', 'none');
+                window.pinnedAlbum = null;
+            }
+            lucide.createIcons();
+            
+            if (location.hash === '#home' && window.renderPinnedAlbum) {
+                setTimeout(window.renderPinnedAlbum, 50);
+            }
+        }
+    };
+
+    // ========== ОБРАБОТЧИКИ СОБЫТИЙ АУДИО ==========
+    if (window.audio) {
+        window.audio.addEventListener('play', function() {
+            if (window.currentTracks === window.albumTracks) {
+                window.renderMayhemTracks();
+                window.updateAlbumPlayButton();
+            }
+        });
+        
+        window.audio.addEventListener('pause', function() {
+            if (window.currentTracks === window.albumTracks) {
+                window.renderMayhemTracks();
+                window.updateAlbumPlayButton();
+            }
+        });
+        
+        window.audio.addEventListener('ended', function() {
+            setTimeout(() => {
+                if (window.currentTracks === window.albumTracks) {
+                    window.renderMayhemTracks();
+                    window.updateAlbumPlayButton();
+                }
+            }, 50);
+        });
+    }
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    setTimeout(() => {
+        window.renderMayhemTracks();
+        window.updateAlbumPlayButton();
+        
+        // Восстанавливаем состояние кнопок
+        if (window.isAlbumLiked) {
+            const btn = document.getElementById('album-like-btn');
+            const icon = btn?.querySelector('i');
+            if (btn && icon) {
+                btn.classList.add('active');
+                icon.setAttribute('fill', 'white');
+            }
+        }
+        
+        if (window.isAlbumPinned) {
+            const btn = document.getElementById('album-pin-btn');
+            const icon = btn?.querySelector('i');
+            if (btn && icon) {
+                btn.classList.add('active');
+                icon.setAttribute('fill', 'white');
+            }
+        }
+        
+        lucide.createIcons();
+    }, 20);
     
     lucide.createIcons();
 </script>
