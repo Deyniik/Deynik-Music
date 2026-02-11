@@ -1,57 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-:root { --bg: #000; --panel: #0f0f0f; --text: #a7a7a7; --accent: #8b6b5a; }
+/* Убираем лишние рамки и делаем плеер чистым */
+.player-bar { 
+    height: 100px; 
+    background: black; 
+    display: grid; 
+    grid-template-columns: 350px 1fr 350px; 
+    align-items: center; 
+    padding: 0 25px;
+    border: none; /* Никаких белых линий сверху */
+}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.search-input {
+    width: 420px;
+    height: 44px;
+    background: #242424;
+    border-radius: 25px;
+    border: none;
+    color: white;
+    text-align: center;
+    font-size: 15px; /* Сделал крупнее, как на скрине */
+}
 
-/* Шапка и Центрированный поиск */
-.top-nav { height: 75px; display: flex; align-items: center; padding: 0 20px; position: relative; }
-.logo-area { width: 380px; display: flex; align-items: center; cursor: pointer; flex-shrink: 0; }
-.logo-area h1 { font-size: 26px; font-weight: 900; letter-spacing: -1.5px; }
-.search-container { position: absolute; left: 50%; transform: translateX(-50%); width: 420px; }
-.search-input { width: 100%; height: 44px; background: #242424; border: none; border-radius: 25px; color: white; text-align: center; font-size: 15px; }
+.p-play-circle {
+    background: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-/* Приложение */
-.app-main { flex: 1; display: flex; gap: 10px; padding: 0 10px 10px; overflow: hidden; }
-.panel { background: var(--panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
-.side { width: 380px; flex-shrink: 0; }
-.center { flex: 1; overflow-y: auto; }
+.p-play-circle:hover { transform: scale(1.08); }
 
-/* Левая панель - Фильтры */
-.filter-nav { margin-bottom: 20px; }
-.filter-scroll { display: flex; gap: 8px; }
-.tab { background: #232323; border: none; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 13px; }
-.tab.active { background: white; color: black; }
-.side-item-playlist { display: flex; gap: 12px; align-items: center; margin-top: 10px; cursor: pointer; padding: 8px; border-radius: 8px; }
-.playlist-icon-likes { width: 52px; height: 52px; border-radius: 6px; background: linear-gradient(135deg, #450af5, #c4efd9); display: flex; align-items: center; justify-content: center; }
+.track-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+}
 
-/* Правая панель */
-.right-tabs { display: flex; gap: 20px; border-bottom: 1px solid #1a1a1a; margin-bottom: 20px; }
-.tab-link { color: var(--text); font-size: 12px; font-weight: 800; padding-bottom: 10px; cursor: pointer; text-transform: uppercase; }
-.tab-link.active { color: white; border-bottom: 2px solid white; }
-.side-big-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
-.section-label { font-size: 12px; font-weight: 800; color: var(--text); margin-bottom: 15px; }
-.wiki-desc { color: var(--text); font-size: 14px; line-height: 1.6; }
+.card-wrap {
+    background: #141414;
+    padding: 14px;
+    border-radius: 10px; /* Скругление карточки */
+    cursor: pointer;
+}
 
-/* Плеер (Без линий и квадратов) */
-.player-bar { height: 100px; background: black; display: grid; grid-template-columns: 350px 1fr 350px; align-items: center; padding: 0 25px; border: none; }
-.p-info { display: flex; align-items: center; gap: 15px; }
-.p-cover { width: 60px; height: 60px; border-radius: 4px; }
-.p-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.p-buttons { display: flex; align-items: center; gap: 30px; }
-.p-btn-main, .p-btn-sub { cursor: pointer; color: #b3b3b3; transition: 0.2s; }
-.p-btn-main:hover { color: white; }
-.p-play-circle { background: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.p-progress { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 550px; font-size: 12px; color: var(--text); }
-.p-bar-bg { flex: 1; height: 4px; background: #333; border-radius: 2px; cursor: pointer; }
-.p-bar-fill { height: 100%; background: white; width: 0%; border-radius: 2px; }
-
-/* Общие элементы */
-.track-item { display: grid; grid-template-columns: 35px 1fr 60px; padding: 12px; border-radius: 8px; cursor: pointer; }
-.track-item:hover, .track-item.playing { background: #1a1a1a; }
-.track-item.playing b { color: #1ed760; }
-.big-play-btn { background: var(--accent); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.8; transition: 0.3s; }
-.big-play-btn:hover { opacity: 1; transform: scale(1.05); }
-
-.hidden { display: none; }
-.scroll-hide::-webkit-scrollbar { display: none; }
+.card-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px; /* Скругление самой картинки 8px */
+    background-size: cover;
+    margin-bottom: 10px;
+}
