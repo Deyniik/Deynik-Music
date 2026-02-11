@@ -2,10 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Deynik Music</title>
+    <title>Deynik Music - Видеоклипы</title>
+    
+    <!-- OPEN GRAPH МЕТАТЕГИ ДЛЯ ПРЕДПРОСМОТРА В МЕССЕНДЖЕРАХ -->
+    <meta property="og:title" content="Deynik Music - Abracadabra">
+    <meta property="og:description" content="Lady Gaga - Abracadabra | Смотри клип в высоком качестве">
+    <meta property="og:image" content="https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:type" content="video.other">
+    <meta property="og:video" content="https://s3.k-connect.ru/static/uploads/post/11559/ABInwxgnTA_Lady_Gaga_-_Abracadabra_Official_Music_Video_-_LadyGagaVEVO_1080p_h264_2.mp4">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="1920">
+    <meta property="og:video:height" content="1080">
+    
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* ВСЕ СТИЛИ ДЛЯ ВИДЕО */
         .video-card {
             cursor: pointer;
             transition: 0.3s;
@@ -94,12 +108,44 @@
             font-size: 12px;
             color: #7a7a7a;
         }
+        #video-player {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        /* СКРЫВАЕМ СИСТЕМНЫЕ КОНТРОЛЫ */
         #video-player::-webkit-media-controls {
             display: none !important;
         }
         #video-player {
             -webkit-appearance: none;
             appearance: none;
+        }
+        /* ИНДИКАТОР ЗАГРУЗКИ */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -269,26 +315,44 @@
         window.currentTracks = currentTracks;
         window.currentIdx = currentIdx;
 
+        // ========== ОБНОВЛЕНИЕ МЕТАТЕГОВ ДЛЯ ПРЕДПРОСМОТРА ==========
+        function updateMetaTags(video) {
+            if (!video) return;
+            
+            document.title = `Deynik Music - ${video.title} | ${video.artist}`;
+            
+            // Обновляем Open Graph теги
+            let ogTitle = document.querySelector('meta[property="og:title"]');
+            let ogDescription = document.querySelector('meta[property="og:description"]');
+            let ogImage = document.querySelector('meta[property="og:image"]');
+            let ogVideo = document.querySelector('meta[property="og:video"]');
+            
+            if (ogTitle) ogTitle.setAttribute('content', `${video.title} - ${video.artist}`);
+            if (ogDescription) ogDescription.setAttribute('content', `Смотри клип ${video.title} в высоком качестве на Deynik Music`);
+            if (ogImage) ogImage.setAttribute('content', video.thumbnail);
+            if (ogVideo) ogVideo.setAttribute('content', video.videoUrl);
+        }
+
         // ========== ЗАГРУЗКА КОНТЕНТА ==========
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
             
-            // ПРОВЕРЯЕМ: это страница видео?
             if (hash === 'videos') {
                 await loadVideosPage();
+                updateRightPanelForVideos();
             } 
-            // ПРОВЕРЯЕМ: это страница отдельного видео?
             else if (hash.startsWith('video-')) {
                 const videoId = hash.replace('video-', '');
                 const video = window.videoDatabase.find(v => v.id === videoId);
                 if (video) {
+                    updateMetaTags(video);
                     await loadVideoPage(video);
+                    updateRightPanelForVideos(video);
                 } else {
                     location.hash = '#videos';
                 }
             }
             else {
-                // Обычная страница
                 try {
                     const res = await fetch(`./pages/${hash}.html`);
                     let html = await res.text();
@@ -317,10 +381,6 @@
         async function loadVideosPage() {
             const contentArea = document.getElementById('content-area');
             contentArea.innerHTML = await generateVideosGrid();
-            
-            // Обновляем правую панель
-            updateRightPanelForVideos();
-            
             lucide.createIcons();
         }
 
@@ -328,6 +388,7 @@
         async function loadVideoPage(video) {
             const contentArea = document.getElementById('content-area');
             contentArea.innerHTML = await generateSingleVideoPage(video);
+            lucide.createIcons();
             
             // Автоматически запускаем видео
             setTimeout(() => {
@@ -340,11 +401,6 @@
                     video.avatar
                 );
             }, 100);
-            
-            // Обновляем правую панель
-            updateRightPanelForVideos(video);
-            
-            lucide.createIcons();
         }
 
         // ========== ГЕНЕРАЦИЯ СЕТКИ ВИДЕО ==========
@@ -375,14 +431,14 @@
                         ${window.videoDatabase.map(video => `
                             <div class="video-card" data-category="${video.category}" onclick="window.location.hash='#video-${video.id}'">
                                 <div class="video-thumbnail">
-                                    <img src="${video.thumbnail}" class="video-thumbnail-img">
+                                    <img src="${video.thumbnail}" class="video-thumbnail-img" loading="lazy">
                                     <div class="video-duration">${video.duration}</div>
                                     <div class="video-play-overlay">
                                         <i data-lucide="play" size="40" color="white" fill="white"></i>
                                     </div>
                                 </div>
                                 <div style="display:flex; gap:12px; margin-top:12px;">
-                                    <img src="${video.avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                                    <img src="${video.avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" loading="lazy">
                                     <div>
                                         <b style="font-size:15px;">${video.title}</b>
                                         <br>
@@ -417,7 +473,20 @@
                         
                         <div id="video-player-section" style="width: 100%; margin-bottom: 30px;">
                             <div style="position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                                <video id="video-player" style="width: 100%; height: 100%;" src="${video.videoUrl}" playsinline></video>
+                                <!-- ИНДИКАТОР ЗАГРУЗКИ -->
+                                <div id="video-loading-indicator" class="video-loading" style="display: none;">
+                                    <span class="loading-spinner"></span>
+                                    Загрузка видео...
+                                </div>
+                                <video 
+                                    id="video-player" 
+                                    style="width: 100%; height: 100%;" 
+                                    src="${video.videoUrl}" 
+                                    playsinline
+                                    preload="auto"
+                                    onwaiting="document.getElementById('video-loading-indicator').style.display='flex'"
+                                    oncanplay="document.getElementById('video-loading-indicator').style.display='none'"
+                                ></video>
                             </div>
                         </div>
                     </div>
@@ -425,73 +494,30 @@
             `;
         }
 
-        // ========== ОБНОВЛЕНИЕ ПРАВОЙ ПАНЕЛИ ДЛЯ ВИДЕО ==========
-        function updateRightPanelForVideos(currentVideo = null) {
-            const sidePanel = document.querySelector('.panel.side:last-child');
-            if (!sidePanel) return;
-            
-            // Меняем заголовок
-            const titleEl = sidePanel.querySelector('h2');
-            if (titleEl) {
-                titleEl.innerText = 'Смотрите так же';
-                titleEl.style.fontSize = '24px';
-                titleEl.style.fontWeight = '800';
-            }
-            
-            // Убираем artist и cover
-            const artistEl = document.getElementById('side-artist');
-            if (artistEl) artistEl.style.display = 'none';
-            
-            const coverEl = document.getElementById('side-cover');
-            if (coverEl) coverEl.style.display = 'none';
-            
-            // Убираем кнопку лайка
-            const likeBtn = document.getElementById('like-side');
-            if (likeBtn) likeBtn.style.display = 'none';
-            
-            // Получаем рекомендации
-            let recommendations = [...window.videoDatabase];
-            if (currentVideo) {
-                recommendations = recommendations.filter(v => v.id !== currentVideo.id);
-            }
-            
-            // Перемешиваем
-            const shuffled = [...recommendations];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            
-            const topRecs = shuffled.slice(0, 8);
-            
-            // Рендерим
-            const container = sidePanel.querySelector('div:last-child > div:last-child');
-            if (container) {
-                container.innerHTML = `
-                    <div id="queue-list" style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                        ${topRecs.map(video => `
-                            <div class="recommendation-item" onclick="window.location.hash='#video-${video.id}'">
-                                <div class="recommendation-thumbnail">
-                                    <img src="${video.thumbnail}" loading="lazy">
-                                </div>
-                                <div class="recommendation-info">
-                                    <span class="recommendation-title">${video.title}</span>
-                                    <span class="recommendation-artist">${video.artist}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-        }
-
-        // ========== ФУНКЦИИ ДЛЯ ВИДЕО ==========
+        // ========== УЛУЧШЕННЫЙ PLAYVIDEO С ПРЕДЗАГРУЗКОЙ ==========
         window.playVideo = function(videoUrl, title, artist, duration, coverArt, avatarUrl) {
             const videoElement = document.getElementById('video-player');
             if (!videoElement) return;
             
+            // Показываем индикатор загрузки
+            const loadingIndicator = document.getElementById('video-loading-indicator');
+            if (loadingIndicator) loadingIndicator.style.display = 'flex';
+            
+            // Используем preload и экономную загрузку
+            videoElement.preload = 'auto';
             videoElement.src = videoUrl;
-            videoElement.play();
+            
+            // Начинаем загрузку, но не ждем полной
+            videoElement.load();
+            
+            // Запускаем сразу как только можно
+            const playPromise = videoElement.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Автовоспроизведение заблокировано:', error);
+                    if (loadingIndicator) loadingIndicator.style.display = 'none';
+                });
+            }
             
             window.currentVideoUrl = videoUrl;
             window.currentVideoTitle = title;
@@ -509,7 +535,7 @@
             
             document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'pause');
             
-            // Прогресс бар
+            // Прогресс бар - обновляем чаще для плавности
             videoElement.ontimeupdate = function() {
                 if (videoElement.duration) {
                     const pct = (videoElement.currentTime / videoElement.duration) * 100 || 0;
@@ -539,6 +565,11 @@
                 window.playNextVideo();
             };
             
+            // Скрываем индикатор когда видео готово
+            videoElement.oncanplay = function() {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+            };
+            
             lucide.createIcons();
         };
 
@@ -546,7 +577,7 @@
         window.shareCurrentVideo = function() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
-                alert('Ссылка на видео скопирована!');
+                alert('🔗 Ссылка на видео скопирована! Теперь вы можете поделиться ей в мессенджерах');
             });
         };
 
@@ -603,6 +634,60 @@
                 }
             }
         };
+
+        // ========== ОБНОВЛЕНИЕ ПРАВОЙ ПАНЕЛИ ==========
+        function updateRightPanelForVideos(currentVideo = null) {
+            const sidePanel = document.querySelector('.panel.side:last-child');
+            if (!sidePanel) return;
+            
+            const titleEl = sidePanel.querySelector('h2');
+            if (titleEl) {
+                titleEl.innerText = 'Смотрите так же';
+                titleEl.style.fontSize = '24px';
+                titleEl.style.fontWeight = '800';
+            }
+            
+            const artistEl = document.getElementById('side-artist');
+            if (artistEl) artistEl.style.display = 'none';
+            
+            const coverEl = document.getElementById('side-cover');
+            if (coverEl) coverEl.style.display = 'none';
+            
+            const likeBtn = document.getElementById('like-side');
+            if (likeBtn) likeBtn.style.display = 'none';
+            
+            let recommendations = [...window.videoDatabase];
+            if (currentVideo) {
+                recommendations = recommendations.filter(v => v.id !== currentVideo.id);
+            }
+            
+            const shuffled = [...recommendations];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            const topRecs = shuffled.slice(0, 8);
+            
+            const container = sidePanel.querySelector('div:last-child > div:last-child');
+            if (container) {
+                container.innerHTML = `
+                    <div id="queue-list" style="overflow-y: auto; flex: 1; padding-right: 5px;">
+                        ${topRecs.map(video => `
+                            <div class="recommendation-item" onclick="window.location.hash='#video-${video.id}'">
+                                <div class="recommendation-thumbnail">
+                                    <img src="${video.thumbnail}" loading="lazy">
+                                </div>
+                                <div class="recommendation-info">
+                                    <span class="recommendation-title">${video.title}</span>
+                                    <span class="recommendation-artist">${video.artist}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
 
         // ========== ГРОМКОСТЬ ==========
         window.startVolDrag = function(e) {
@@ -693,7 +778,7 @@
             }
         };
 
-        // ========== ОСТАЛЬНЫЕ ФУНКЦИИ ==========
+        // ========== ФУНКЦИИ ДЛЯ АУДИО ==========
         function updateUI(track) {
             document.getElementById('p-title').innerText = track.title;
             document.getElementById('p-artist').innerText = 'Lady Gaga';
@@ -730,7 +815,7 @@
         };
 
         function renderQueue() {
-            // ... существующая функция renderQueue ...
+            // Функция для очереди аудио
         }
 
         audio.ontimeupdate = function() {
