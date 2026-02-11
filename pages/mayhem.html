@@ -1,39 +1,36 @@
-<div style="position: relative; min-height: 600px;">
-    <!-- ГРАДИЕНТ КАК В СПОТИФАЙ -->
-    <div style="position: absolute; top: -20px; left: -20px; right: -20px; height: 450px; background: radial-gradient(circle at 20% 10%, rgba(210,210,210,0.26) 0%, rgba(190,190,190,0.12) 20%, rgba(170,170,170,0.05) 40%, rgba(150,150,150,0.02) 60%, transparent 85%); pointer-events: none; z-index: 1; border-radius: 12px 12px 0 0;"></div>
-    
-    <!-- КОНТЕНТ ПОВЕРХ ГРАДИЕНТА -->
-    <div style="position: relative; z-index: 2;">
-        <div style="display:flex; gap:30px; margin-bottom:40px;">
-            <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
-                <div>
-                    <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
-                    <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Mayhem</h1>
-                    <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
-                        <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
-                        <span style="color:#7a7a7a;">•</span>
-                        <span style="color:#7a7a7a;">17 песен</span>
-                    </div>
-                </div>
-                
-                <div class="album-actions">
-                    <div id="album-main-play-btn" class="album-play-btn" onclick="window.toggleAlbumPlay()">
-                        <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
-                    </div>
-                    <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike()">
-                        <i data-lucide="heart" size="22" color="white" fill="none"></i>
-                    </div>
-                    <div id="album-pin-btn" class="album-pin-btn" onclick="window.toggleAlbumPin()">
-                        <i data-lucide="pin" size="22" color="white" fill="none"></i>
-                    </div>
-                </div>
+<div id="album-gradient"></div>
+
+<div style="display:flex; gap:30px; margin-bottom:40px;">
+    <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+    <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
+        <div>
+            <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
+            <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Mayhem</h1>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
+                <span style="color:#7a7a7a;">•</span>
+                <span style="color:#7a7a7a;">17 песен</span>
             </div>
         </div>
-
-        <div id="album-list"></div>
+        
+        <div class="album-actions">
+            <div id="album-main-play-btn" class="album-play-btn" onclick="window.toggleAlbumPlay()">
+                <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
+            </div>
+            <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike()">
+                <i data-lucide="heart" size="22" color="white" fill="none"></i>
+            </div>
+            <div id="album-pin-btn" class="album-pin-btn" onclick="window.toggleAlbumPin()">
+                <i data-lucide="pin" size="22" color="white" fill="none"></i>
+            </div>
+            <div id="album-share-btn" class="album-share-btn" onclick="window.shareAlbum()">
+                <i data-lucide="share-2" size="20" color="white"></i>
+            </div>
+        </div>
     </div>
 </div>
+
+<div id="album-list"></div>
 
 <script>
     (function() {
@@ -60,7 +57,7 @@
                 
                 html += `<div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">`;
                 
-                // ЛЕВАЯ КОЛОНКА - АНИМАЦИЯ ИЛИ ЦИФРА
+                // ЛЕВАЯ КОЛОНКА - АНИМАЦИЯ ВОЛНЫ ИЛИ ЦИФРА
                 html += `<div style="display:flex; align-items:center; justify-content:flex-start; width:40px;">`;
                 if (isPlaying) {
                     html += `<div class="playing-indicator">
@@ -134,10 +131,12 @@
             if (btn && icon) {
                 if (window.isAlbumLiked) {
                     btn.classList.add('active');
-                    icon.setAttribute('fill', 'white');
+                    icon.setAttribute('fill', '#CC6B26');
+                    icon.setAttribute('color', '#CC6B26');
                 } else {
                     btn.classList.remove('active');
                     icon.setAttribute('fill', 'none');
+                    icon.setAttribute('color', 'white');
                 }
                 lucide.createIcons();
             }
@@ -155,20 +154,36 @@
                     icon.setAttribute('fill', 'white');
                     window.pinnedAlbum = {
                         name: "Mayhem",
-                        sub: "Альбом • 2025",
+                        sub: "Lady Gaga • 2025",
                         cover: "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg"
                     };
+                    
+                    // Обновляем левую панель сразу
+                    if (window.renderPinnedAlbum) {
+                        window.renderPinnedAlbum();
+                    }
                 } else {
                     btn.classList.remove('active');
                     icon.setAttribute('fill', 'none');
                     window.pinnedAlbum = null;
+                    
+                    // Обновляем левую панель сразу
+                    if (window.renderPinnedAlbum) {
+                        window.renderPinnedAlbum();
+                    }
                 }
                 lucide.createIcons();
-                
-                if (location.hash === '#home' && window.renderPinnedAlbum) {
-                    setTimeout(window.renderPinnedAlbum, 50);
-                }
             }
+        };
+
+        // ========== SHARE ALBUM ==========
+        window.shareAlbum = function() {
+            const url = 'https://deyniik.github.io/Deynik-Music/#mayhem';
+            navigator.clipboard.writeText(url).then(function() {
+                alert('Ссылка на альбом скопирована!');
+            }).catch(function() {
+                prompt('Скопируйте ссылку:', url);
+            });
         };
 
         // ========== ПЕРЕХВАТ ФУНКЦИЙ ПЛЕЕРА ==========
@@ -245,7 +260,8 @@
                 const icon = btn?.querySelector('i');
                 if (btn && icon) {
                     btn.classList.add('active');
-                    icon.setAttribute('fill', 'white');
+                    icon.setAttribute('fill', '#CC6B26');
+                    icon.setAttribute('color', '#CC6B26');
                 }
             }
             
