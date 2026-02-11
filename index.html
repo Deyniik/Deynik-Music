@@ -39,7 +39,7 @@
                     <div style="width:52px; height:52px; border-radius:6px; background: linear-gradient(135deg, #450af5, #c4efd9); display:flex; align-items:center; justify-content:center;">
                         <i data-lucide="heart" fill="white" color="white" size="24"></i>
                     </div>
-                    <div style="margin-left:8px;"><b>Любимые треки</b><br><small style="color:#7a7a7a">Плейлист • 0 треков</small></div>
+                    <div style="margin-left:8px;"><b>Любимые треки</b><br><small style="color:#7a7a7a;">Плейлист • 0 треков</small></div>
                 </div>
                 <div id="filtered-content"></div>
             </div>
@@ -129,6 +129,11 @@
         let isVolDragging = false;
         const albumCover = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
         window.pinnedAlbum = null;
+        
+        // СОХРАНЯЕМ В WINDOW
+        window.audio = audio;
+        window.currentTracks = currentTracks;
+        window.currentIdx = currentIdx;
 
         // ========== ЗАГРУЗКА КОНТЕНТА ==========
         async function loadContent() {
@@ -149,9 +154,6 @@
                 if (hash === 'home' && window.renderPinnedAlbum) {
                     setTimeout(window.renderPinnedAlbum, 50);
                 }
-                
-                // Обновляем градиент при загрузке страницы
-                updateGradientFromCover();
             } catch {
                 location.hash = '#home';
             }
@@ -160,21 +162,19 @@
         // ========== ПЛЕЕР ==========
         window.playTrack = function(idx, trackList) {
             if (!trackList?.length) return;
-            currentTracks = trackList;
-            currentIdx = idx;
-            const track = currentTracks[currentIdx];
-            audio.src = track.url;
-            audio.play();
+            window.currentTracks = trackList;
+            window.currentIdx = idx;
+            const track = window.currentTracks[window.currentIdx];
+            window.audio.src = track.url;
+            window.audio.play();
             updateUI(track);
             renderQueue();
             
             setTimeout(() => {
-                if (location.hash === '#mayhem') {
-                    const event = new Event('hashchange');
-                    window.dispatchEvent(event);
+                if (location.hash === '#mayhem' && window.renderMayhemTracks) {
+                    window.renderMayhemTracks();
+                    window.updateAlbumPlayButton?.();
                 }
-                // Обновляем градиент при смене трека
-                updateGradientFromCover();
             }, 50);
         };
 
@@ -204,45 +204,45 @@
         window.togglePlay = function() {
             if (!audio.src) return;
             audio.paused ? audio.play() : audio.pause();
-            if (currentTracks[currentIdx]) updateUI(currentTracks[currentIdx]);
+            if (window.currentTracks[window.currentIdx]) updateUI(window.currentTracks[window.currentIdx]);
             
             setTimeout(() => {
-                if (location.hash === '#mayhem') {
-                    const event = new Event('hashchange');
-                    window.dispatchEvent(event);
+                if (location.hash === '#mayhem' && window.renderMayhemTracks) {
+                    window.renderMayhemTracks();
+                    window.updateAlbumPlayButton?.();
                 }
             }, 50);
         };
 
         window.nextTrack = function() {
-            if (currentIdx < currentTracks.length - 1) {
-                playTrack(currentIdx + 1, currentTracks);
+            if (window.currentIdx < window.currentTracks.length - 1) {
+                window.playTrack(window.currentIdx + 1, window.currentTracks);
             }
         };
 
         window.prevTrack = function() {
-            if (currentIdx > 0) {
-                playTrack(currentIdx - 1, currentTracks);
+            if (window.currentIdx > 0) {
+                window.playTrack(window.currentIdx - 1, window.currentTracks);
             }
         };
 
         function renderQueue() {
-            if (!currentTracks.length) {
+            if (!window.currentTracks.length) {
                 document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
                 return;
             }
             
-            const queueTracks = currentTracks.slice(currentIdx);
+            const queueTracks = window.currentTracks.slice(window.currentIdx);
             const visibleTracks = queueTracks.slice(0, 8);
             
             document.getElementById('queue-list').innerHTML = visibleTracks.map((t, i) => {
                 const isPlaying = i === 0;
                 return `
-                    <div class="queue-item ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${currentIdx + i}, currentTracks)">
+                    <div class="queue-item ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${window.currentIdx + i}, window.currentTracks)">
                         <img src="${albumCover}" style="width:44px; height:44px; border-radius:4px;">
                         <div style="flex:1;">
                             <b style="font-size:13px; ${isPlaying ? 'color: #CC6B26;' : ''}">${t.title}</b>
-                            <br><small style="color:#7a7a7a">Lady Gaga</small>
+                            <br><small style="color:#7a7a7a;">Lady Gaga</small>
                         </div>
                         <span style="color:#7a7a7a; font-size:12px;">${t.time}</span>
                     </div>
@@ -297,7 +297,7 @@
 
         // ========== ЛАЙК ==========
         window.toggleLike = function() {
-            if (!currentTracks.length) return;
+            if (!window.currentTracks.length) return;
             isLiked = !isLiked;
             document.querySelectorAll('.like-btn').forEach(el => {
                 el.classList.toggle('active', isLiked);
@@ -327,107 +327,33 @@
                 .map(item => `
                     <div class="side-item" onclick="location.hash='#${item.type === 'album' ? 'mayhem' : ''}'">
                         <img src="${albumCover}" style="width:52px; height:52px; border-radius:4px;">
-                        <div><b>${item.name}</b><br><small style="color:#7a7a7a">${item.sub}</small></div>
+                        <div><b>${item.name}</b><br><small style="color:#7a7a7a;">${item.sub}</small></div>
                     </div>
                 `).join('');
         }
 
         // ========== ОБРАБОТЧИК КОНЦА ТРЕКА ==========
         audio.onended = function() {
-            if (currentIdx < currentTracks.length - 1) {
-                playTrack(currentIdx + 1, currentTracks);
+            if (window.currentIdx < window.currentTracks.length - 1) {
+                window.playTrack(window.currentIdx + 1, window.currentTracks);
             }
             renderQueue();
             
             setTimeout(() => {
-                if (location.hash === '#mayhem') {
-                    const event = new Event('hashchange');
-                    window.dispatchEvent(event);
+                if (location.hash === '#mayhem' && window.renderMayhemTracks) {
+                    window.renderMayhemTracks();
+                    window.updateAlbumPlayButton?.();
                 }
             }, 100);
         };
 
-        // ========== ДИНАМИЧЕСКИЙ ГРАДИЕНТ ОТ ОБЛОЖКИ ==========
-        function updateGradientFromCover() {
-            let coverUrl = null;
-            
-            // 1. Если открыт альбом Mayhem, берем его обложку
-            if (location.hash === '#mayhem') {
-                coverUrl = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
-            } 
-            // 2. Если играет трек, берем обложку из плеера
-            else if (document.getElementById('p-img').src) {
-                coverUrl = document.getElementById('p-img').src;
-            }
-            
-            if (coverUrl && coverUrl !== '') {
-                extractColorFromImage(coverUrl, (rgbColor) => {
-                    const gradientColor = `rgba(${rgbColor}, 0.3)`;
-                    document.body.style.background = `radial-gradient(circle at top center, ${gradientColor} 0%, #000000 85%)`;
-                    document.body.style.backgroundAttachment = 'fixed';
-                });
-            } else {
-                // Сброс на черный, если нет обложки
-                document.body.style.background = 'black';
-            }
-        }
-
-        // Извлечение доминирующего цвета из изображения
-        function extractColorFromImage(imageUrl, callback) {
-            const img = new Image();
-            img.crossOrigin = 'Anonymous';
-            img.src = imageUrl + '?t=' + new Date().getTime(); // Антикэш
-            
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // Уменьшаем размер для производительности
-                canvas.width = 50;
-                canvas.height = 50;
-                
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                try {
-                    // Берем пиксель из верхней части изображения
-                    const imageData = ctx.getImageData(25, 10, 1, 1).data;
-                    const rgb = `${imageData[0]}, ${imageData[1]}, ${imageData[2]}`;
-                    callback(rgb);
-                } catch (e) {
-                    console.log('CORS error, используем стандартный цвет');
-                    callback('139, 69, 19'); // Коричневый по умолчанию
-                }
-            };
-            
-            img.onerror = function() {
-                callback('139, 69, 19'); // Коричневый при ошибке
-            };
-        }
-
-        // ========== СКРОЛЛ ОЧЕРЕДИ ==========
-        setTimeout(() => {
-            const queueList = document.getElementById('queue-list');
-            if (queueList) {
-                queueList.style.scrollBehavior = 'smooth';
-                queueList.addEventListener('wheel', function(e) {
-                    e.preventDefault();
-                    this.scrollTop += e.deltaY;
-                }, { passive: false });
-            }
-        }, 100);
-
         // ========== СТАРТ ==========
-        window.addEventListener('hashchange', function() {
-            loadContent();
-            updateGradientFromCover();
-        });
-        
+        window.addEventListener('hashchange', loadContent);
         window.onload = () => {
             loadContent();
             renderSide('all');
             lucide.createIcons();
             audio.volume = 0.7;
-            updateGradientFromCover();
         };
     </script>
 </body>
