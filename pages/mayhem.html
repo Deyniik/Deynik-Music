@@ -1,34 +1,82 @@
-<div style="display:flex; gap:30px; align-items:flex-end; margin-bottom:40px;">
+<div style="display:flex; gap:30px; align-items:flex-end; margin-bottom:40px; position:relative;">
     <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-    <div>
-        <small style="font-weight:800; color:#7a7a7a">АЛЬБОМ</small>
-        <h1 style="font-size:70px; font-weight:900; margin:10px 0;">Mayhem</h1>
-        <p>Lady Gaga • 2025 • 14 песен</p>
+    <div style="flex:1;">
+        <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
+        <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Mayhem</h1>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:15px;">
+            <span style="color:#7a7a7a;">Lady Gaga • 2025</span>
+            <span style="color:#7a7a7a;">•</span>
+            <span style="color:#7a7a7a;" id="album-duration">41:03</span>
+        </div>
+    </div>
+    <div class="album-play-btn" onclick="window.playTrack(0, window.albumTracks)">
+        <i data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
     </div>
 </div>
 
 <div id="album-list"></div>
 
 <script>
-    // Функция для отображения треков
+    function formatAlbumDuration() {
+        if (!window.albumTracks) return '41:03';
+        let total = 0;
+        window.albumTracks.forEach(track => {
+            const [m, s] = track.time.split(':').map(Number);
+            total += m * 60 + s;
+        });
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const seconds = total % 60;
+        if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
     function renderMayhemTracks() {
         const albumList = document.getElementById('album-list');
         if (albumList && window.albumTracks) {
-            albumList.innerHTML = window.albumTracks.map((t, i) => `
-                <div class="track-row" onclick="window.playTrack(${i}, window.albumTracks)">
-                    <span style="color:#7a7a7a">${i+1}</span>
-                    <b>${t.title}</b>
-                    <span style="text-align:right; color:#7a7a7a">${t.time}</span>
-                </div>
-            `).join('');
+            document.getElementById('album-duration').innerText = formatAlbumDuration();
+            
+            albumList.innerHTML = window.albumTracks.map((t, i) => {
+                const isPlaying = window.currentTracks === window.albumTracks && window.currentIdx === i;
+                const trackNumber = isPlaying ? 
+                    `<div class="playing-indicator" style="display:flex; gap:3px;">
+                        <span></span><span></span><span></span>
+                    </div>` : 
+                    `<span style="color:#7a7a7a;">${i+1}</span>`;
+                
+                return `
+                    <div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">
+                        ${trackNumber}
+                        <b style="${isPlaying ? `color: #CC6B26;` : ''}">${t.title}</b>
+                        <span style="text-align:right; color:#7a7a7a">${t.time}</span>
+                    </div>
+                `;
+            }).join('');
         }
     }
 
-    // Пробуем сразу
+    // Слушаем изменения текущего трека
+    const originalPlayTrack = window.playTrack;
+    window.playTrack = function(idx, trackList) {
+        originalPlayTrack(idx, trackList);
+        setTimeout(renderMayhemTracks, 50);
+        renderQueue();
+    };
+
+    // Слушаем окончание трека
+    const audio = document.querySelector('audio') || new Audio();
+    audio.addEventListener('ended', function() {
+        setTimeout(() => {
+            if (window.currentIdx < window.currentTracks.length - 1) {
+                window.playTrack(window.currentIdx + 1, window.currentTracks);
+            }
+            renderQueue();
+        }, 100);
+    });
+
     renderMayhemTracks();
-    
-    // Пробуем через небольшую задержку (на случай если DOM еще не готов)
     setTimeout(renderMayhemTracks, 50);
-    
     lucide.createIcons();
 </script>
