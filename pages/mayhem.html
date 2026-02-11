@@ -24,12 +24,8 @@
             const [m, s] = track.time.split(':').map(Number);
             total += m * 60 + s;
         });
-        const hours = Math.floor(total / 3600);
-        const minutes = Math.floor((total % 3600) / 60);
+        const minutes = Math.floor(total / 60);
         const seconds = total % 60;
-        if (hours > 0) {
-            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 
@@ -41,42 +37,36 @@
             albumList.innerHTML = window.albumTracks.map((t, i) => {
                 const isPlaying = window.currentTracks === window.albumTracks && window.currentIdx === i;
                 const trackNumber = isPlaying ? 
-                    `<div class="playing-indicator" style="display:flex; gap:3px;">
+                    `<div class="playing-indicator" style="display:flex; gap:3px; justify-content:center;">
                         <span></span><span></span><span></span>
                     </div>` : 
                     `<span style="color:#7a7a7a;">${i+1}</span>`;
                 
                 return `
                     <div class="track-row ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${i}, window.albumTracks)">
-                        ${trackNumber}
-                        <b style="${isPlaying ? `color: #CC6B26;` : ''}">${t.title}</b>
+                        <div style="display:flex; align-items:center; justify-content:center; width:35px;">
+                            ${trackNumber}
+                        </div>
+                        <b style="${isPlaying ? 'color: #CC6B26;' : ''}">${t.title}</b>
                         <span style="text-align:right; color:#7a7a7a">${t.time}</span>
                     </div>
                 `;
             }).join('');
+            
+            lucide.createIcons();
         }
     }
 
-    // Слушаем изменения текущего трека
+    // Переопределяем playTrack для обновления списка
     const originalPlayTrack = window.playTrack;
     window.playTrack = function(idx, trackList) {
         originalPlayTrack(idx, trackList);
         setTimeout(renderMayhemTracks, 50);
-        renderQueue();
     };
 
-    // Слушаем окончание трека
-    const audio = document.querySelector('audio') || new Audio();
-    audio.addEventListener('ended', function() {
-        setTimeout(() => {
-            if (window.currentIdx < window.currentTracks.length - 1) {
-                window.playTrack(window.currentIdx + 1, window.currentTracks);
-            }
-            renderQueue();
-        }, 100);
-    });
-
+    // Обновляем при загрузке страницы
     renderMayhemTracks();
     setTimeout(renderMayhemTracks, 50);
+    
     lucide.createIcons();
 </script>
