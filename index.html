@@ -10,9 +10,9 @@
     <header class="top-nav">
         <div class="logo-area" onclick="location.hash='#home'">
             <h1>Deynik Music</h1>
-            <svg width="30" height="30" viewBox="0 0 100 100">
-                <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
-                <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+            <svg class="logo-svg" width="34" height="34" viewBox="0 0 100 100">
+                <polygon points="12,12 75,50 12,88" fill="#CC6B26" rx="8" ry="8" style="rx:8; ry:8"/>
+                <path d="M65,30 Q88,50 65,70 M78,15 Q110,50 78,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(-5, 0)"/>
             </svg>
         </div>
         <div class="search-container">
@@ -42,8 +42,6 @@
                     <div style="margin-left:8px;"><b>Любимые треки</b><br><small style="color:#7a7a7a;">Плейлист • 0 треков</small></div>
                 </div>
                 <div id="filtered-content"></div>
-                
-                <!-- Закрепленные альбомы -->
                 <div id="pinned-side-container" style="margin-top: 20px;"></div>
             </div>
         </aside>
@@ -76,7 +74,7 @@
             <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
         </div>
 
-        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
             <div style="display:flex; align-items:center; gap:20px;">
                 <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18" style="transform: scale(0.9);"></i></div>
                 <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
@@ -133,10 +131,73 @@
         const albumCover = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
         window.pinnedAlbum = null;
         
-        // СОХРАНЯЕМ В WINDOW
         window.audio = audio;
         window.currentTracks = currentTracks;
         window.currentIdx = currentIdx;
+
+        // ========== МОЙ VIBE ==========
+        window.isVibePlaying = false;
+        window.vibeTracks = [];
+
+        window.toggleVibePlay = function() {
+            if (!window.isVibePlaying) {
+                // Первый запуск или после остановки
+                if (!window.vibeTracks.length) {
+                    window.vibeTracks = [...window.albumTracks];
+                }
+                
+                // Перемешиваем
+                const shuffled = [...window.vibeTracks];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                
+                // ОЧЕРЕДЬ ПУСТАЯ - НЕ ПОКАЗЫВАЕМ ТРЕКИ
+                window.currentTracks = [];
+                window.currentIdx = -1;
+                renderQueue();
+                
+                // Запускаем первый трек
+                setTimeout(() => {
+                    window.playTrack(0, shuffled);
+                    window.isVibePlaying = true;
+                    updateVibeButton();
+                }, 50);
+            } else {
+                // Повторное нажатие - ставим на паузу
+                window.togglePlay();
+                window.isVibePlaying = !audio.paused;
+                updateVibeButton();
+            }
+        };
+
+        function updateVibeButton() {
+            const vibeIcon = document.getElementById('vibePlayIcon');
+            if (vibeIcon) {
+                if (window.isVibePlaying && !audio.paused) {
+                    vibeIcon.setAttribute('data-lucide', 'pause');
+                } else {
+                    vibeIcon.setAttribute('data-lucide', 'play');
+                }
+                lucide.createIcons();
+            }
+        }
+
+        // Следим за состоянием плеера для кнопки Vibe
+        audio.addEventListener('play', function() {
+            if (window.currentTracks !== window.albumTracks) {
+                window.isVibePlaying = true;
+                updateVibeButton();
+            }
+        });
+
+        audio.addEventListener('pause', function() {
+            if (window.currentTracks !== window.albumTracks) {
+                window.isVibePlaying = false;
+                updateVibeButton();
+            }
+        });
 
         // ========== ЗАГРУЗКА КОНТЕНТА ==========
         async function loadContent() {
@@ -233,7 +294,7 @@
             }
         };
 
-        // ========== ОЧЕРЕДЬ - ВСЕ ТРЕКИ ==========
+        // ========== ОЧЕРЕДЬ ==========
         function renderQueue() {
             const queueList = document.getElementById('queue-list');
             if (!queueList) return;
@@ -243,7 +304,6 @@
                 return;
             }
             
-            // ВСЕ треки от текущего до конца
             const queueTracks = window.currentTracks.slice(window.currentIdx);
             
             queueList.innerHTML = queueTracks.map((t, i) => {
@@ -351,7 +411,7 @@
             renderPinnedInSide();
         }
 
-        // ========== ЗАКРЕПЛЕННЫЙ АЛЬБОМ В ЛЕВОЙ ПАНЕЛИ ==========
+        // ========== ЗАКРЕПЛЕННЫЙ АЛЬБОМ ==========
         function renderPinnedInSide() {
             const container = document.getElementById('pinned-side-container');
             if (!container) return;
