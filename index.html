@@ -42,6 +42,9 @@
                     <div style="margin-left:8px;"><b>Любимые треки</b><br><small style="color:#7a7a7a;">Плейлист • 0 треков</small></div>
                 </div>
                 <div id="filtered-content"></div>
+                
+                <!-- Закрепленные альбомы будут отображаться здесь -->
+                <div id="pinned-side-container" style="margin-top: 20px;"></div>
             </div>
         </aside>
 
@@ -56,9 +59,9 @@
                 </div>
                 <i data-lucide="heart" id="like-side" class="like-btn" onclick="toggleLike()"></i>
             </div>
-            <div style="margin-top:35px;">
+            <div style="margin-top:35px; display: flex; flex-direction: column; flex: 1; min-height: 0;">
                 <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:#7a7a7a; text-transform:uppercase;">Очередь</p>
-                <div id="queue-list" class="scroll-hide" style="overflow-y: auto; max-height: calc(100vh - 450px); scroll-behavior: smooth;"></div>
+                <div id="queue-list" class="scroll-hide" style="overflow-y: auto; flex: 1;"></div>
             </div>
         </aside>
     </div>
@@ -151,8 +154,11 @@
                 
                 lucide.createIcons();
                 
-                if (hash === 'home' && window.renderPinnedAlbum) {
-                    setTimeout(window.renderPinnedAlbum, 50);
+                if (hash === 'home') {
+                    renderPinnedInSide();
+                    if (window.renderPinnedAlbum) {
+                        setTimeout(window.renderPinnedAlbum, 50);
+                    }
                 }
             } catch {
                 location.hash = '#home';
@@ -196,6 +202,7 @@
             document.querySelectorAll('.like-btn').forEach(el => {
                 el.classList.remove('active');
                 el.setAttribute('fill', 'none');
+                el.setAttribute('color', '#b3b3b3');
             });
             
             lucide.createIcons();
@@ -226,16 +233,20 @@
             }
         };
 
+        // ========== ОЧЕРЕДЬ - ВСЕ ТРЕКИ ==========
         function renderQueue() {
-            if (!window.currentTracks.length) {
-                document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
+            const queueList = document.getElementById('queue-list');
+            if (!queueList) return;
+            
+            if (!window.currentTracks || !window.currentTracks.length) {
+                queueList.innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
                 return;
             }
             
+            // Показываем ВСЕ треки от текущего до конца
             const queueTracks = window.currentTracks.slice(window.currentIdx);
-            const visibleTracks = queueTracks.slice(0, 8);
             
-            document.getElementById('queue-list').innerHTML = visibleTracks.map((t, i) => {
+            queueList.innerHTML = queueTracks.map((t, i) => {
                 const isPlaying = i === 0;
                 return `
                     <div class="queue-item ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${window.currentIdx + i}, window.currentTracks)">
@@ -301,7 +312,13 @@
             isLiked = !isLiked;
             document.querySelectorAll('.like-btn').forEach(el => {
                 el.classList.toggle('active', isLiked);
-                el.setAttribute('fill', isLiked ? 'white' : 'none');
+                if (isLiked) {
+                    el.setAttribute('fill', '#CC6B26');
+                    el.setAttribute('color', '#CC6B26');
+                } else {
+                    el.setAttribute('fill', 'none');
+                    el.setAttribute('color', '#b3b3b3');
+                }
             });
             lucide.createIcons();
         };
@@ -330,7 +347,30 @@
                         <div><b>${item.name}</b><br><small style="color:#7a7a7a;">${item.sub}</small></div>
                     </div>
                 `).join('');
+            
+            // После рендера фильтра добавляем закрепленный альбом
+            renderPinnedInSide();
         }
+
+        // ========== ЗАКРЕПЛЕННЫЙ АЛЬБОМ В ЛЕВОЙ ПАНЕЛИ ==========
+        function renderPinnedInSide() {
+            const container = document.getElementById('pinned-side-container');
+            if (!container) return;
+            
+            if (window.pinnedAlbum) {
+                container.innerHTML = `
+                    <h3 style="font-size:14px; font-weight:700; margin-bottom:15px; color:#7a7a7a; text-transform:uppercase;">Закреплено</h3>
+                    <div class="side-item" onclick="location.hash='#mayhem'">
+                        <img src="${window.pinnedAlbum.cover}" style="width:52px; height:52px; border-radius:4px;">
+                        <div><b>${window.pinnedAlbum.name}</b><br><small style="color:#7a7a7a;">${window.pinnedAlbum.sub}</small></div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        window.renderPinnedInSide = renderPinnedInSide;
 
         // ========== ОБРАБОТЧИК КОНЦА ТРЕКА ==========
         audio.onended = function() {
