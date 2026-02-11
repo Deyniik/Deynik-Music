@@ -35,6 +35,7 @@ body {
     align-items: center; 
     padding: 0 20px;
     justify-content: space-between;
+    background: #000000;
 }
 
 .logo-area { 
@@ -103,20 +104,20 @@ body {
     background: var(--panel-bg);
 }
 
-/* ГРАДИЕНТ ТОЛЬКО ДЛЯ АЛЬБОМА */
-.center:has(#album-gradient)::before {
+/* ГРАДИЕНТ ТОЛЬКО ДЛЯ АЛЬБОМА И ТОЛЬКО ДО КНОПОК */
+.center:has(#album-header)::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 380px;
+    height: 320px;
     background: radial-gradient(circle at 20% 0%, 
-        rgba(210,210,210,0.2) 0%,
-        rgba(190,190,190,0.1) 15%,
-        rgba(170,170,170,0.04) 30%,
-        rgba(150,150,150,0.01) 45%,
-        transparent 65%
+        rgba(210,210,210,0.18) 0%,
+        rgba(190,190,190,0.08) 20%,
+        rgba(170,170,170,0.03) 40%,
+        rgba(150,150,150,0.01) 55%,
+        transparent 70%
     );
     pointer-events: none;
     z-index: 1;
@@ -136,7 +137,7 @@ body {
 
 .player-bar { 
     height: 85px; 
-    background: black; 
+    background: #000000; 
     display: grid; 
     grid-template-columns: 350px 1fr 350px; 
     align-items: center; 
