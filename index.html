@@ -1,30 +1,21 @@
-function renderQueue() {
-    if (!currentTracks.length) {
-        document.getElementById('queue-list').innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
-        return;
-    }
-    
-    const queueTracks = currentTracks.slice(currentIdx);
-    // Показываем только 5 треков, остальные будут скроллиться
-    const visibleTracks = queueTracks.slice(0, 10);
-    
-    document.getElementById('queue-list').innerHTML = visibleTracks.map((t, i) => {
-        const isPlaying = i === 0;
-        return `
-            <div class="queue-item ${isPlaying ? 'playing' : ''}" onclick="window.playTrack(${currentIdx + i}, currentTracks)">
-                <img src="${albumCover}" style="width:44px; height:44px; border-radius:4px;">
-                <div style="flex:1;">
-                    <b style="font-size:13px; ${isPlaying ? 'color: #CC6B26;' : ''}">${t.title}</b>
-                    <br><small style="color:#7a7a7a">Lady Gaga</small>
-                </div>
-                <span style="color:#7a7a7a; font-size:12px;">${t.time}</span>
-            </div>
-        `;
-    }).join('');
-}
-
-// Добавляем скролл колесиком для очереди
-document.getElementById('queue-list').addEventListener('wheel', function(e) {
-    e.preventDefault();
-    this.scrollTop += e.deltaY;
-}, { passive: false });
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Deynik Music</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="logo-area" onclick="location.hash='#home'">
+            <h1>Deynik Music</h1>
+            <svg width="30" height="30" viewBox="0 0 100 100">
+                <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
+                <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
+        </div>
+        <div style
