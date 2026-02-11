@@ -8,31 +8,34 @@
 </head>
 <body>
     <header class="top-nav">
-        <div class="logo-area" onclick="location.hash='#home'">
-            <h1>Deynik Music</h1>
-            <svg width="34" height="34" viewBox="0 0 100 100" style="margin-left: 15px;">
+        <div class="logo-area" onclick="loadPage('home')">
+            <div class="logo-text">Deynik Music</div>
+            <svg width="34" height="34" viewBox="0 0 100 100" style="margin-left: 20px;">
                 <polygon points="5,15 70,50 5,85" fill="#5c4033"/>
-                <path d="M80,30 Q105,50 80,70 M93,15 Q130,50 93,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+                <path d="M85,30 Q110,50 85,70 M98,15 Q135,50 98,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
+        
         <div class="search-container">
             <input type="text" class="search-input" placeholder="Поиск музыки">
         </div>
-        <div style="width: 380px;"></div>
-    </header>
+        
+        <div style="width: 380px;"></div> </header>
 
     <div class="app-main">
         <aside class="panel side">
             <div class="filter-nav">
-                <div class="filter-scroll scroll-hide">
-                    <button class="tab active"><i data-lucide="home" size="16"></i></button>
+                <button class="nav-arrow" onclick="scrollF(-100)"><i data-lucide="chevron-left"></i></button>
+                <div class="filter-scroll scroll-hide" id="fScroll">
+                    <button class="tab active"><i data-lucide="home" size="18"></i></button>
                     <button class="tab">Исполнители</button>
                     <button class="tab">Альбомы</button>
                     <button class="tab">Плейлисты</button>
                 </div>
+                <button class="nav-arrow" onclick="scrollF(100)"><i data-lucide="chevron-right"></i></button>
             </div>
-            <div class="side-item-playlist">
-                <div class="playlist-icon-likes"><i data-lucide="heart" fill="white"></i></div>
+            <div class="side-item playlist-likes">
+                <div class="heart-box"><i data-lucide="heart" fill="white"></i></div>
                 <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
             </div>
         </aside>
@@ -41,17 +44,22 @@
 
         <aside class="panel side">
             <div class="right-tabs">
-                <div id="t-queue" class="tab-link active" onclick="switchRight('queue')">Далее</div>
-                <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
+                <div id="t-queue" class="tab-link active" onclick="switchSide('queue')">Далее</div>
+                <div id="t-wiki" class="tab-link" onclick="switchSide('wiki')">О треке</div>
             </div>
             <div class="right-content scroll-hide">
-                <img id="side-cover" src="" class="side-big-cover">
+                <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" class="side-big-img">
+                <div id="side-meta">
+                    <h2 id="side-title">Disease</h2>
+                    <p id="side-artist">Lady Gaga</p>
+                </div>
+                
                 <div id="panel-queue">
-                    <p class="section-label">ОЧЕРЕДЬ</p>
+                    <p class="section-label">В ЭТОМ АЛЬБОМЕ</p>
                     <div id="queue-list"></div>
                 </div>
+                
                 <div id="panel-wiki" class="hidden">
-                    <h2 id="wiki-title"></h2>
                     <p id="wiki-text" class="wiki-info"></p>
                 </div>
             </div>
@@ -60,32 +68,31 @@
 
     <footer class="player-bar">
         <div class="p-info">
-            <img id="p-img" src="" class="p-cover" style="display:none;">
-            <div>
-                <b id="p-title">Выберите трек</b>
-                <span id="p-artist">Lady Gaga</span>
-            </div>
-            <i data-lucide="heart" class="like-btn"></i>
+            <img id="p-img" src="" class="p-thumb">
+            <div><b id="p-title"></b><br><span id="p-artist"></span></div>
+            <i data-lucide="heart" class="like-btn" onclick="toggleLike()"></i>
         </div>
+
         <div class="p-controls">
-            <div class="p-buttons">
-                <i data-lucide="shuffle" class="p-btn-sub"></i>
-                <i data-lucide="skip-back" fill="currentColor" class="p-btn-main" onclick="prevTrack()"></i>
+            <div class="p-btns">
+                <i data-lucide="shuffle" class="p-sub-btn"></i>
+                <i data-lucide="skip-back" fill="currentColor" class="p-main-btn" onclick="prev()"></i>
                 <div class="p-play-circle" onclick="togglePlay()">
-                    <i id="main-play-icon" data-lucide="play" fill="black"></i>
+                    <i id="play-icon" data-lucide="play" fill="black"></i>
                 </div>
-                <i data-lucide="skip-forward" fill="currentColor" class="p-btn-main" onclick="nextTrack()"></i>
-                <i data-lucide="repeat" class="p-btn-sub"></i>
+                <i data-lucide="skip-forward" fill="currentColor" class="p-main-btn" onclick="next()"></i>
+                <i data-lucide="repeat" class="p-sub-btn"></i>
             </div>
             <div class="p-progress">
-                <span id="c-time">0:00</span>
-                <div class="p-bar-bg" onclick="seek(event)"><div id="p-fill" class="p-bar-fill"></div></div>
-                <span id="d-time">0:00</span>
+                <span id="cur">0:00</span>
+                <div class="bar-bg" onclick="seek(event)"><div id="fill" class="bar-fill"></div></div>
+                <span id="dur">0:00</span>
             </div>
         </div>
+
         <div class="p-volume">
             <i data-lucide="volume-2" size="20"></i>
-            <div class="v-slider"><div id="v-fill" class="v-fill"></div></div>
+            <div class="vol-bg"><div id="v-fill" class="vol-fill"></div></div>
         </div>
     </footer>
 
