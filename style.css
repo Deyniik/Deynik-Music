@@ -18,15 +18,13 @@
 }
 
 body { 
-    background: black; 
+    background: var(--bg-black); 
     color: white; 
     font-family: 'Inter', sans-serif; 
     height: 100vh; 
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
-    transition: background 0.5s ease;
-    background-attachment: fixed;
 }
 
 .top-nav { 
@@ -35,8 +33,6 @@ body {
     align-items: center; 
     padding: 0 20px;
     justify-content: space-between;
-    position: relative;
-    z-index: 2;
 }
 
 .logo-area { 
@@ -57,8 +53,6 @@ body {
     flex: 1;
     display: flex;
     justify-content: center;
-    position: relative;
-    z-index: 2;
 }
 
 .search-input { 
@@ -84,18 +78,14 @@ body {
     gap: 10px; 
     padding: 0 10px 10px; 
     overflow: hidden; 
-    position: relative;
-    z-index: 2;
 }
 
 .panel { 
-    background: rgba(15, 15, 15, 0.85);
-    backdrop-filter: blur(5px);
+    background: var(--panel-bg); 
     border-radius: 12px; 
     padding: 20px; 
     display: flex; 
     flex-direction: column; 
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .side { 
@@ -106,20 +96,49 @@ body {
 .center { 
     flex: 1; 
     overflow-y: auto; 
-    scrollbar-width: none; 
+    scrollbar-width: none;
+    position: relative;
+    background: var(--panel-bg);
+}
+
+/* ГРАДИЕНТ КАК В SPOTIFY - СВЕРХУ ВНИЗ */
+.center::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background: radial-gradient(circle at 20% 0%, 
+        rgba(200, 200, 200, 0.25) 0%, 
+        rgba(180, 180, 180, 0.12) 25%,
+        rgba(160, 160, 160, 0.05) 50%,
+        rgba(140, 140, 140, 0.02) 70%,
+        transparent 90%
+    );
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 12px 12px 0 0;
+}
+
+/* ВСЕ КОНТЕНТЫ ПОВЕРХ ГРАДИЕНТА */
+#content-area {
+    position: relative;
+    z-index: 2;
+}
+
+#content-area > * {
+    position: relative;
+    z-index: 2;
 }
 
 .player-bar { 
     height: 85px; 
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
+    background: black; 
     display: grid; 
     grid-template-columns: 350px 1fr 350px; 
     align-items: center; 
     padding: 0 25px;
-    position: relative;
-    z-index: 3;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .p-btn { 
@@ -153,6 +172,7 @@ body {
     background: #1d1d1d; 
 }
 
+/* СТИЛИ ДЛЯ ТРЕКОВ В АЛЬБОМЕ */
 .track-row { 
     display: grid; 
     grid-template-columns: 50px 1fr 60px; 
@@ -162,48 +182,76 @@ body {
     align-items: center;
     transition: all 0.2s ease;
     margin-bottom: 4px;
+    position: relative;
 }
 
 .track-row:hover { 
     background: #1a1a1a; 
 }
 
+/* ПОДСВЕТКА ИГРАЮЩЕГО ТРЕКА - ЯРКАЯ И ЗАМЕТНАЯ */
 .track-row.playing {
     background: var(--brand-light) !important;
-    border-left: 3px solid var(--brand);
+    border-left: 4px solid var(--brand);
+    position: relative;
 }
 
 .track-row.playing b {
     color: var(--brand) !important;
+    font-weight: 700;
 }
 
+.track-row.playing::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--brand), #ff9e5e);
+}
+
+/* АНИМАЦИЯ ВОСПРОИЗВЕДЕНИЯ - КАК В СПОТИФАЙ */
 .playing-indicator {
     display: flex;
-    gap: 4px;
+    gap: 5px;
     align-items: center;
     justify-content: center;
-    width: 30px;
+    width: 40px;
+    height: 20px;
 }
 
 .playing-indicator span {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     background: var(--brand);
     border-radius: 50%;
-    animation: pulse 1.2s infinite;
+    animation: spotify-wave 1.2s infinite ease-in-out;
 }
 
-.playing-indicator span:nth-child(2) {
-    animation-delay: 0.4s;
+.playing-indicator span:nth-child(1) { 
+    animation-delay: 0s; 
 }
 
-.playing-indicator span:nth-child(3) {
-    animation-delay: 0.8s;
+.playing-indicator span:nth-child(2) { 
+    animation-delay: 0.2s; 
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.3); }
+.playing-indicator span:nth-child(3) { 
+    animation-delay: 0.4s; 
+}
+
+@keyframes spotify-wave {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(0.8);
+        background: var(--brand);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.4);
+        background: #ff8c4a;
+    }
 }
 
 .scroll-hide::-webkit-scrollbar { 
@@ -216,7 +264,7 @@ body {
     gap: 10px;
     margin-bottom: 25px;
     position: relative;
-    z-index: 2;
+    z-index: 3;
 }
 
 .filter-scroll {
@@ -326,7 +374,7 @@ body {
     background: var(--brand);
 }
 
-/* КНОПКИ АЛЬБОМА - В РЯД */
+/* КНОПКИ АЛЬБОМА */
 .album-actions {
     display: flex;
     align-items: center;
@@ -427,15 +475,4 @@ body {
 
 #p-artist {
     font-size: 13px !important;
-}
-
-/* АНИМАЦИЯ ДЛЯ ИНДИКАТОРА ВОСПРОИЗВЕДЕНИЯ */
-@keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.3); }
-}
-
-/* СТИЛИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ */
-#pinned-album-container {
-    margin-top: 20px;
 }
