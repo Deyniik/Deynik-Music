@@ -24,9 +24,9 @@
     <!-- ГРИД С ВИДЕО -->
     <div id="video-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
         <!-- Taylor Swift - 22 -->
-        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11561/FvHevpyAMu_Taylor_Swift_-_22_-_Taylor_Swift_1080p_h264.mp4', '22', 'Taylor Swift', '3:52', 'https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg')">
+        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11561/FvHevpyAMu_Taylor_Swift_-_22_-_Taylor_Swift_1080p_h264.mp4', '22', 'Taylor Swift', '3:52', 'https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg', 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp')">
             <div class="video-thumbnail">
-                <img src="https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+                <img src="https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg" class="video-thumbnail-img">
                 <div class="video-duration">3:52</div>
                 <div class="video-play-overlay">
                     <i data-lucide="play" size="40" color="white" fill="white"></i>
@@ -43,9 +43,9 @@
         </div>
 
         <!-- Taylor Swift - Opalite -->
-        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11560/UipqebVHl8_Taylor_Swift_-_Opalite_Official_Music_Video_-_Taylor_Swift_1080p_h264.mp4', 'Opalite', 'Taylor Swift', '4:15', 'https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg')">
+        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11560/UipqebVHl8_Taylor_Swift_-_Opalite_Official_Music_Video_-_Taylor_Swift_1080p_h264.mp4', 'Opalite', 'Taylor Swift', '4:15', 'https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg', 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp')">
             <div class="video-thumbnail">
-                <img src="https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+                <img src="https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg" class="video-thumbnail-img">
                 <div class="video-duration">4:15</div>
                 <div class="video-play-overlay">
                     <i data-lucide="play" size="40" color="white" fill="white"></i>
@@ -62,9 +62,9 @@
         </div>
 
         <!-- Lady Gaga - Abracadabra -->
-        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11559/ABInwxgnTA_Lady_Gaga_-_Abracadabra_Official_Music_Video_-_LadyGagaVEVO_1080p_h264_2.mp4', 'Abracadabra', 'Lady Gaga', '3:43', 'https://s3.k-connect.ru/static/uploads/comments/11559/sddefault.jpg')">
+        <div class="video-card" data-category="pop" onclick="window.playVideo('https://s3.k-connect.ru/static/uploads/post/11559/ABInwxgnTA_Lady_Gaga_-_Abracadabra_Official_Music_Video_-_LadyGagaVEVO_1080p_h264_2.mp4', 'Abracadabra', 'Lady Gaga', '3:43', 'https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg', 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg')">
             <div class="video-thumbnail">
-                <img src="https://s3.k-connect.ru/static/uploads/comments/11559/sddefault.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+                <img src="https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg" class="video-thumbnail-img">
                 <div class="video-duration">3:43</div>
                 <div class="video-play-overlay">
                     <i data-lucide="play" size="40" color="white" fill="white"></i>
@@ -81,53 +81,139 @@
         </div>
     </div>
 
-    <!-- ВИДЕО ПЛЕЕР -->
-    <div id="video-player-container" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <div class="p-btn" style="width: 45px; height: 45px; background: #CC6B26;" onclick="window.closeVideoPlayer()">
-                    <i data-lucide="x" size="20" color="white"></i>
-                </div>
-                <div>
-                    <h2 id="video-player-title" style="font-size: 22px; font-weight: 700;">Abracadabra</h2>
-                    <p id="video-player-artist" style="color: #7a7a7a;">Lady Gaga</p>
-                </div>
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="window.likeCurrentVideo()">
-                    <i id="video-like-icon" data-lucide="heart" size="20" color="white" fill="none"></i>
-                </div>
-                <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="window.shareVideo()">
-                    <i data-lucide="share-2" size="20" color="white"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div style="position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden;">
-            <video id="video-player" controls style="width: 100%; display: block;" src="">
-                Ваш браузер не поддерживает видео тег.
-            </video>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 20px; margin-top: 20px;">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="window.playPreviousVideo()">
-                    <i data-lucide="skip-back" size="20" color="white"></i>
-                </div>
-                <div class="p-btn" style="width: 50px; height: 50px; background: white; color: black;" onclick="window.toggleVideoPlay()">
-                    <i id="video-play-pause-icon" data-lucide="pause" size="24" fill="black" color="black"></i>
-                </div>
-                <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="window.playNextVideo()">
-                    <i data-lucide="skip-forward" size="20" color="white"></i>
-                </div>
-            </div>
-            <div style="flex: 1; height: 5px; background: #3e3e3e; border-radius: 3px; position: relative;">
-                <div id="video-progress" style="width: 0%; height: 100%; background: #CC6B26; border-radius: 3px;"></div>
-            </div>
-            <span id="video-time" style="color: #7a7a7a; font-size: 13px;">0:00 / 0:00</span>
-        </div>
-    </div>
+    <!-- ВИДЕО ПЛЕЕР (СКРЫТ) -->
+    <video id="video-player" style="display: none;"></video>
+
+    <!-- РЕКОМЕНДАЦИИ В ПРАВОЙ ПАНЕЛИ -->
+    <div id="video-recommendations" style="display: none;"></div>
 </div>
+
+<style>
+    /* ЕДИНЫЙ РАЗМЕР ДЛЯ ВСЕХ ОБЛОЖЕК */
+    .video-thumbnail {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #1a1a1a;
+    }
+    
+    .video-thumbnail-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    .video-duration {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 3;
+    }
+    
+    .video-play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.3s;
+        z-index: 2;
+    }
+    
+    .video-card {
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 12px;
+        background: transparent;
+    }
+    
+    .video-card:hover .video-play-overlay {
+        opacity: 1;
+    }
+    
+    .compact-view .video-card {
+        display: flex;
+        gap: 16px;
+        background: #1a1a1a;
+        padding: 12px;
+        border-radius: 12px;
+    }
+    
+    .compact-view .video-thumbnail {
+        width: 160px;
+        aspect-ratio: 16/9;
+        flex-shrink: 0;
+    }
+    
+    .compact-view .video-card > div:last-child {
+        margin-top: 0 !important;
+        flex: 1;
+    }
+    
+    #video-grid.compact-view {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    /* КНОПКА ПОДЕЛИТЬСЯ АНИМАЦИЯ */
+    @keyframes share-pop {
+        0% { transform: scale(1); background: #1a1a1a; }
+        50% { transform: scale(1.2); background: #CC6B26; }
+        100% { transform: scale(1); background: #1a1a1a; }
+    }
+    
+    .share-animation {
+        animation: share-pop 0.4s ease;
+    }
+    
+    /* СТИЛИ ДЛЯ ПРАВОЙ ПАНЕЛИ */
+    .recommendation-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: 0.2s;
+        margin-bottom: 4px;
+    }
+    
+    .recommendation-item:hover {
+        background: #1a1a1a;
+    }
+    
+    .recommendation-thumbnail {
+        width: 80px;
+        aspect-ratio: 16/9;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #1a1a1a;
+        flex-shrink: 0;
+    }
+    
+    .recommendation-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 
 <script>
     (function() {
@@ -140,58 +226,86 @@
         window.videoLikes = {};
 
         // ========== ВОСПРОИЗВЕДЕНИЕ ВИДЕО ==========
-        window.playVideo = function(videoUrl, title, artist, duration, coverArt) {
-            const container = document.getElementById('video-player-container');
-            const video = document.getElementById('video-player');
-            const titleEl = document.getElementById('video-player-title');
-            const artistEl = document.getElementById('video-player-artist');
+        window.playVideo = function(videoUrl, title, artist, duration, coverArt, avatarUrl) {
+            // Используем музыкальный плеер
+            const audio = window.audio;
+            const playBtn = document.getElementById('main-play-btn');
             
-            if (container && video) {
-                container.style.display = 'block';
-                video.src = videoUrl;
-                video.play();
-                if (titleEl) titleEl.textContent = title;
-                if (artistEl) artistEl.textContent = artist;
+            if (!audio) return;
+            
+            // Сохраняем состояние
+            window.currentVideoUrl = videoUrl;
+            window.currentVideoTitle = title;
+            window.currentVideoArtist = artist;
+            window.currentVideoCover = coverArt;
+            window.currentVideoAvatar = avatarUrl;
+            
+            // Обновляем интерфейс плеера
+            document.getElementById('p-title').innerText = title;
+            document.getElementById('p-artist').innerText = artist;
+            document.getElementById('p-img').src = coverArt;
+            document.getElementById('p-img').style.display = 'block';
+            
+            document.getElementById('side-cover').src = coverArt;
+            document.getElementById('side-cover').style.display = 'block';
+            document.getElementById('side-title').innerText = title;
+            document.getElementById('side-artist').innerText = artist;
+            
+            // Меняем src аудио на видео (хитрость: создаем MediaStream)
+            if (videoUrl) {
+                // Останавливаем текущее аудио
+                audio.pause();
                 
-                window.currentVideoTitle = title;
-                window.currentVideoArtist = artist;
-                window.currentVideoUrl = videoUrl;
-                window.currentVideoDuration = duration;
-                window.currentVideoCover = coverArt;
+                // Создаем новый элемент video для воспроизведения
+                let videoElement = document.getElementById('hidden-video-player');
+                if (!videoElement) {
+                    videoElement = document.createElement('video');
+                    videoElement.id = 'hidden-video-player';
+                    videoElement.style.display = 'none';
+                    document.body.appendChild(videoElement);
+                }
                 
+                // Устанавливаем src и запускаем
+                videoElement.src = videoUrl;
+                videoElement.play();
+                
+                // Сохраняем ссылку
+                window.currentVideoElement = videoElement;
                 window.isVideoPlaying = true;
                 
-                // Обновляем иконку
-                const playIcon = document.getElementById('video-play-pause-icon');
-                if (playIcon) {
-                    playIcon.setAttribute('data-lucide', 'pause');
+                // Обновляем кнопку play/pause
+                playBtn?.setAttribute('data-lucide', 'pause');
+                
+                // Обновляем прогресс бар
+                videoElement.ontimeupdate = function() {
+                    if (videoElement.duration) {
+                        const pct = (videoElement.currentTime / videoElement.duration) * 100 || 0;
+                        document.getElementById('p-fill').style.width = pct + '%';
+                        document.getElementById('c-time').innerText = formatTime(videoElement.currentTime);
+                        document.getElementById('d-time').innerText = formatTime(videoElement.duration);
+                    }
+                };
+                
+                // Добавляем возможность перемотки
+                const barBg = document.querySelector('.bar-bg');
+                if (barBg) {
+                    barBg.onclick = function(e) {
+                        if (videoElement.duration) {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            videoElement.currentTime = ((e.clientX - rect.left) / rect.width) * videoElement.duration;
+                        }
+                    };
                 }
                 
-                // Обновляем иконку лайка
-                const likeIcon = document.getElementById('video-like-icon');
-                if (likeIcon) {
-                    const isLiked = window.videoLikes?.[videoUrl] || false;
-                    likeIcon.setAttribute('fill', isLiked ? '#CC6B26' : 'none');
-                    likeIcon.setAttribute('color', isLiked ? '#CC6B26' : 'white');
-                }
-                
-                // Плавный скролл
-                setTimeout(() => {
-                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+                // По окончании
+                videoElement.onended = function() {
+                    window.playNextVideo();
+                };
                 
                 lucide.createIcons();
                 
-                // Обновляем время
-                video.ontimeupdate = function() {
-                    const progress = document.getElementById('video-progress');
-                    const timeEl = document.getElementById('video-time');
-                    if (progress && timeEl) {
-                        const pct = (video.currentTime / video.duration) * 100 || 0;
-                        progress.style.width = pct + '%';
-                        timeEl.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration);
-                    }
-                };
+                // Обновляем рекомендации в правой панели
+                window.updateRecommendations();
             }
         };
 
@@ -203,99 +317,21 @@
             return mins + ':' + (secs < 10 ? '0' : '') + secs;
         }
 
-        // ========== ЗАКРЫТЬ ПЛЕЕР ==========
-        window.closeVideoPlayer = function() {
-            const container = document.getElementById('video-player-container');
-            const video = document.getElementById('video-player');
-            
-            if (container && video) {
-                container.style.display = 'none';
-                video.pause();
-                video.src = '';
-                window.isVideoPlaying = false;
-            }
-        };
-
-        // ========== ЛАЙК ДЛЯ ВИДЕО ==========
-        window.likeCurrentVideo = function() {
-            if (!window.currentVideoUrl) return;
-            
-            if (!window.videoLikes) window.videoLikes = {};
-            window.videoLikes[window.currentVideoUrl] = !window.videoLikes[window.currentVideoUrl];
-            
-            const likeIcon = document.getElementById('video-like-icon');
-            if (likeIcon) {
-                if (window.videoLikes[window.currentVideoUrl]) {
-                    likeIcon.setAttribute('fill', '#CC6B26');
-                    likeIcon.setAttribute('color', '#CC6B26');
+        // ========== ПЕРЕОПРЕДЕЛЯЕМ TogglePlay ==========
+        const originalTogglePlay = window.togglePlay;
+        window.togglePlay = function() {
+            if (window.location.hash === '#videos' && window.currentVideoElement) {
+                if (window.currentVideoElement.paused) {
+                    window.currentVideoElement.play();
+                    document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'pause');
                 } else {
-                    likeIcon.setAttribute('fill', 'none');
-                    likeIcon.setAttribute('color', 'white');
+                    window.currentVideoElement.pause();
+                    document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'play');
                 }
                 lucide.createIcons();
+            } else {
+                if (originalTogglePlay) originalTogglePlay();
             }
-        };
-
-        // ========== ПОДЕЛИТЬСЯ ==========
-        window.shareVideo = function() {
-            if (!window.currentVideoUrl) return;
-            
-            navigator.clipboard.writeText(window.currentVideoUrl).then(() => {
-                const btn = event.currentTarget;
-                btn.style.animation = 'share-pop 0.4s ease';
-                setTimeout(() => {
-                    btn.style.animation = '';
-                }, 400);
-                
-                const icon = btn.querySelector('i');
-                icon.setAttribute('data-lucide', 'check');
-                lucide.createIcons();
-                
-                setTimeout(() => {
-                    icon.setAttribute('data-lucide', 'share-2');
-                    lucide.createIcons();
-                }, 1500);
-            });
-        };
-
-        // ========== ФИЛЬТРАЦИЯ ВИДЕО ==========
-        window.filterVideos = function(category, btn) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            
-            const videos = document.querySelectorAll('.video-card');
-            videos.forEach(video => {
-                if (category === 'all') {
-                    video.style.display = 'block';
-                } else {
-                    const videoCategory = video.getAttribute('data-category');
-                    video.style.display = videoCategory === category ? 'block' : 'none';
-                }
-            });
-            
-            if (document.getElementById('video-grid').classList.contains('compact-view')) {
-                videos.forEach(video => {
-                    if (video.style.display === 'block') {
-                        video.style.display = 'flex';
-                    }
-                });
-            }
-        };
-
-        // ========== СОРТИРОВКА ==========
-        window.sortVideos = function() {
-            const grid = document.getElementById('video-grid');
-            const videos = Array.from(document.querySelectorAll('.video-card'));
-            
-            videos.sort((a, b) => {
-                const titleA = a.querySelector('b')?.textContent || '';
-                const titleB = b.querySelector('b')?.textContent || '';
-                return titleA.localeCompare(titleB);
-            });
-            
-            grid.innerHTML = '';
-            videos.forEach(video => grid.appendChild(video));
-            lucide.createIcons();
         };
 
         // ========== НАВИГАЦИЯ ПО ВИДЕО ==========
@@ -323,22 +359,170 @@
             }
         };
 
-        window.toggleVideoPlay = function() {
-            const video = document.getElementById('video-player');
-            const icon = document.getElementById('video-play-pause-icon');
-            
-            if (video) {
-                if (video.paused) {
-                    video.play();
-                    window.isVideoPlaying = true;
-                    icon.setAttribute('data-lucide', 'pause');
-                } else {
-                    video.pause();
-                    window.isVideoPlaying = false;
-                    icon.setAttribute('data-lucide', 'play');
+        // ========== ПЕРЕОПРЕДЕЛЯЕМ NEXT/PREV ==========
+        window.nextTrack = function() {
+            if (window.location.hash === '#videos') {
+                window.playNextVideo();
+            } else {
+                if (window.currentIdx < window.currentTracks.length - 1) {
+                    window.playTrack(window.currentIdx + 1, window.currentTracks);
                 }
-                lucide.createIcons();
             }
+        };
+
+        window.prevTrack = function() {
+            if (window.location.hash === '#videos') {
+                window.playPreviousVideo();
+            } else {
+                if (window.currentIdx > 0) {
+                    window.playTrack(window.currentIdx - 1, window.currentTracks);
+                }
+            }
+        };
+
+        // ========== ОБНОВЛЕНИЕ РЕКОМЕНДАЦИЙ ==========
+        window.updateRecommendations = function() {
+            const container = document.querySelector('.panel.side:last-child > div:last-child');
+            if (!container || window.location.hash !== '#videos') return;
+            
+            // Меняем заголовок
+            const header = container.previousElementSibling;
+            if (header) {
+                const title = header.querySelector('p');
+                if (title) title.innerText = 'Смотрите так же';
+            }
+            
+            // Получаем все видео
+            const videos = Array.from(document.querySelectorAll('.video-card'));
+            
+            // Фильтруем текущее видео
+            const recommendations = videos.filter(v => {
+                const onclick = v.getAttribute('onclick') || '';
+                return !onclick.includes(window.currentVideoUrl || '');
+            });
+            
+            // Перемешиваем и берем 5
+            const shuffled = [...recommendations];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            const topRecs = shuffled.slice(0, 5);
+            
+            // Рендерим
+            container.innerHTML = `
+                <div id="queue-list" style="overflow-y: auto; flex: 1;">
+                    ${topRecs.map(video => {
+                        const thumbnail = video.querySelector('.video-thumbnail img')?.src || '';
+                        const title = video.querySelector('b')?.textContent || '';
+                        const artist = video.querySelector('small')?.textContent || '';
+                        const avatar = video.querySelector('img:last-child')?.src || '';
+                        const onclick = video.getAttribute('onclick') || '';
+                        
+                        return `
+                            <div class="recommendation-item" onclick="${onclick.replace(/"/g, '&quot;')}">
+                                <div class="recommendation-thumbnail">
+                                    <img src="${thumbnail}">
+                                </div>
+                                <div style="flex:1;">
+                                    <b style="font-size:13px;">${title}</b>
+                                    <br>
+                                    <small style="color:#7a7a7a;">${artist}</small>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        };
+
+        // ========== ФИЛЬТРАЦИЯ ВИДЕО ==========
+        window.filterVideos = function(category, btn) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const videos = document.querySelectorAll('.video-card');
+            videos.forEach(video => {
+                if (category === 'all') {
+                    video.style.display = 'block';
+                } else {
+                    const videoCategory = video.getAttribute('data-category');
+                    video.style.display = videoCategory === category ? 'block' : 'none';
+                }
+            });
+            
+            if (document.getElementById('video-grid').classList.contains('compact-view')) {
+                videos.forEach(video => {
+                    if (video.style.display === 'block') {
+                        video.style.display = 'flex';
+                    }
+                });
+            }
+            
+            // Обновляем рекомендации
+            window.updateRecommendations();
+        };
+
+        // ========== СОРТИРОВКА ==========
+        window.sortVideos = function() {
+            const grid = document.getElementById('video-grid');
+            const videos = Array.from(document.querySelectorAll('.video-card'));
+            
+            videos.sort((a, b) => {
+                const titleA = a.querySelector('b')?.textContent || '';
+                const titleB = b.querySelector('b')?.textContent || '';
+                return titleA.localeCompare(titleB);
+            });
+            
+            grid.innerHTML = '';
+            videos.forEach(video => grid.appendChild(video));
+            lucide.createIcons();
+            
+            // Обновляем рекомендации
+            window.updateRecommendations();
+        };
+
+        // ========== ЛАЙК ==========
+        window.likeCurrentVideo = function() {
+            if (!window.currentVideoUrl) return;
+            
+            if (!window.videoLikes) window.videoLikes = {};
+            window.videoLikes[window.currentVideoUrl] = !window.videoLikes[window.currentVideoUrl];
+            
+            // Обновляем иконку лайка в плеере
+            const likePlayer = document.getElementById('like-player');
+            const likeSide = document.getElementById('like-side');
+            
+            const isLiked = window.videoLikes[window.currentVideoUrl];
+            
+            [likePlayer, likeSide].forEach(el => {
+                if (el) {
+                    el.classList.toggle('active', isLiked);
+                    el.setAttribute('fill', isLiked ? '#CC6B26' : 'none');
+                    el.setAttribute('color', isLiked ? '#CC6B26' : '#b3b3b3');
+                }
+            });
+            
+            lucide.createIcons();
+        };
+
+        // ========== ПОДЕЛИТЬСЯ ==========
+        window.shareVideo = function() {
+            if (!window.currentVideoUrl) return;
+            
+            navigator.clipboard.writeText(window.currentVideoUrl).then(() => {
+                // Анимация на кнопке поделиться (если есть)
+                const shareBtn = document.querySelector('[onclick="window.shareVideo()"]');
+                if (shareBtn) {
+                    shareBtn.style.animation = 'share-pop 0.4s ease';
+                    setTimeout(() => {
+                        shareBtn.style.animation = '';
+                    }, 400);
+                }
+                
+                alert('Ссылка на видео скопирована!');
+            });
         };
 
         // ========== ИНИЦИАЛИЗАЦИЯ ==========
@@ -349,7 +533,7 @@
                 const titleEl = card.querySelector('b');
                 const artistEl = card.querySelector('small');
                 const durationEl = card.querySelector('.video-duration');
-                const coverEl = card.querySelector('img:first-child');
+                const thumbnailEl = card.querySelector('.video-thumbnail-img');
                 const avatarEl = card.querySelector('img:last-child');
                 
                 return {
@@ -357,13 +541,18 @@
                     title: titleEl?.textContent || 'Без названия',
                     artist: artistEl?.textContent || 'Неизвестный исполнитель',
                     duration: durationEl?.textContent || '3:00',
-                    thumbnail: coverEl?.src || '',
+                    thumbnail: thumbnailEl?.src || '',
                     avatar: avatarEl?.src || '',
                     url: card.getAttribute('onclick')?.match(/'([^']+)'/)?.filter((m, i) => i === 1)?.[0] || ''
                 };
             });
             
             lucide.createIcons();
+            
+            // Обновляем рекомендации при загрузке
+            if (window.location.hash === '#videos') {
+                window.updateRecommendations();
+            }
         }, 100);
     })();
 </script>
