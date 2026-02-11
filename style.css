@@ -121,21 +121,22 @@ body {
     background: #1d1d1d; 
 }
 
+/* ===== СТИЛИ ДЛЯ ТРЕКОВ ===== */
 .track-row { 
     display: grid; 
     grid-template-columns: 35px 1fr 60px; 
-    padding: 10px; 
+    padding: 12px; 
     border-radius: 8px; 
     cursor: pointer; 
     align-items: center; 
+    margin-bottom: 2px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
 }
 
 .track-row:hover { 
-    background: #1a1a1a; 
-}
-
-.scroll-hide::-webkit-scrollbar { 
-    display: none; 
+    background: #1a1a1a !important; 
+    border-left-color: #7a7a7a !important;
 }
 
 /* ===== СТИЛИ ИЗ УУУУУУУУ ===== */
@@ -247,4 +248,8 @@ body {
 
 .bar-bg:hover .bar-fill {
     background: #1ed760;
+}
+
+.scroll-hide::-webkit-scrollbar { 
+    display: none; 
 }
