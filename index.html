@@ -2,19 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Deynik Music - Видеоклипы</title>
+    <title>Deynik Music</title>
     
-    <!-- OPEN GRAPH МЕТАТЕГИ ДЛЯ ПРЕДПРОСМОТРА В МЕССЕНДЖЕРАХ -->
-    <meta property="og:title" content="Deynik Music - Abracadabra">
-    <meta property="og:description" content="Lady Gaga - Abracadabra | Смотри клип в высоком качестве">
-    <meta property="og:image" content="https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg">
+    <!-- ДИНАМИЧЕСКИЕ МЕТАТЕГИ - БУДУТ ПЕРЕЗАПИСАНЫ -->
+    <meta property="og:title" content="Deynik Music">
+    <meta property="og:description" content="Слушай музыку и смотри клипы">
+    <meta property="og:image" content="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg">
     <meta property="og:image:width" content="1280">
     <meta property="og:image:height" content="720">
-    <meta property="og:type" content="video.other">
-    <meta property="og:video" content="https://s3.k-connect.ru/static/uploads/post/11559/ABInwxgnTA_Lady_Gaga_-_Abracadabra_Official_Music_Video_-_LadyGagaVEVO_1080p_h264_2.mp4">
-    <meta property="og:video:type" content="video/mp4">
-    <meta property="og:video:width" content="1920">
-    <meta property="og:video:height" content="1080">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deyniik.github.io/Deynik-Music/">
+    <meta name="twitter:card" content="summary_large_image">
     
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -128,11 +126,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             padding: 12px 24px;
             border-radius: 30px;
             font-size: 14px;
             z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .loading-spinner {
             display: inline-block;
@@ -142,7 +143,6 @@
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
@@ -319,32 +319,65 @@
         function updateMetaTags(video) {
             if (!video) return;
             
-            document.title = `Deynik Music - ${video.title} | ${video.artist}`;
+            // Обновляем заголовок страницы
+            document.title = `${video.title} - ${video.artist} | Deynik Music`;
             
             // Обновляем Open Graph теги
             let ogTitle = document.querySelector('meta[property="og:title"]');
             let ogDescription = document.querySelector('meta[property="og:description"]');
             let ogImage = document.querySelector('meta[property="og:image"]');
-            let ogVideo = document.querySelector('meta[property="og:video"]');
+            let ogUrl = document.querySelector('meta[property="og:url"]');
+            let ogType = document.querySelector('meta[property="og:type"]');
             
-            if (ogTitle) ogTitle.setAttribute('content', `${video.title} - ${video.artist}`);
-            if (ogDescription) ogDescription.setAttribute('content', `Смотри клип ${video.title} в высоком качестве на Deynik Music`);
+            if (ogTitle) ogTitle.setAttribute('content', `${video.title} - ${video.artist} | Deynik Music`);
+            if (ogDescription) ogDescription.setAttribute('content', `Смотри клип ${video.title} · ${video.artist} в высоком качестве. Бесплатно на Deynik Music.`);
             if (ogImage) ogImage.setAttribute('content', video.thumbnail);
-            if (ogVideo) ogVideo.setAttribute('content', video.videoUrl);
+            if (ogUrl) ogUrl.setAttribute('content', `https://deyniik.github.io/Deynik-Music/#video-${video.id}`);
+            if (ogType) ogType.setAttribute('content', 'video.other');
+            
+            // Специально для Discord/Twitter
+            let twitterCard = document.querySelector('meta[name="twitter:card"]');
+            let twitterTitle = document.querySelector('meta[name="twitter:title"]');
+            let twitterDescription = document.querySelector('meta[name="twitter:description"]');
+            let twitterImage = document.querySelector('meta[name="twitter:image"]');
+            
+            if (!twitterCard) {
+                twitterCard = document.createElement('meta');
+                twitterCard.setAttribute('name', 'twitter:card');
+                document.head.appendChild(twitterCard);
+            }
+            if (!twitterTitle) {
+                twitterTitle = document.createElement('meta');
+                twitterTitle.setAttribute('name', 'twitter:title');
+                document.head.appendChild(twitterTitle);
+            }
+            if (!twitterDescription) {
+                twitterDescription = document.createElement('meta');
+                twitterDescription.setAttribute('name', 'twitter:description');
+                document.head.appendChild(twitterDescription);
+            }
+            if (!twitterImage) {
+                twitterImage = document.createElement('meta');
+                twitterImage.setAttribute('name', 'twitter:image');
+                document.head.appendChild(twitterImage);
+            }
+            
+            twitterCard.setAttribute('content', 'summary_large_image');
+            twitterTitle.setAttribute('content', `${video.title} - ${video.artist} | Deynik Music`);
+            twitterDescription.setAttribute('content', `Смотри клип ${video.title} · ${video.artist}`);
+            twitterImage.setAttribute('content', video.thumbnail);
         }
 
         // ========== ЗАГРУЗКА КОНТЕНТА ==========
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
             
-            if (hash === 'videos') {
-                await loadVideosPage();
-                updateRightPanelForVideos();
-            } 
-            else if (hash.startsWith('video-')) {
+            // Проверяем, это страница видео?
+            if (hash.startsWith('video-')) {
                 const videoId = hash.replace('video-', '');
                 const video = window.videoDatabase.find(v => v.id === videoId);
                 if (video) {
+                    // Обновляем метатеги ДО загрузки контента
                     updateMetaTags(video);
                     await loadVideoPage(video);
                     updateRightPanelForVideos(video);
@@ -352,7 +385,14 @@
                     location.hash = '#videos';
                 }
             }
+            else if (hash === 'videos') {
+                // Сброс метатегов для главной видео
+                document.title = 'Видеоклипы | Deynik Music';
+                await loadVideosPage();
+                updateRightPanelForVideos();
+            }
             else {
+                // Обычные страницы
                 try {
                     const res = await fetch(`./pages/${hash}.html`);
                     let html = await res.text();
@@ -473,7 +513,6 @@
                         
                         <div id="video-player-section" style="width: 100%; margin-bottom: 30px;">
                             <div style="position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                                <!-- ИНДИКАТОР ЗАГРУЗКИ -->
                                 <div id="video-loading-indicator" class="video-loading" style="display: none;">
                                     <span class="loading-spinner"></span>
                                     Загрузка видео...
@@ -483,9 +522,7 @@
                                     style="width: 100%; height: 100%;" 
                                     src="${video.videoUrl}" 
                                     playsinline
-                                    preload="auto"
-                                    onwaiting="document.getElementById('video-loading-indicator').style.display='flex'"
-                                    oncanplay="document.getElementById('video-loading-indicator').style.display='none'"
+                                    preload="metadata"
                                 ></video>
                             </div>
                         </div>
@@ -494,7 +531,7 @@
             `;
         }
 
-        // ========== УЛУЧШЕННЫЙ PLAYVIDEO С ПРЕДЗАГРУЗКОЙ ==========
+        // ========== УЛУЧШЕННЫЙ PLAYVIDEO ==========
         window.playVideo = function(videoUrl, title, artist, duration, coverArt, avatarUrl) {
             const videoElement = document.getElementById('video-player');
             if (!videoElement) return;
@@ -503,17 +540,15 @@
             const loadingIndicator = document.getElementById('video-loading-indicator');
             if (loadingIndicator) loadingIndicator.style.display = 'flex';
             
-            // Используем preload и экономную загрузку
-            videoElement.preload = 'auto';
+            // Устанавливаем источник
             videoElement.src = videoUrl;
             
-            // Начинаем загрузку, но не ждем полной
-            videoElement.load();
-            
-            // Запускаем сразу как только можно
+            // Запускаем воспроизведение
             const playPromise = videoElement.play();
             if (playPromise !== undefined) {
-                playPromise.catch(error => {
+                playPromise.then(() => {
+                    if (loadingIndicator) loadingIndicator.style.display = 'none';
+                }).catch(error => {
                     console.log('Автовоспроизведение заблокировано:', error);
                     if (loadingIndicator) loadingIndicator.style.display = 'none';
                 });
@@ -535,7 +570,7 @@
             
             document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'pause');
             
-            // Прогресс бар - обновляем чаще для плавности
+            // Прогресс бар
             videoElement.ontimeupdate = function() {
                 if (videoElement.duration) {
                     const pct = (videoElement.currentTime / videoElement.duration) * 100 || 0;
@@ -577,7 +612,7 @@
         window.shareCurrentVideo = function() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
-                alert('🔗 Ссылка на видео скопирована! Теперь вы можете поделиться ей в мессенджерах');
+                alert('🔗 Ссылка на видео скопирована!');
             });
         };
 
@@ -882,9 +917,22 @@
 
         window.renderPinnedInSide = renderPinnedInSide;
 
-        // ========== СТАРТ ==========
+        // ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ==========
+        // Проверяем hash при старте
+        function checkInitialHash() {
+            let hash = location.hash.replace('#', '');
+            if (hash.startsWith('video-')) {
+                const videoId = hash.replace('video-', '');
+                const video = window.videoDatabase.find(v => v.id === videoId);
+                if (video) {
+                    updateMetaTags(video);
+                }
+            }
+        }
+        
         window.addEventListener('hashchange', loadContent);
         window.onload = () => {
+            checkInitialHash();
             loadContent();
             renderSide('all');
             lucide.createIcons();
