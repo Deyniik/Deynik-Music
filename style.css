@@ -4,53 +4,54 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-/* Шапка */
+/* Шапка и Центрированный поиск */
 .top-nav { height: 75px; display: flex; align-items: center; padding: 0 20px; position: relative; }
-.logo-area { width: 380px; display: flex; align-items: center; cursor: pointer; }
+.logo-area { width: 380px; display: flex; align-items: center; cursor: pointer; flex-shrink: 0; }
 .logo-area h1 { font-size: 26px; font-weight: 900; letter-spacing: -1.5px; }
-.search-container { position: absolute; left: 50%; transform: translateX(-50%); }
-.search-input { width: 420px; height: 44px; background: #242424; border: none; border-radius: 22px; color: white; text-align: center; }
+.search-container { position: absolute; left: 50%; transform: translateX(-50%); width: 420px; }
+.search-input { width: 100%; height: 44px; background: #242424; border: none; border-radius: 25px; color: white; text-align: center; font-size: 15px; }
 
-/* Панели */
+/* Приложение */
 .app-main { flex: 1; display: flex; gap: 10px; padding: 0 10px 10px; overflow: hidden; }
-.panel { background: var(--panel); border-radius: 12px; padding: 20px; }
-.side { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; }
+.panel { background: var(--panel); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+.side { width: 380px; flex-shrink: 0; }
 .center { flex: 1; overflow-y: auto; }
 
-/* Левая панель */
-.side-header { display: flex; gap: 12px; margin-bottom: 20px; color: var(--text); }
-.side-item { display: flex; gap: 12px; padding: 12px; border-radius: 8px; cursor: pointer; }
-.side-item.active { background: #1a1a1a; }
-.side-playlist-card { display: flex; gap: 15px; align-items: center; margin-top: 25px; cursor: pointer; }
-.like-square { width: 52px; height: 52px; border-radius: 6px; background: linear-gradient(135deg, #450af5, #c4efd9); display: flex; align-items: center; justify-content: center; }
+/* Левая панель - Фильтры */
+.filter-nav { margin-bottom: 20px; }
+.filter-scroll { display: flex; gap: 8px; }
+.tab { background: #232323; border: none; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 13px; }
+.tab.active { background: white; color: black; }
+.side-item-playlist { display: flex; gap: 12px; align-items: center; margin-top: 10px; cursor: pointer; padding: 8px; border-radius: 8px; }
+.playlist-icon-likes { width: 52px; height: 52px; border-radius: 6px; background: linear-gradient(135deg, #450af5, #c4efd9); display: flex; align-items: center; justify-content: center; }
 
 /* Правая панель */
 .right-tabs { display: flex; gap: 20px; border-bottom: 1px solid #1a1a1a; margin-bottom: 20px; }
 .tab-link { color: var(--text); font-size: 12px; font-weight: 800; padding-bottom: 10px; cursor: pointer; text-transform: uppercase; }
 .tab-link.active { color: white; border-bottom: 2px solid white; }
-.side-big-img { width: 100%; border-radius: 12px; margin-bottom: 20px; }
-.side-track-row { display: flex; gap: 12px; padding: 8px; border-radius: 8px; align-items: center; opacity: 0.5; cursor: pointer; }
-.side-track-row.active { opacity: 1; background: #1a1a1a; }
-.side-track-row img { width: 45px; height: 45px; border-radius: 4px; }
+.side-big-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
+.section-label { font-size: 12px; font-weight: 800; color: var(--text); margin-bottom: 15px; }
+.wiki-desc { color: var(--text); font-size: 14px; line-height: 1.6; }
 
-/* Плеер */
-.player-bar { height: 95px; background: black; display: grid; grid-template-columns: 350px 1fr 350px; align-items: center; padding: 0 25px; border-top: none; }
-.p-track-info { display: flex; align-items: center; gap: 15px; }
-.p-min-cover { width: 56px; height: 56px; border-radius: 4px; }
-.p-core-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.p-buttons { display: flex; align-items: center; gap: 25px; }
-.p-main-btn { cursor: pointer; color: #b3b3b3; }
-.p-main-btn:hover { color: white; }
-.p-play-btn { background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.p-progress-box { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 500px; font-size: 11px; color: var(--text); }
-.p-slider-bg { flex: 1; height: 4px; background: #333; border-radius: 2px; cursor: pointer; }
-.p-slider-fill { height: 100%; background: white; width: 0%; border-radius: 2px; }
+/* Плеер (Без линий и квадратов) */
+.player-bar { height: 100px; background: black; display: grid; grid-template-columns: 350px 1fr 350px; align-items: center; padding: 0 25px; border: none; }
+.p-info { display: flex; align-items: center; gap: 15px; }
+.p-cover { width: 60px; height: 60px; border-radius: 4px; }
+.p-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.p-buttons { display: flex; align-items: center; gap: 30px; }
+.p-btn-main, .p-btn-sub { cursor: pointer; color: #b3b3b3; transition: 0.2s; }
+.p-btn-main:hover { color: white; }
+.p-play-circle { background: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.p-progress { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 550px; font-size: 12px; color: var(--text); }
+.p-bar-bg { flex: 1; height: 4px; background: #333; border-radius: 2px; cursor: pointer; }
+.p-bar-fill { height: 100%; background: white; width: 0%; border-radius: 2px; }
 
-/* Альбомные стили */
-.big-play-btn { background: var(--accent); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.track-list-item { display: grid; grid-template-columns: 40px 1fr 60px; padding: 12px; border-radius: 8px; cursor: pointer; }
-.track-list-item:hover { background: #1a1a1a; }
-.track-list-item.active { color: #1ed760; background: #1a1a1a; }
+/* Общие элементы */
+.track-item { display: grid; grid-template-columns: 35px 1fr 60px; padding: 12px; border-radius: 8px; cursor: pointer; }
+.track-item:hover, .track-item.playing { background: #1a1a1a; }
+.track-item.playing b { color: #1ed760; }
+.big-play-btn { background: var(--accent); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.8; transition: 0.3s; }
+.big-play-btn:hover { opacity: 1; transform: scale(1.05); }
 
 .hidden { display: none; }
 .scroll-hide::-webkit-scrollbar { display: none; }
