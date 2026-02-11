@@ -5,7 +5,9 @@
     --panel-bg: #0f0f0f; 
     --card-inner: #141414; 
     --text-gray: #7a7a7a; 
-    --spotify-green: #1ed760; 
+    --brand: #CC6B26;
+    --brand-hover: #e07c3a;
+    --brand-light: rgba(204, 107, 38, 0.15);
 }
 
 * { 
@@ -29,7 +31,8 @@ body {
     height: 65px; 
     display: flex; 
     align-items: center; 
-    padding: 0 20px; 
+    padding: 0 20px;
+    justify-content: space-between;
 }
 
 .logo-area { 
@@ -46,6 +49,12 @@ body {
     letter-spacing: -1.5px; 
 }
 
+.search-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
 .search-input { 
     width: 400px; 
     height: 40px; 
@@ -54,7 +63,13 @@ body {
     border: none; 
     color: white; 
     text-align: center; 
-    opacity: 0.6; 
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+.search-input:focus {
+    opacity: 1;
+    background: #252525;
 }
 
 .app-main { 
@@ -90,8 +105,7 @@ body {
     display: grid; 
     grid-template-columns: 350px 1fr 350px; 
     align-items: center; 
-    padding: 0 25px; 
-    border-top: 1px solid #121212; 
+    padding: 0 25px;
 }
 
 .p-btn { 
@@ -127,11 +141,51 @@ body {
     padding: 10px; 
     border-radius: 8px; 
     cursor: pointer; 
-    align-items: center; 
+    align-items: center;
+    transition: 0.2s;
 }
 
 .track-row:hover { 
     background: #1a1a1a; 
+}
+
+.track-row.playing {
+    background: var(--brand-light);
+    border-left: 3px solid var(--brand);
+}
+
+.track-row.playing span:first-child {
+    color: var(--brand) !important;
+    font-weight: 700;
+}
+
+.playing-indicator {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand) !important;
+}
+
+.playing-indicator span {
+    width: 4px;
+    height: 4px;
+    background: var(--brand);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+}
+
+.playing-indicator span:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.playing-indicator span:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
 }
 
 .scroll-hide::-webkit-scrollbar { 
@@ -143,6 +197,7 @@ body {
     align-items: center;
     gap: 10px;
     margin-bottom: 25px;
+    position: relative;
 }
 
 .filter-scroll {
@@ -153,7 +208,7 @@ body {
 }
 
 .nav-arrow {
-    background: #1a1a1a;
+    background: transparent;
     border: none;
     color: white;
     border-radius: 50%;
@@ -164,10 +219,13 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: 0.2s;
+    position: relative;
+    z-index: 2;
 }
 
 .nav-arrow:hover {
-    background: #252525;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .tab {
@@ -180,6 +238,7 @@ body {
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
+    transition: 0.2s;
 }
 
 .tab:hover {
@@ -245,5 +304,57 @@ body {
 }
 
 .bar-bg:hover .bar-fill {
-    background: #1ed760;
+    background: var(--brand);
+}
+
+/* Стили для плей-кнопки альбома */
+.album-play-btn {
+    width: 55px;
+    height: 55px;
+    background: var(--brand);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 8px 20px rgba(204, 107, 38, 0.3);
+}
+
+.album-play-btn:hover {
+    transform: scale(1.05);
+    background: var(--brand-hover);
+}
+
+/* Очередь */
+.queue-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.queue-item:hover {
+    background: #1a1a1a;
+}
+
+.queue-item.playing {
+    background: var(--brand-light);
+    border-left: 3px solid var(--brand);
+}
+
+.queue-item.playing b {
+    color: var(--brand);
+}
+
+#p-title {
+    font-size: 15px !important;
+    font-weight: 600;
+}
+
+#p-artist {
+    font-size: 13px !important;
 }
