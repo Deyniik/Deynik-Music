@@ -15,53 +15,44 @@
                 <path d="M80,30 Q105,50 80,70 M93,15 Q130,50 93,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
             </svg>
         </div>
-        
         <div class="search-container">
             <input type="text" class="search-input" placeholder="Поиск музыки">
         </div>
-        
         <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
             <div class="filter-nav">
-                <div class="filter-scroll scroll-hide" id="filterScroll">
+                <div class="filter-scroll scroll-hide">
                     <button class="tab active"><i data-lucide="home" size="16"></i></button>
                     <button class="tab">Исполнители</button>
                     <button class="tab">Альбомы</button>
                     <button class="tab">Плейлисты</button>
                 </div>
             </div>
-            
-            <div class="side-content scroll-hide">
-                <div class="side-item-playlist">
-                    <div class="playlist-icon-likes"><i data-lucide="heart" fill="white"></i></div>
-                    <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
-                </div>
-                </div>
+            <div class="side-item-playlist">
+                <div class="playlist-icon-likes"><i data-lucide="heart" fill="white"></i></div>
+                <div><b>Лайки</b><br><small>Плейлист • 17 треков</small></div>
+            </div>
         </aside>
 
-        <main class="panel center scroll-hide" id="content-area">
-            </main>
+        <main class="panel center scroll-hide" id="content-area"></main>
 
         <aside class="panel side">
             <div class="right-tabs">
                 <div id="t-queue" class="tab-link active" onclick="switchRight('queue')">Далее</div>
                 <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
             </div>
-            
-            <div class="right-scroll-container scroll-hide">
-                <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" class="side-big-img">
-                
+            <div class="right-content scroll-hide">
+                <img id="side-cover" src="" class="side-big-cover">
                 <div id="panel-queue">
                     <p class="section-label">ОЧЕРЕДЬ</p>
                     <div id="queue-list"></div>
                 </div>
-
                 <div id="panel-wiki" class="hidden">
-                    <h2 id="wiki-title" style="margin-bottom:10px;"></h2>
-                    <p id="wiki-text" class="wiki-desc"></p>
+                    <h2 id="wiki-title"></h2>
+                    <p id="wiki-text" class="wiki-info"></p>
                 </div>
             </div>
         </aside>
@@ -74,18 +65,17 @@
                 <b id="p-title">Выберите трек</b>
                 <span id="p-artist">Lady Gaga</span>
             </div>
-            <i data-lucide="heart" class="like-icon" style="margin-left:15px;"></i>
+            <i data-lucide="heart" class="like-btn"></i>
         </div>
-
         <div class="p-controls">
             <div class="p-buttons">
-                <i data-lucide="shuffle" size="18" class="p-btn-sub"></i>
-                <i data-lucide="skip-back" fill="currentColor" size="24" class="p-btn-main" onclick="prevTrack()"></i>
+                <i data-lucide="shuffle" class="p-btn-sub"></i>
+                <i data-lucide="skip-back" fill="currentColor" class="p-btn-main" onclick="prevTrack()"></i>
                 <div class="p-play-circle" onclick="togglePlay()">
-                    <i id="main-play-icon" data-lucide="play" fill="black" size="22"></i>
+                    <i id="main-play-icon" data-lucide="play" fill="black"></i>
                 </div>
-                <i data-lucide="skip-forward" fill="currentColor" size="24" class="p-btn-main" onclick="nextTrack()"></i>
-                <i data-lucide="repeat" size="18" class="p-btn-sub"></i>
+                <i data-lucide="skip-forward" fill="currentColor" class="p-btn-main" onclick="nextTrack()"></i>
+                <i data-lucide="repeat" class="p-btn-sub"></i>
             </div>
             <div class="p-progress">
                 <span id="c-time">0:00</span>
@@ -93,13 +83,12 @@
                 <span id="d-time">0:00</span>
             </div>
         </div>
-
         <div class="p-volume">
-            <i data-lucide="volume-2" size="20" color="#a7a7a7"></i>
-            <div class="v-slider"><div id="v-fill" class="v-fill" style="width:70%;"></div></div>
+            <i data-lucide="volume-2" size="20"></i>
+            <div class="v-slider"><div id="v-fill" class="v-fill"></div></div>
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
