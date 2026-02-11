@@ -1,56 +1,73 @@
-/* Убираем лишние рамки и делаем плеер чистым */
-.player-bar { 
-    height: 100px; 
-    background: black; 
-    display: grid; 
-    grid-template-columns: 350px 1fr 350px; 
-    align-items: center; 
-    padding: 0 25px;
-    border: none; /* Никаких белых линий сверху */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-black: #000000;
+    --panel-bg: #0f0f0f;
+    --card-inner: #141414;
+    --text-gray: #a7a7a7;
+    --spotify-green: #1ed760;
 }
 
-.search-input {
-    width: 420px;
-    height: 44px;
-    background: #242424;
-    border-radius: 25px;
-    border: none;
-    color: white;
-    text-align: center;
-    font-size: 15px; /* Сделал крупнее, как на скрине */
+* { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+body { 
+    background: var(--bg-black); color: white; font-family: 'Inter', sans-serif; 
+    height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    font-size: 16px; 
 }
 
-.p-play-circle {
-    background: white;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
+.app-main { flex: 1; display: flex; gap: 10px; padding: 0 10px 10px; overflow: hidden; }
+.panel { background: var(--panel-bg); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+.side { width: 380px; flex-shrink: 0; } 
+.center { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #333 transparent; }
 
-.p-play-circle:hover { transform: scale(1.08); }
+.top-nav { height: 70px; display: flex; align-items: center; padding: 0 20px; }
+.logo { width: 380px; font-size: 26px; font-weight: 900; flex-shrink: 0; letter-spacing: -1.5px; }
+.search-container { flex: 1; display: flex; justify-content: center; }
+.search-input { width: 420px; height: 44px; background: #242424; border-radius: 25px; border: none; color: white; text-align: center; font-size: 15px; }
 
-.track-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 18px;
+.filter-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
+.filter-scroll { display: flex; gap: 10px; overflow-x: hidden; scroll-behavior: smooth; }
+.nav-arrow { 
+    background: #1a1a1a; border: none; color: white; border-radius: 50%; 
+    width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
 }
+.tab { 
+    background: #232323; border: none; color: white; padding: 8px 18px; 
+    border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;
+}
+.tab.active { background: white; color: black; }
 
-.card-wrap {
-    background: #141414;
-    padding: 14px;
-    border-radius: 10px; /* Скругление карточки */
-    cursor: pointer;
-}
+.track-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+.card-wrap { background: var(--card-inner); padding: 14px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+.card-wrap:hover { background: #232323; }
+.card-cover { width: 100%; aspect-ratio: 1; border-radius: 8px; background-size: cover; margin-bottom: 10px; }
 
-.card-cover {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 8px; /* Скругление самой картинки 8px */
-    background-size: cover;
-    margin-bottom: 10px;
+.vibe-banner { 
+    height: 280px; border-radius: 12px; margin-bottom: 30px; 
+    background: linear-gradient(135deg, #634731 0%, #000000 100%); 
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
 }
+.vibe-banner h1 { font-size: 60px; font-weight: 800; margin-bottom: 20px; letter-spacing: -2px; }
+
+.player-bar { height: 100px; background: black; display: grid; grid-template-columns: 350px 1fr 350px; align-items: center; padding: 0 25px; }
+
+.side-item { display: flex; gap: 12px; align-items: center; padding: 8px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+.side-item:hover { background: #1a1a1a; }
+
+.spotify-btn { color: #b3b3b3; cursor: pointer; transition: 0.2s; }
+.spotify-btn:hover { color: white; }
+
+.bar-bg { flex: 1; height: 5px; background: #3e3e3e; border-radius: 3px; cursor: pointer; }
+.bar-fill { height: 100%; background: white; width: 0%; border-radius: 3px; }
+.bar-bg:hover .bar-fill { background: var(--spotify-green); }
+
+.vol-slider { width: 110px; height: 5px; background: #3e3e3e; border-radius: 3px; cursor: pointer; }
+.vol-fill { height: 100%; background: white; width: 80%; border-radius: 3px; }
+
+.like-btn { cursor: pointer; color: #b3b3b3; }
+.like-btn.active { color: white !important; }
+
+.scroll-hide::-webkit-scrollbar { display: none; }
