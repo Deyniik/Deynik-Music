@@ -2,108 +2,165 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Deynik Music | Mayhem Ultra</title>
+    <title>Deynik Music</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-
     <header class="top-nav">
-        <div class="logo">Deynik Music</div>
+        <div class="logo-area" onclick="location.hash='#home'">
+            <h1>Deynik Music</h1>
+            <svg width="30" height="30" viewBox="0 0 100 100">
+                <polygon points="10,10 80,50 10,90" fill="#5c4033"/>
+                <path d="M60,30 Q85,50 60,70 M75,15 Q110,50 75,85" stroke="#5c4033" fill="none" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+        </div>
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Поиск музыки">
+            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
         </div>
         <div style="width: 380px;"></div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
-            <div class="filter-nav">
-                <button class="nav-arrow" onclick="scrollFilters(-120)"><i data-lucide="chevron-left" size="18"></i></button>
-                <div class="filter-scroll scroll-hide" id="filterScroll">
-                    <button class="tab active" onclick="filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
-                    <button class="tab" onclick="filterSide('artist', this)">Исполнители</button>
-                    <button class="tab" onclick="filterSide('album', this)">Альбомы</button>
-                    <button class="tab" onclick="filterSide('playlist', this)">Плейлисты</button>
-                    <button class="tab" onclick="filterSide('radio', this)">Радио</button>
-                </div>
-                <button class="nav-arrow" onclick="scrollFilters(120)"><i data-lucide="chevron-right" size="18"></i></button>
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px; color:#7a7a7a">
+                <i data-lucide="library"></i> <b>Моя медиатека</b>
             </div>
-            <div id="side-list" class="scroll-hide" style="overflow-y:auto;">
-                <div class="side-item">
-                    <div style="width:52px; height:52px; border-radius:6px; background: linear-gradient(135deg, #450af5, #c4efd9); display:flex; align-items:center; justify-content:center;">
-                        <i data-lucide="heart" fill="white" color="white" size="24"></i>
-                    </div>
-                    <div style="margin-left:8px;"><b>Лайки</b><br><small style="color:var(--text-gray)">Плейлист • 17 треков</small></div>
-                </div>
-                <div id="filtered-content"></div>
+            <div class="side-item" onclick="location.hash='#home'" style="cursor:pointer; margin-bottom:15px;">
+                <i data-lucide="home"></i> <span style="margin-left:12px">Главная</span>
             </div>
         </aside>
 
-        <main class="panel center scroll-hide">
-            <div class="vibe-banner">
-                <h1>Мой Vibe</h1>
-                <div style="background: var(--spotify-green); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items:center; justify-content:center; cursor:pointer;" onclick="playVibe()">
-                    <i id="vibe-play-icon" data-lucide="play" fill="black" color="black" size="32" style="margin-left:4px"></i>
-                </div>
-            </div>
-            <h2 style="margin-bottom:20px; font-size: 22px; font-weight: 800;">Mayhem — Lady Gaga</h2>
-            <div class="track-grid" id="track-grid"></div>
-        </main>
+        <main class="panel center scroll-hide" id="content-area"></main>
 
         <aside class="panel side">
-            <img id="side-cover" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:100%; border-radius:10px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <h2 id="side-title" style="font-size:24px; font-weight:800;">Disease</h2>
-                    <p style="color:var(--text-gray); font-size:17px;">Lady Gaga</p>
-                </div>
-                <i data-lucide="heart" id="like-side" class="like-btn" onclick="toggleLike()"></i>
+            <div class="right-tabs">
+                <div id="t-queue" class="tab-link active" onclick="switchRight('queue')">Далее</div>
+                <div id="t-wiki" class="tab-link" onclick="switchRight('wiki')">О треке</div>
             </div>
-            <div style="margin-top:35px;">
-                <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:var(--text-gray); text-transform:uppercase;">В этом альбоме</p>
-                <div id="queue-list" class="scroll-hide"></div>
+            <div id="panel-queue" class="scroll-hide" style="overflow-y:auto;"></div>
+            <div id="panel-wiki" class="hidden">
+                <img id="wiki-cover" src="" style="width:100%; border-radius:8px; margin-bottom:20px;">
+                <h3 id="wiki-title" style="margin-bottom:10px;"></h3>
+                <p id="wiki-text" style="color:#7a7a7a; font-size:14px; line-height:1.6;"></p>
             </div>
         </aside>
     </div>
 
     <footer class="player-bar">
         <div style="display:flex; align-items:center; gap:15px;">
-            <img id="p-img" src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:60px; height:60px; border-radius:4px;">
+            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
             <div>
-                <b id="p-title" style="font-size:15px; display:block;">Disease</b>
-                <span style="color:var(--text-gray); font-size:13px;">Lady Gaga</span>
+                <b id="p-title" style="font-size:14px; display:block;">Выберите трек</b>
+                <span style="color:#7a7a7a; font-size:12px;">Lady Gaga</span>
             </div>
-            <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
         </div>
-
-        <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
-            <div style="display:flex; align-items:center; gap:28px;">
-                <i data-lucide="shuffle" size="18" class="spotify-btn"></i>
-                <i data-lucide="skip-back" fill="currentColor" size="24" class="spotify-btn" onclick="prevTrack()"></i>
-                <div onclick="togglePlay()" style="background:white; border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:black; cursor:pointer;">
-                    <i id="main-play-icon" data-lucide="play" fill="black" size="22" style="margin-left:3px"></i>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18"></i></div>
+                <div class="p-btn" style="background:white; color:black;" onclick="togglePlay()">
+                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px"></i>
                 </div>
-                <i data-lucide="skip-forward" fill="currentColor" size="24" class="spotify-btn" onclick="nextTrack()"></i>
-                <i data-lucide="repeat" size="18" class="spotify-btn"></i>
+                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
             </div>
             <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
-                <span style="font-size:12px; color:var(--text-gray); width:40px; text-align:right;" id="cur-time">0:00</span>
-                <div class="bar-bg" onmousedown="seek(event)"><div id="p-fill" class="bar-fill"></div></div>
-                <span style="font-size:12px; color:var(--text-gray); width:40px;" id="dur-time">0:00</span>
+                <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
+                <div style="flex:1; height:4px; background:#333; border-radius:2px; cursor:pointer;" onclick="seek(event)">
+                    <div id="p-fill" style="height:100%; background:white; width:0%; border-radius:2px;"></div>
+                </div>
+                <span id="d-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
             </div>
         </div>
-
-        <div style="display:flex; justify-content:flex-end; align-items:center;">
-            <div style="display:flex; align-items:center; gap:12px;" onwheel="handleVolumeWheel(event)">
-                <i data-lucide="volume-2" size="20" color="#b3b3b3"></i>
-                <div class="vol-slider" id="vol-slider" onmousedown="startVolDrag(event)">
-                    <div id="v-fill" class="vol-fill"></div>
-                </div>
+        <div style="display:flex; justify-content:flex-end;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
+                <div style="width:100px; height:4px; background:#333; border-radius:2px;"><div style="height:100%; background:white; width:70%;"></div></div>
             </div>
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        let audio = new Audio();
+        let currentTracks = [];
+        let currentIdx = -1;
+
+        async function loadContent() {
+            let hash = location.hash.replace('#', '') || 'home';
+            try {
+                const response = await fetch(`./pages/${hash}.html`);
+                document.getElementById('content-area').innerHTML = await response.text();
+                lucide.createIcons();
+                if(hash === 'home') currentIdx = -1; 
+            } catch (err) { location.hash = '#home'; }
+        }
+
+        window.playTrack = function(idx, trackList) {
+            currentTracks = trackList;
+            currentIdx = idx;
+            const track = currentTracks[currentIdx];
+            audio.src = track.url;
+            audio.play();
+            updateUI(track);
+            renderQueue();
+        };
+
+        function updateUI(track) {
+            document.getElementById('p-title').innerText = track.title;
+            document.getElementById('p-img').src = "https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg";
+            document.getElementById('p-img').style.display = 'block';
+            document.getElementById('main-play-btn').setAttribute('data-lucide', audio.paused ? 'play' : 'pause');
+            
+            document.getElementById('wiki-cover').src = document.getElementById('p-img').src;
+            document.getElementById('wiki-title').innerText = track.title;
+            document.getElementById('wiki-text').innerText = `Трек из альбома Mayhem (2025). Длительность: ${track.time}.`;
+            lucide.createIcons();
+        }
+
+        function togglePlay() {
+            if(!audio.src) return;
+            audio.paused ? audio.play() : audio.pause();
+            updateUI(currentTracks[currentIdx]);
+        }
+
+        function nextTrack() { if(currentIdx < currentTracks.length - 1) playTrack(currentIdx + 1, currentTracks); }
+        function prevTrack() { if(currentIdx > 0) playTrack(currentIdx - 1, currentTracks); }
+
+        function renderQueue() {
+            document.getElementById('panel-queue').innerHTML = currentTracks.map((t, i) => `
+                <div class="track-row" style="opacity:${i === currentIdx ? '1' : '0.5'}" onclick="playTrack(${i}, currentTracks)">
+                    <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:40px; border-radius:4px; margin-right:12px;">
+                    <b>${t.title}</b>
+                </div>
+            `).join('');
+        }
+
+        function switchRight(type) {
+            document.getElementById('panel-queue').classList.toggle('hidden', type !== 'queue');
+            document.getElementById('panel-wiki').classList.toggle('hidden', type !== 'wiki');
+            document.getElementById('t-queue').classList.toggle('active', type === 'queue');
+            document.getElementById('t-wiki').classList.toggle('active', type === 'wiki');
+        }
+
+        audio.ontimeupdate = () => {
+            const pct = (audio.currentTime / audio.duration) * 100 || 0;
+            document.getElementById('p-fill').style.width = pct + '%';
+            document.getElementById('c-time').innerText = formatTime(audio.currentTime);
+            if(audio.duration) document.getElementById('d-time').innerText = formatTime(audio.duration);
+        };
+
+        function formatTime(s) {
+            const m = Math.floor(s/60);
+            const sec = Math.floor(s%60);
+            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        function seek(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        }
+
+        window.addEventListener('hashchange', loadContent);
+        window.onload = loadContent;
+    </script>
 </body>
 </html>
