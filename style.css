@@ -141,13 +141,13 @@ body {
 
 .track-row { 
     display: grid; 
-    grid-template-columns: 45px 1fr 60px; 
+    grid-template-columns: 50px 1fr 60px; 
     padding: 12px 10px; 
     border-radius: 8px; 
     cursor: pointer; 
     align-items: center;
-    transition: 0.2s;
-    margin-bottom: 2px;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
 }
 
 .track-row:hover { 
@@ -155,22 +155,20 @@ body {
 }
 
 .track-row.playing {
-    background: var(--brand-light);
+    background: var(--brand-light) !important;
     border-left: 3px solid var(--brand);
 }
 
 .track-row.playing b {
-    color: var(--brand);
+    color: var(--brand) !important;
 }
 
 .playing-indicator {
     display: flex;
     gap: 4px;
     align-items: center;
-    justify-content: center;
-    color: var(--brand) !important;
-    width: 24px;
-    height: 24px;
+    justify-content: flex-start;
+    width: 30px;
 }
 
 .playing-indicator span {
@@ -313,19 +311,20 @@ body {
     background: var(--brand);
 }
 
-/* Стили для кнопок альбома */
+/* КНОПКИ АЛЬБОМА - ТЕПЕРЬ В РЯД */
 .album-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     margin-top: 20px;
+    flex-direction: row !important;
 }
 
 .album-play-btn {
     width: 55px;
     height: 55px;
     background: var(--brand);
-    border-radius: 12px;
+    border-radius: 8px !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -339,19 +338,15 @@ body {
     background: var(--brand-hover);
 }
 
-.album-play-btn.pause {
-    background: var(--brand);
-}
-
-.album-play-btn.pause i {
-    margin-left: 0;
+.album-play-btn i {
+    transition: all 0.2s;
 }
 
 .album-like-btn, .album-pin-btn {
     width: 45px;
     height: 45px;
     background: #1a1a1a;
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -374,14 +369,16 @@ body {
 
 .album-pin-btn.active i {
     color: white;
+    fill: white;
 }
 
-/* Очередь */
+/* ОЧЕРЕДЬ */
 #queue-list {
     overflow-y: auto;
-    max-height: calc(100vh - 400px);
+    max-height: calc(100vh - 450px);
     scrollbar-width: none;
     padding-right: 5px;
+    scroll-behavior: smooth;
 }
 
 .queue-item {
@@ -392,7 +389,7 @@ body {
     cursor: pointer;
     border-radius: 8px;
     transition: 0.2s;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 
 .queue-item:hover {
