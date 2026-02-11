@@ -1,6 +1,4 @@
-<div id="album-gradient"></div>
-
-<div style="display:flex; gap:30px; margin-bottom:40px;">
+<div id="album-header" style="display:flex; gap:30px; margin-bottom:40px;">
     <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
     <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
         <div>
@@ -159,6 +157,9 @@
                     };
                     
                     // Обновляем левую панель сразу
+                    if (window.renderPinnedInSide) {
+                        window.renderPinnedInSide();
+                    }
                     if (window.renderPinnedAlbum) {
                         window.renderPinnedAlbum();
                     }
@@ -168,6 +169,9 @@
                     window.pinnedAlbum = null;
                     
                     // Обновляем левую панель сразу
+                    if (window.renderPinnedInSide) {
+                        window.renderPinnedInSide();
+                    }
                     if (window.renderPinnedAlbum) {
                         window.renderPinnedAlbum();
                     }
