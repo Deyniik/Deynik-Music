@@ -5,7 +5,6 @@
     <title>Deynik Music</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://player.kinescope.io/v2/player.js"></script>
     <style>
         /* ВИДЕО СТИЛИ */
         .video-card {
@@ -99,29 +98,108 @@
             left: 0;
             border: 0;
         }
+        
+        /* КНОПКА ПЛЕЙ НА АЛЬБОМЕ */
+        .album-card {
+            position: relative;
+        }
+        .album-play-small {
+            position: absolute;
+            bottom: 70px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            background: #CC6B26;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            cursor: pointer;
+            z-index: 5;
+        }
+        .album-card:hover .album-play-small {
+            opacity: 1;
+        }
+        .album-play-small:hover {
+            transform: scale(1.1);
+            background: #e07c3a;
+        }
+        
+        /* НАВИГАЦИЯ */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-left: 30px;
+        }
+        .nav-btn {
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: #232323;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+        .nav-btn:hover {
+            background: #2a2a2a;
+        }
+        .nav-btn.active {
+            background: white;
+            color: black;
+        }
+        .nav-btn.active i {
+            color: black !important;
+        }
+        
+        /* ЛОГО */
+        .logo-svg polygon {
+            fill: #CC6B26;
+            rx: 12;
+            ry: 12;
+        }
+        .logo-svg path {
+            stroke: #CC6B26;
+            transform: translate(12px, 0);
+        }
     </style>
 </head>
 <body>
     <header class="top-nav">
         <div class="logo-area" onclick="location.hash='#home'">
             <h1>Deynik Music</h1>
-            <svg class="logo-svg" width="34" height="34" viewBox="0 0 100 100">
-                <polygon points="12,12 75,50 12,88" fill="#CC6B26" rx="8" ry="8"/>
-                <path d="M65,30 Q88,50 65,70 M78,15 Q110,50 78,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(5, 0)"/>
+            <svg class="logo-svg" width="40" height="40" viewBox="0 0 100 100">
+                <polygon points="15,15 70,50 15,85" fill="#CC6B26" rx="12" ry="12"/>
+                <path d="M70,30 Q95,50 70,70 M88,15 Q120,50 88,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(12, 0)"/>
             </svg>
         </div>
         <div class="search-container">
             <input type="text" class="search-input" placeholder="Поиск треков или исполнителей">
         </div>
-        <div style="width: 380px;"></div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="location.hash='#home'">
+                <i data-lucide="music" size="18"></i>
+                Музыка
+            </button>
+            <button class="nav-btn" onclick="location.hash='#videos'">
+                <i data-lucide="video" size="18"></i>
+                Клипы
+            </button>
+        </div>
     </header>
 
     <div class="app-main">
         <aside class="panel side">
             <div class="filter-nav">
                 <div class="filter-scroll scroll-hide" id="filterScroll">
-                    <button class="tab active" onclick="window.location.hash='#home'; filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
-                    <button class="tab" onclick="window.location.hash='#videos'; filterSide('all', this)">Видеоклипы</button>
+                    <button class="tab active" onclick="filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
                     <button class="tab" onclick="filterSide('artist', this)">Исполнители</button>
                     <button class="tab" onclick="filterSide('album', this)">Альбомы</button>
                     <button class="tab" onclick="filterSide('playlist', this)">Плейлисты</button>
@@ -261,7 +339,7 @@
         window.trackLikes = {};
         window.videoLikes = {};
         window.currentVideoId = null;
-        window.currentPlayer = null;
+        window.currentVideoIframe = null;
         window.isVideoPlaying = false;
         
         window.audio = audio;
@@ -312,14 +390,32 @@
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
             
+            // Обновляем активную кнопку навигации
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (hash === 'videos' || hash.startsWith('video-')) {
+                document.querySelector('.nav-btn[onclick*="#videos"]').classList.add('active');
+            } else {
+                document.querySelector('.nav-btn[onclick*="#home"]').classList.add('active');
+            }
+            
             // ВИДЕО СТРАНИЦЫ
             if (hash === 'videos') {
+                // Останавливаем аудио
+                audio.pause();
+                window.currentTracks = [];
+                window.currentIdx = -1;
+                
                 document.getElementById('content-area').innerHTML = generateVideosPage();
                 updateRightPanelForVideos();
                 document.title = 'Видеоклипы | Deynik Music';
                 lucide.createIcons();
             }
             else if (hash.startsWith('video-')) {
+                // Останавливаем аудио
+                audio.pause();
+                window.currentTracks = [];
+                window.currentIdx = -1;
+                
                 const videoId = hash.replace('video-', '');
                 const video = window.videoDatabase.find(v => v.id === videoId);
                 if (video) {
@@ -336,6 +432,9 @@
                         document.getElementById('main-play-btn').setAttribute('data-lucide', 'pause');
                         window.isVideoPlaying = true;
                         lucide.createIcons();
+                        
+                        // Сохраняем ссылку на iframe для управления
+                        window.currentVideoIframe = document.querySelector('#video-player-section iframe');
                     }, 500);
                 }
                 lucide.createIcons();
@@ -360,6 +459,9 @@
                             setTimeout(window.renderPinnedAlbum, 50);
                         }
                     }
+                    
+                    // Очищаем очередь от видео
+                    renderQueue();
                 } catch {
                     location.hash = '#home';
                 }
@@ -404,7 +506,7 @@
 
         function generateVideoPage(video) {
             return `
-                <div style="padding: 0; width: 100%;">
+                <div id="video-player-section" style="padding: 0; width: 100%;">
                     <div style="margin-bottom: 30px;">
                         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
                             <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="location.hash='#videos'">
@@ -419,6 +521,7 @@
                         <div style="width: 100%; margin-bottom: 30px;">
                             <div class="kinescope-player">
                                 <iframe 
+                                    id="video-iframe-${video.id}"
                                     src="${video.embedUrl}" 
                                     allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
                                     frameborder="0" 
@@ -430,6 +533,75 @@
                 </div>
             `;
         }
+
+        // ========== УПРАВЛЕНИЕ ВИДЕО ЧЕРЕЗ НИЖНИЙ ПЛЕЕР ==========
+        window.togglePlay = function() {
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-') && window.currentVideoIframe) {
+                const btn = document.getElementById('main-play-btn');
+                const isPlaying = btn.getAttribute('data-lucide') === 'pause';
+                
+                // Отправляем команду в iframe Kinescope
+                try {
+                    // Пытаемся отправить postMessage для управления плеером
+                    window.currentVideoIframe.contentWindow.postMessage({
+                        event: 'command',
+                        func: isPlaying ? 'pauseVideo' : 'playVideo',
+                        args: ''
+                    }, '*');
+                } catch(e) {
+                    console.log('Не удалось отправить команду плееру');
+                }
+                
+                btn.setAttribute('data-lucide', isPlaying ? 'play' : 'pause');
+                window.isVideoPlaying = !isPlaying;
+                lucide.createIcons();
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (!audio.src) return;
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+                if (window.currentTracks[window.currentIdx]) {
+                    updateUI(window.currentTracks[window.currentIdx]);
+                }
+            }
+        };
+
+        window.nextTrack = function() {
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index < window.videoDatabase.length - 1) {
+                    location.hash = `#video-${window.videoDatabase[index + 1].id}`;
+                }
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (window.currentIdx < window.currentTracks.length - 1) {
+                    window.playTrack(window.currentIdx + 1, window.currentTracks);
+                }
+            }
+        };
+
+        window.prevTrack = function() {
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index > 0) {
+                    location.hash = `#video-${window.videoDatabase[index - 1].id}`;
+                }
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (window.currentIdx > 0) {
+                    window.playTrack(window.currentIdx - 1, window.currentTracks);
+                }
+            }
+        };
 
         // ========== ОБНОВЛЕНИЕ ПРАВОЙ ПАНЕЛИ ==========
         function updateRightPanelForVideos(currentVideo = null) {
@@ -498,6 +670,13 @@
             }, 50);
         };
 
+        window.playAlbum = function() {
+            location.hash = '#mayhem';
+            setTimeout(() => {
+                window.playTrack(0, window.albumTracks);
+            }, 100);
+        };
+
         function updateUI(track) {
             document.getElementById('p-title').innerText = track.title;
             document.getElementById('p-artist').innerText = 'Lady Gaga';
@@ -522,65 +701,15 @@
             lucide.createIcons();
         }
 
-        window.togglePlay = function() {
-            // ВИДЕО РЕЖИМ
-            if (window.location.hash.includes('video-')) {
-                const btn = document.getElementById('main-play-btn');
-                const isPlaying = btn.getAttribute('data-lucide') === 'pause';
-                btn.setAttribute('data-lucide', isPlaying ? 'play' : 'pause');
-                window.isVideoPlaying = !isPlaying;
-                lucide.createIcons();
-            } 
-            // АУДИО РЕЖИМ
-            else {
-                if (!audio.src) return;
-                if (audio.paused) {
-                    audio.play();
-                } else {
-                    audio.pause();
-                }
-                if (window.currentTracks[window.currentIdx]) {
-                    updateUI(window.currentTracks[window.currentIdx]);
-                }
-            }
-        };
-
-        window.nextTrack = function() {
-            // ВИДЕО РЕЖИМ
-            if (window.location.hash.includes('video-') && window.currentVideoId) {
-                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
-                if (index < window.videoDatabase.length - 1) {
-                    location.hash = `#video-${window.videoDatabase[index + 1].id}`;
-                }
-            } 
-            // АУДИО РЕЖИМ
-            else {
-                if (window.currentIdx < window.currentTracks.length - 1) {
-                    window.playTrack(window.currentIdx + 1, window.currentTracks);
-                }
-            }
-        };
-
-        window.prevTrack = function() {
-            // ВИДЕО РЕЖИМ
-            if (window.location.hash.includes('video-') && window.currentVideoId) {
-                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
-                if (index > 0) {
-                    location.hash = `#video-${window.videoDatabase[index - 1].id}`;
-                }
-            } 
-            // АУДИО РЕЖИМ
-            else {
-                if (window.currentIdx > 0) {
-                    window.playTrack(window.currentIdx - 1, window.currentTracks);
-                }
-            }
-        };
-
         // ========== ОЧЕРЕДЬ ==========
         function renderQueue() {
             const queueList = document.getElementById('queue-list');
             if (!queueList) return;
+            
+            // Если мы на странице видео - не показываем очередь
+            if (window.location.hash.includes('video-') || window.location.hash === '#videos') {
+                return;
+            }
             
             if (!window.currentTracks || !window.currentTracks.length) {
                 queueList.innerHTML = '<p style="color:#7a7a7a; padding:10px;">Очередь пуста</p>';
