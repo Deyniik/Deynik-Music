@@ -29,6 +29,18 @@
         <img src="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg" style="width:100%; border-radius:8px; margin-bottom:12px;">
         <b style="font-size:15px;">Mayhem</b><br>
         <small style="color:#7a7a7a;">Lady Gaga • 2025</small>
+        <div class="album-play-small" onclick="event.stopPropagation(); window.playAlbum('mayhem')">
+            <i data-lucide="play" fill="white" color="white" size="22" style="margin-left:2px;"></i>
+        </div>
+    </div>
+    
+    <div class="album-card" onclick="location.hash='#red'">
+        <img src="https://s3.k-connect.ru/static/music/1475/5978/1770895503_cover.jpeg" style="width:100%; border-radius:8px; margin-bottom:12px;">
+        <b style="font-size:15px;">Red (Taylor's Version)</b><br>
+        <small style="color:#7a7a7a;">Taylor Swift • 2021</small>
+        <div class="album-play-small" onclick="event.stopPropagation(); window.playAlbum('red')">
+            <i data-lucide="play" fill="white" color="white" size="22" style="margin-left:2px;"></i>
+        </div>
     </div>
 </div>
 
@@ -45,13 +57,17 @@
             container.innerHTML = `
                 <h2 style="margin:40px 0 20px;">Закреплено</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="album-card" onclick="location.hash='#mayhem'">
+                    <div class="album-card" onclick="location.hash='#${window.pinnedAlbum.hash || 'mayhem'}'">
                         <img src="${window.pinnedAlbum.cover}" style="width:100%; border-radius:8px; margin-bottom:12px;">
                         <b style="font-size:15px;">${window.pinnedAlbum.name}</b><br>
                         <small style="color:#7a7a7a;">${window.pinnedAlbum.sub}</small>
+                        <div class="album-play-small" onclick="event.stopPropagation(); window.playAlbum('${window.pinnedAlbum.hash || 'mayhem'}')">
+                            <i data-lucide="play" fill="white" color="white" size="22" style="margin-left:2px;"></i>
+                        </div>
                     </div>
                 </div>
             `;
+            lucide.createIcons();
         } else {
             container.style.display = 'none';
             container.innerHTML = '';
