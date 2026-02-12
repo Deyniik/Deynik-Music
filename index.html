@@ -5,6 +5,101 @@
     <title>Deynik Music</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://player.kinescope.io/v2/player.js"></script>
+    <style>
+        /* ВИДЕО СТИЛИ */
+        .video-card {
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 12px;
+            background: transparent;
+        }
+        .video-card:hover .video-play-overlay { opacity: 1; }
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        .video-thumbnail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3;
+        }
+        .video-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 2;
+        }
+        .recommendation-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
+            margin-bottom: 8px;
+        }
+        .recommendation-item:hover {
+            background: #1a1a1a;
+        }
+        .recommendation-thumbnail {
+            width: 120px;
+            aspect-ratio: 16/9;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #1a1a1a;
+            flex-shrink: 0;
+        }
+        .recommendation-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .kinescope-player {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .kinescope-player iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border: 0;
+        }
+    </style>
 </head>
 <body>
     <header class="top-nav">
@@ -25,7 +120,8 @@
         <aside class="panel side">
             <div class="filter-nav">
                 <div class="filter-scroll scroll-hide" id="filterScroll">
-                    <button class="tab active" onclick="filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
+                    <button class="tab active" onclick="window.location.hash='#home'; filterSide('all', this)"><i data-lucide="home" size="16"></i></button>
+                    <button class="tab" onclick="window.location.hash='#videos'; filterSide('all', this)">Видеоклипы</button>
                     <button class="tab" onclick="filterSide('artist', this)">Исполнители</button>
                     <button class="tab" onclick="filterSide('album', this)">Альбомы</button>
                     <button class="tab" onclick="filterSide('playlist', this)">Плейлисты</button>
@@ -120,6 +216,41 @@
             {title:"Die With A Smile", url:"https://s3.k-connect.ru/static/music/1475/5970/1770656935_Lady_Gaga_-_Die_With_A_Smile.mp3", time:"4:11"}
         ];
         
+        // ========== ВИДЕО БАЗА ==========
+        window.videoDatabase = [
+            {
+                id: 'abracadabra',
+                title: 'Abracadabra',
+                artist: 'Lady Gaga',
+                duration: '3:43',
+                embedUrl: 'https://kinescope.io/embed/23P3nMBcJP5impENM59GKy?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg',
+                avatar: 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg',
+                category: 'pop'
+            },
+            {
+                id: '22',
+                title: '22',
+                artist: 'Taylor Swift',
+                duration: '3:52',
+                embedUrl: 'https://kinescope.io/embed/6jSnedNm6D26XFkfqRZ1xi?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg',
+                avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp',
+                category: 'pop'
+            },
+            {
+                id: 'opalite',
+                title: 'Opalite',
+                artist: 'Taylor Swift',
+                duration: '4:15',
+                embedUrl: 'https://kinescope.io/embed/4v59o3MEohNejrECfLGgAc?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg',
+                avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp',
+                category: 'pop'
+            }
+        ];
+
+        // ========== АУДИО ПЕРЕМЕННЫЕ ==========
         let audio = new Audio();
         let currentTracks = [];
         let currentIdx = -1;
@@ -128,6 +259,10 @@
         const albumCover = 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg';
         window.pinnedAlbum = null;
         window.trackLikes = {};
+        window.videoLikes = {};
+        window.currentVideoId = null;
+        window.currentPlayer = null;
+        window.isVideoPlaying = false;
         
         window.audio = audio;
         window.currentTracks = currentTracks;
@@ -173,56 +308,178 @@
             }
         };
 
-        audio.addEventListener('play', function() {
-            if (window.currentTracks !== window.albumTracks) {
-                window.isVibePlaying = true;
-                const vibeIcon = document.getElementById('vibePlayIcon');
-                if (vibeIcon) {
-                    vibeIcon.setAttribute('data-lucide', 'pause');
-                    lucide.createIcons();
-                }
-            }
-        });
-
-        audio.addEventListener('pause', function() {
-            if (window.currentTracks !== window.albumTracks) {
-                window.isVibePlaying = false;
-                const vibeIcon = document.getElementById('vibePlayIcon');
-                if (vibeIcon) {
-                    vibeIcon.setAttribute('data-lucide', 'play');
-                    lucide.createIcons();
-                }
-            }
-        });
-
         // ========== ЗАГРУЗКА КОНТЕНТА ==========
         async function loadContent() {
             let hash = location.hash.replace('#', '') || 'home';
-            try {
-                const res = await fetch(`./pages/${hash}.html`);
-                let html = await res.text();
-                
-                document.getElementById('content-area').innerHTML = html;
-                
-                const scripts = document.getElementById('content-area').getElementsByTagName('script');
-                for (let script of scripts) {
-                    eval(script.innerHTML);
-                }
-                
+            
+            // ВИДЕО СТРАНИЦЫ
+            if (hash === 'videos') {
+                document.getElementById('content-area').innerHTML = generateVideosPage();
+                updateRightPanelForVideos();
+                document.title = 'Видеоклипы | Deynik Music';
                 lucide.createIcons();
-                
-                if (hash === 'home') {
-                    renderPinnedInSide();
-                    if (window.renderPinnedAlbum) {
-                        setTimeout(window.renderPinnedAlbum, 50);
-                    }
+            }
+            else if (hash.startsWith('video-')) {
+                const videoId = hash.replace('video-', '');
+                const video = window.videoDatabase.find(v => v.id === videoId);
+                if (video) {
+                    document.getElementById('content-area').innerHTML = generateVideoPage(video);
+                    updateRightPanelForVideos(video);
+                    document.title = `${video.title} - ${video.artist} | Deynik Music`;
+                    window.currentVideoId = video.id;
+                    
+                    setTimeout(() => {
+                        document.getElementById('p-title').innerText = video.title;
+                        document.getElementById('p-artist').innerText = video.artist;
+                        document.getElementById('p-img').src = video.thumbnail;
+                        document.getElementById('p-img').style.display = 'block';
+                        document.getElementById('main-play-btn').setAttribute('data-lucide', 'pause');
+                        window.isVideoPlaying = true;
+                        lucide.createIcons();
+                    }, 500);
                 }
-            } catch {
-                location.hash = '#home';
+                lucide.createIcons();
+            }
+            // АУДИО СТРАНИЦЫ
+            else {
+                try {
+                    const res = await fetch(`./pages/${hash}.html`);
+                    let html = await res.text();
+                    document.getElementById('content-area').innerHTML = html;
+                    
+                    const scripts = document.getElementById('content-area').getElementsByTagName('script');
+                    for (let script of scripts) {
+                        eval(script.innerHTML);
+                    }
+                    
+                    lucide.createIcons();
+                    
+                    if (hash === 'home') {
+                        renderPinnedInSide();
+                        if (window.renderPinnedAlbum) {
+                            setTimeout(window.renderPinnedAlbum, 50);
+                        }
+                    }
+                } catch {
+                    location.hash = '#home';
+                }
             }
         }
 
-        // ========== ПЛЕЕР ==========
+        // ========== ГЕНЕРАЦИЯ СТРАНИЦ ВИДЕО ==========
+        function generateVideosPage() {
+            return `
+                <div style="padding: 0; width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+                        <div>
+                            <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 8px;">Видеоклипы</h1>
+                            <p style="color: #7a7a7a; font-size: 15px;">Смотри лучшие клипы в высоком качестве</p>
+                        </div>
+                    </div>
+
+                    <div id="video-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+                        ${window.videoDatabase.map(video => `
+                            <div class="video-card" onclick="location.hash='#video-${video.id}'">
+                                <div class="video-thumbnail">
+                                    <img src="${video.thumbnail}" class="video-thumbnail-img" loading="lazy">
+                                    <div class="video-duration">${video.duration}</div>
+                                    <div class="video-play-overlay">
+                                        <i data-lucide="play" size="40" color="white" fill="white"></i>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:12px; margin-top:12px;">
+                                    <img src="${video.avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" loading="lazy">
+                                    <div>
+                                        <b style="font-size:15px;">${video.title}</b>
+                                        <br>
+                                        <small style="color:#7a7a7a;">${video.artist}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateVideoPage(video) {
+            return `
+                <div style="padding: 0; width: 100%;">
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                            <div class="p-btn" style="width: 45px; height: 45px; background: #1a1a1a;" onclick="location.hash='#videos'">
+                                <i data-lucide="arrow-left" size="20" color="white"></i>
+                            </div>
+                            <div>
+                                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">${video.title}</h1>
+                                <p style="color: #7a7a7a; font-size: 16px;">${video.artist}</p>
+                            </div>
+                        </div>
+                        
+                        <div style="width: 100%; margin-bottom: 30px;">
+                            <div class="kinescope-player">
+                                <iframe 
+                                    src="${video.embedUrl}" 
+                                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
+                                    frameborder="0" 
+                                    allowfullscreen
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== ОБНОВЛЕНИЕ ПРАВОЙ ПАНЕЛИ ==========
+        function updateRightPanelForVideos(currentVideo = null) {
+            const sidePanel = document.querySelector('.panel.side:last-child');
+            if (!sidePanel) return;
+            
+            const titleEl = sidePanel.querySelector('h2');
+            if (titleEl) {
+                titleEl.innerText = 'Смотрите так же';
+                titleEl.style.fontSize = '24px';
+                titleEl.style.fontWeight = '800';
+            }
+            
+            const artistEl = document.getElementById('side-artist');
+            if (artistEl) artistEl.style.display = 'none';
+            
+            const coverEl = document.getElementById('side-cover');
+            if (coverEl) coverEl.style.display = 'none';
+            
+            const likeBtn = document.getElementById('like-side');
+            if (likeBtn) likeBtn.style.display = 'none';
+            
+            let recommendations = [...window.videoDatabase];
+            if (currentVideo) {
+                recommendations = recommendations.filter(v => v.id !== currentVideo.id);
+            }
+            
+            const shuffled = [...recommendations].sort(() => Math.random() - 0.5).slice(0, 8);
+            
+            const container = sidePanel.querySelector('div:last-child > div:last-child');
+            if (container) {
+                container.innerHTML = `
+                    <div id="queue-list" style="overflow-y: auto; flex: 1; padding-right: 5px;">
+                        ${shuffled.map(video => `
+                            <div class="recommendation-item" onclick="location.hash='#video-${video.id}'">
+                                <div class="recommendation-thumbnail">
+                                    <img src="${video.thumbnail}" loading="lazy">
+                                </div>
+                                <div class="recommendation-info">
+                                    <span style="font-size:14px; font-weight:600; display:block; margin-bottom:4px;">${video.title}</span>
+                                    <span style="font-size:12px; color:#7a7a7a;">${video.artist}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        // ========== АУДИО ПЛЕЕР ==========
         window.playTrack = function(idx, trackList) {
             if (!trackList?.length) return;
             window.currentTracks = trackList;
@@ -266,27 +523,57 @@
         }
 
         window.togglePlay = function() {
-            if (!audio.src) return;
-            audio.paused ? audio.play() : audio.pause();
-            if (window.currentTracks[window.currentIdx]) updateUI(window.currentTracks[window.currentIdx]);
-            
-            setTimeout(() => {
-                if (location.hash === '#mayhem' && window.renderMayhemTracks) {
-                    window.renderMayhemTracks();
-                    window.updateAlbumPlayButton?.();
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-')) {
+                const btn = document.getElementById('main-play-btn');
+                const isPlaying = btn.getAttribute('data-lucide') === 'pause';
+                btn.setAttribute('data-lucide', isPlaying ? 'play' : 'pause');
+                window.isVideoPlaying = !isPlaying;
+                lucide.createIcons();
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (!audio.src) return;
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
                 }
-            }, 50);
+                if (window.currentTracks[window.currentIdx]) {
+                    updateUI(window.currentTracks[window.currentIdx]);
+                }
+            }
         };
 
         window.nextTrack = function() {
-            if (window.currentIdx < window.currentTracks.length - 1) {
-                window.playTrack(window.currentIdx + 1, window.currentTracks);
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index < window.videoDatabase.length - 1) {
+                    location.hash = `#video-${window.videoDatabase[index + 1].id}`;
+                }
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (window.currentIdx < window.currentTracks.length - 1) {
+                    window.playTrack(window.currentIdx + 1, window.currentTracks);
+                }
             }
         };
 
         window.prevTrack = function() {
-            if (window.currentIdx > 0) {
-                window.playTrack(window.currentIdx - 1, window.currentTracks);
+            // ВИДЕО РЕЖИМ
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = window.videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index > 0) {
+                    location.hash = `#video-${window.videoDatabase[index - 1].id}`;
+                }
+            } 
+            // АУДИО РЕЖИМ
+            else {
+                if (window.currentIdx > 0) {
+                    window.playTrack(window.currentIdx - 1, window.currentTracks);
+                }
             }
         };
 
@@ -319,7 +606,7 @@
 
         // ========== ВРЕМЯ ==========
         audio.ontimeupdate = function() {
-            if (audio.duration) {
+            if (audio.duration && !window.location.hash.includes('video-')) {
                 const pct = (audio.currentTime / audio.duration) * 100 || 0;
                 document.getElementById('p-fill').style.width = pct + '%';
                 document.getElementById('c-time').innerText = formatTime(audio.currentTime);
@@ -335,9 +622,13 @@
         }
 
         window.seek = function(e) {
-            if (!audio.duration) return;
-            const rect = e.currentTarget.getBoundingClientRect();
-            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+            if (window.location.hash.includes('video-')) {
+                // Видео перемотка через Kinescope не поддерживается
+                return;
+            } else if (audio.duration) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+            }
         };
 
         // ========== ГРОМКОСТЬ ==========
@@ -364,18 +655,24 @@
 
         // ========== ЛАЙК ==========
         window.toggleLike = function() {
-            if (!window.currentTracks.length) return;
-            isLiked = !isLiked;
-            document.querySelectorAll('.like-btn').forEach(el => {
-                el.classList.toggle('active', isLiked);
-                if (isLiked) {
-                    el.setAttribute('fill', '#CC6B26');
-                    el.setAttribute('color', '#CC6B26');
-                } else {
-                    el.setAttribute('fill', 'none');
-                    el.setAttribute('color', '#b3b3b3');
-                }
-            });
+            if (!window.currentTracks.length && !window.currentVideoId) return;
+            
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                window.videoLikes[window.currentVideoId] = !window.videoLikes[window.currentVideoId];
+                const isLiked = window.videoLikes[window.currentVideoId];
+                document.querySelectorAll('.like-btn').forEach(el => {
+                    el.classList.toggle('active', isLiked);
+                    el.setAttribute('fill', isLiked ? '#CC6B26' : 'none');
+                    el.setAttribute('color', isLiked ? '#CC6B26' : '#b3b3b3');
+                });
+            } else {
+                isLiked = !isLiked;
+                document.querySelectorAll('.like-btn').forEach(el => {
+                    el.classList.toggle('active', isLiked);
+                    el.setAttribute('fill', isLiked ? '#CC6B26' : 'none');
+                    el.setAttribute('color', isLiked ? '#CC6B26' : '#b3b3b3');
+                });
+            }
             lucide.createIcons();
         };
 
