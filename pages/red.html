@@ -1,0 +1,332 @@
+<div id="album-header" style="display:flex; gap:30px; margin-bottom:40px;">
+    <img src="https://s3.k-connect.ru/static/music/1475/5978/1770895503_cover.jpeg" style="width:230px; height:230px; border-radius:10px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+    <div style="display:flex; flex-direction:column; justify-content:space-between; height:230px;">
+        <div>
+            <small style="font-weight:800; color:#7a7a7a; letter-spacing:1px;">АЛЬБОМ</small>
+            <h1 style="font-size:70px; font-weight:900; margin:10px 0; line-height:1;">Red</h1>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                <span style="color:#7a7a7a;">Taylor Swift • 2021</span>
+                <span style="color:#7a7a7a;">•</span>
+                <span style="color:#7a7a7a;">30 песен</span>
+            </div>
+        </div>
+        
+        <div class="album-actions">
+            <div id="album-main-play-btn" class="album-play-btn" onclick="window.toggleAlbumPlay()">
+                <i id="album-play-icon" data-lucide="play" fill="white" color="white" size="28" style="margin-left:4px;"></i>
+            </div>
+            <div id="album-like-btn" class="album-like-btn" onclick="window.toggleAlbumLike(event)">
+                <i data-lucide="heart" size="22" color="white" fill="none"></i>
+            </div>
+            <div id="album-pin-btn" class="album-pin-btn" onclick="window.toggleAlbumPin()">
+                <i data-lucide="pin" size="22" color="white" fill="none"></i>
+            </div>
+            <div id="album-share-btn" class="album-share-btn" onclick="window.shareAlbum(this)">
+                <i data-lucide="share-2" size="20" color="white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="album-list"></div>
+
+<script>
+    (function() {
+        'use strict';
+        
+        // ========== ТРЕКИ АЛЬБОМА RED ==========
+        window.redTracks = [
+            {title:"State Of Grace (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5973/1770895500_Taylor_Swift_-_State_Of_Grace_Taylor_s_Version.mp3", time:"4:55"},
+            {title:"Red (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5974/1770895501_Taylor_Swift_-_Red_Taylor_s_Version.mp3", time:"3:43"},
+            {title:"Treacherous (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5975/1770895501_Taylor_Swift_-_Treacherous_Taylor_s_Version.mp3", time:"4:02"},
+            {title:"I Knew You Were Trouble (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5976/1770895502_Taylor_Swift_-_I_Knew_You_Were_Trouble_Taylor_s_Version.mp3", time:"3:39"},
+            {title:"All Too Well (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5977/1770895502_Taylor_Swift_-_All_Too_Well_Taylor_s_Version.mp3", time:"5:29"},
+            {title:"22 (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5978/1770895503_Taylor_Swift_-_22_Taylor_s_Version.mp3", time:"3:52"},
+            {title:"I Almost Do (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5979/1770895503_Taylor_Swift_-_I_Almost_Do_Taylor_s_Version.mp3", time:"4:04"},
+            {title:"We Are Never Ever Getting Back Together (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5980/1770895504_Taylor_Swift_We_Are_Never_Ever_Getting_Back_Together_Taylor_s.mp3", time:"3:13"},
+            {title:"Stay Stay Stay (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5981/1770895504_Taylor_Swift_-_Stay_Stay_Stay_Taylor_s_Version.mp3", time:"3:25"},
+            {title:"The Last Time (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5982/1770895505_Taylor_Swift_-_The_Last_Time_Taylor_s_Version.mp3", time:"4:59"},
+            {title:"Holy Ground (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5983/1770896065_Taylor_Swift_-_Holy_Ground_Taylor_s_Version.mp3", time:"3:22"},
+            {title:"Sad Beautiful Tragic (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5984/1770896066_Taylor_Swift_-_Sad_Beautiful_Tragic_Taylor_s_Version.mp3", time:"4:44"},
+            {title:"The Lucky One (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5985/1770896066_Taylor_Swift_-_The_Lucky_One_Taylor_s_Version.mp3", time:"4:00"},
+            {title:"Everything Has Changed (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5986/1770896066_Taylor_Swift_-_Everything_Has_Changed_Taylor_s_Version.mp3", time:"4:05"},
+            {title:"Starlight (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5987/1770896067_Taylor_Swift_-_Starlight_Taylor_s_Version.mp3", time:"3:40"},
+            {title:"Begin Again (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5988/1770896067_Taylor_Swift_-_Begin_Again_Taylor_s_Version.mp3", time:"3:58"},
+            {title:"The Moment I Knew (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5989/1770896068_Taylor_Swift_-_The_Moment_I_Knew_Taylor_s_Version.mp3", time:"4:46"},
+            {title:"Come Back... Be Here (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5990/1770896069_Taylor_Swift_-_Come_Back...Be_Here_Taylor_s_Version.mp3", time:"3:43"},
+            {title:"Girl At Home (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5991/1770896069_Taylor_Swift_-_Girl_At_Home_Taylor_s_Version.mp3", time:"3:40"},
+            {title:"State Of Grace (Acoustic Version) (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5992/1770896071_Taylor_Swift_State_Of_Grace_Acoustic_Version_Taylor_s_Versi.mp3", time:"5:21"},
+            {title:"Ronan (Taylor's Version)", url:"https://s3.k-connect.ru/static/music/1475/5993/1770896916_Taylor_Swift_-_Ronan_Taylor_s_Version.mp3", time:"4:24"},
+            {title:"Better Man (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5994/1770896916_Taylor_Swift_Better_Man_Taylor_s_Version_From_The_Vault.mp3", time:"4:57"},
+            {title:"Nothing New (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5995/1770896917_Taylor_Swift_Nothing_New_Taylor_s_Version_From_The_Vault.mp3", time:"4:18"},
+            {title:"Babe (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5996/1770896917_Taylor_Swift_-_Babe_Taylor_s_Version_From_The_Vault.mp3", time:"3:44"},
+            {title:"Message In A Bottle (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5997/1770896917_Taylor_Swift_Message_In_A_Bottle_Taylor_s_Version_From_The.mp3", time:"3:45"},
+            {title:"I Bet You Think About Me (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5998/1770896918_Taylor_Swift_I_Bet_You_Think_About_Me_Taylor_s_Version_From.mp3", time:"4:45"},
+            {title:"Forever Winter (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/5999/1770896919_Taylor_Swift_Forever_Winter_Taylor_s_Version_From_The_Vault.mp3", time:"4:23"},
+            {title:"Run (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/6000/1770896919_Taylor_Swift_-_Run_Taylor_s_Version_From_The_Vault.mp3", time:"4:00"},
+            {title:"The Very First Night (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/6001/1770896921_Taylor_Swift_The_Very_First_Night_Taylor_s_Version_From_The.mp3", time:"3:20"},
+            {title:"All Too Well (10 Minute Version) (Taylor's Version) (From The Vault)", url:"https://s3.k-connect.ru/static/music/1475/6002/1770896922_Taylor_Swift_All_Too_Well_10_Minute_Version_Taylor_s_Versio.mp3", time:"10:13"}
+        ];
+
+        // ========== СОСТОЯНИЕ ==========
+        if (window.isAlbumPinned === undefined) window.isAlbumPinned = false;
+        if (window.isAlbumLiked === undefined) window.isAlbumLiked = false;
+        if (!window.trackLikes) window.trackLikes = {};
+        
+        // ========== РЕНДЕР ТРЕКОВ ==========
+        window.renderRedTracks = function() {
+            const albumList = document.getElementById('album-list');
+            if (!albumList || !window.redTracks) return;
+            
+            const isAlbumPlaying = (window.currentTracks === window.redTracks);
+            const currentAudio = window.audio;
+            const currentIdx = window.currentIdx;
+            
+            let html = '';
+            
+            for (let i = 0; i < window.redTracks.length; i++) {
+                const track = window.redTracks[i];
+                const isPlaying = isAlbumPlaying && currentIdx === i && currentAudio && !currentAudio.paused;
+                const isCurrentTrack = isAlbumPlaying && currentIdx === i;
+                const isLiked = window.trackLikes[track.url] || false;
+                
+                html += `<div class="track-row ${isCurrentTrack ? 'playing' : ''}" data-track-index="${i}">`;
+                
+                // ЛЕВАЯ КОЛОНКА - АНИМАЦИЯ ВОЛНЫ ИЛИ ЦИФРА
+                html += `<div style="display:flex; align-items:center; justify-content:flex-start; width:40px;" onclick="window.playTrack(${i}, window.redTracks)">`;
+                if (isCurrentTrack) {
+                    if (isPlaying) {
+                        html += `<div class="playing-indicator">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>`;
+                    } else {
+                        html += `<span style="color:#CC6B26; font-size:14px; font-weight:600;">${i+1}</span>`;
+                    }
+                } else {
+                    html += `<span style="color:#7a7a7a; font-size:14px;">${i+1}</span>`;
+                }
+                html += `</div>`;
+                
+                // НАЗВАНИЕ ТРЕКА
+                html += `<b style="${isCurrentTrack ? 'color: #CC6B26 !important; font-weight: 700;' : ''}" onclick="window.playTrack(${i}, window.redTracks)">${track.title}</b>`;
+                
+                // ЛАЙК ТРЕКА
+                html += `<div style="text-align:center; color:#7a7a7a;" onclick="event.stopPropagation(); window.toggleTrackLike('${track.url}', this)">`;
+                if (isLiked) {
+                    html += `<i data-lucide="heart" size="16" color="#CC6B26" fill="#CC6B26" class="track-like active"></i>`;
+                } else {
+                    html += `<i data-lucide="heart" size="16" color="#7a7a7a" fill="none" class="track-like"></i>`;
+                }
+                html += `</div>`;
+                
+                // ВРЕМЯ
+                html += `<span style="text-align:right; color:#7a7a7a;" onclick="window.playTrack(${i}, window.redTracks)">${track.time}</span>`;
+                
+                html += `</div>`;
+            }
+            
+            albumList.innerHTML = html;
+            lucide.createIcons();
+        };
+
+        // ========== TOGGLE LIKE ДЛЯ ТРЕКА ==========
+        window.toggleTrackLike = function(trackUrl, element) {
+            if (!window.trackLikes) window.trackLikes = {};
+            window.trackLikes[trackUrl] = !window.trackLikes[trackUrl];
+            
+            const icon = element.querySelector('i');
+            if (window.trackLikes[trackUrl]) {
+                icon.setAttribute('fill', '#CC6B26');
+                icon.setAttribute('color', '#CC6B26');
+                icon.classList.add('active');
+            } else {
+                icon.setAttribute('fill', 'none');
+                icon.setAttribute('color', '#7a7a7a');
+                icon.classList.remove('active');
+            }
+            lucide.createIcons();
+        };
+
+        // ========== КНОПКА ПЛЕЙ/ПАУЗА ==========
+        window.updateAlbumPlayButton = function() {
+            const playIcon = document.getElementById('album-play-icon');
+            if (!playIcon) return;
+            
+            const isAlbumPlaying = (window.currentTracks === window.redTracks);
+            const audio = window.audio;
+            
+            if (isAlbumPlaying && audio && !audio.paused) {
+                playIcon.setAttribute('data-lucide', 'pause');
+            } else {
+                playIcon.setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        };
+
+        // ========== TOGGLE PLAY ==========
+        window.toggleAlbumPlay = function() {
+            if (!window.redTracks) return;
+            
+            const isAlbumPlaying = (window.currentTracks === window.redTracks);
+            const audio = window.audio;
+            
+            if (isAlbumPlaying && audio && audio.src) {
+                window.togglePlay();
+            } else {
+                if (window.currentTracks === window.redTracks && window.currentIdx !== -1) {
+                    window.playTrack(window.currentIdx, window.redTracks);
+                } else {
+                    window.playTrack(0, window.redTracks);
+                }
+            }
+            
+            setTimeout(window.updateAlbumPlayButton, 20);
+            setTimeout(window.renderRedTracks, 20);
+        };
+
+        // ========== TOGGLE LIKE АЛЬБОМА ==========
+        window.toggleAlbumLike = function(event) {
+            if (event) event.stopPropagation();
+            window.isAlbumLiked = !window.isAlbumLiked;
+            const btn = document.getElementById('album-like-btn');
+            const icon = btn?.querySelector('i');
+            
+            if (btn && icon) {
+                if (window.isAlbumLiked) {
+                    btn.classList.add('active');
+                    icon.setAttribute('fill', '#CC6B26');
+                    icon.setAttribute('color', '#CC6B26');
+                } else {
+                    btn.classList.remove('active');
+                    icon.setAttribute('fill', 'none');
+                    icon.setAttribute('color', 'white');
+                }
+                lucide.createIcons();
+            }
+        };
+
+        // ========== TOGGLE PIN ==========
+        window.toggleAlbumPin = function() {
+            window.isAlbumPinned = !window.isAlbumPinned;
+            const btn = document.getElementById('album-pin-btn');
+            const icon = btn?.querySelector('i');
+            
+            if (btn && icon) {
+                if (window.isAlbumPinned) {
+                    btn.classList.add('active');
+                    icon.setAttribute('fill', 'white');
+                    window.pinnedAlbum = {
+                        name: "Red (Taylor's Version)",
+                        sub: "Taylor Swift • 2021",
+                        cover: "https://s3.k-connect.ru/static/music/1475/5978/1770895503_cover.jpeg"
+                    };
+                    
+                    if (window.renderPinnedInSide) window.renderPinnedInSide();
+                    if (window.renderPinnedAlbum) window.renderPinnedAlbum();
+                } else {
+                    btn.classList.remove('active');
+                    icon.setAttribute('fill', 'none');
+                    window.pinnedAlbum = null;
+                    
+                    if (window.renderPinnedInSide) window.renderPinnedInSide();
+                    if (window.renderPinnedAlbum) window.renderPinnedAlbum();
+                }
+                lucide.createIcons();
+            }
+        };
+
+        // ========== SHARE ALBUM ==========
+        window.shareAlbum = function(btn) {
+            const url = 'https://deyniik.github.io/Deynik-Music/#red';
+            navigator.clipboard.writeText(url).then(function() {
+                btn.classList.add('share-animation');
+                setTimeout(() => {
+                    btn.classList.remove('share-animation');
+                }, 400);
+                
+                const icon = btn.querySelector('i');
+                icon.setAttribute('data-lucide', 'check');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    icon.setAttribute('data-lucide', 'share-2');
+                    lucide.createIcons();
+                }, 1500);
+            });
+        };
+
+        // ========== ПЕРЕХВАТ ФУНКЦИЙ ПЛЕЕРА ==========
+        const originalPlayTrack = window.playTrack;
+        window.playTrack = function(idx, trackList) {
+            if (originalPlayTrack) originalPlayTrack(idx, trackList);
+            setTimeout(() => {
+                window.renderRedTracks();
+                window.updateAlbumPlayButton();
+            }, 30);
+        };
+
+        const originalTogglePlay = window.togglePlay;
+        window.togglePlay = function() {
+            if (originalTogglePlay) originalTogglePlay();
+            setTimeout(() => {
+                window.renderRedTracks();
+                window.updateAlbumPlayButton();
+            }, 30);
+        };
+
+        // ========== СОБЫТИЯ АУДИО ==========
+        if (window.audio) {
+            window.audio.addEventListener('play', function() {
+                if (window.currentTracks === window.redTracks) {
+                    window.renderRedTracks();
+                    window.updateAlbumPlayButton();
+                }
+            });
+            
+            window.audio.addEventListener('pause', function() {
+                if (window.currentTracks === window.redTracks) {
+                    window.renderRedTracks();
+                    window.updateAlbumPlayButton();
+                }
+            });
+            
+            window.audio.addEventListener('ended', function() {
+                setTimeout(() => {
+                    if (window.currentTracks === window.redTracks) {
+                        window.renderRedTracks();
+                        window.updateAlbumPlayButton();
+                    }
+                }, 50);
+            });
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        setTimeout(function() {
+            window.renderRedTracks();
+            window.updateAlbumPlayButton();
+            
+            if (window.isAlbumLiked) {
+                const btn = document.getElementById('album-like-btn');
+                const icon = btn?.querySelector('i');
+                if (btn && icon) {
+                    btn.classList.add('active');
+                    icon.setAttribute('fill', '#CC6B26');
+                    icon.setAttribute('color', '#CC6B26');
+                }
+            }
+            
+            if (window.isAlbumPinned) {
+                const btn = document.getElementById('album-pin-btn');
+                const icon = btn?.querySelector('i');
+                if (btn && icon) {
+                    btn.classList.add('active');
+                    icon.setAttribute('fill', 'white');
+                }
+            }
+            
+            lucide.createIcons();
+        }, 50);
+    })();
+</script>
